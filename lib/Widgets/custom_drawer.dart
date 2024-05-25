@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:projctwakeell/Views/HomePage_lawyer_screen/home_page_lawyer_screen.dart';
 import 'package:projctwakeell/Views/LawyerDashBoardScreen/lawyer_dashboard_screen.dart';
+import 'package:projctwakeell/Views/LoginAsClientScreen/login_as_client_screen.dart';
+import 'package:projctwakeell/Views/LoginAsLawyerScreen/login_as_lawyer_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
@@ -9,6 +11,7 @@ import '../Utils/colors.dart';
 import '../Views/ClientDashboardScreen/client_dashboard_screen.dart';
 import '../Views/FeedBackFormScreen/feedback_form_screen.dart';
 import '../Views/HomePageClientScreen/home_page_client_screen.dart';
+import '../user_provider.dart';
 import 'custom_text.dart';
 
 class MyLawyerDrawer extends StatelessWidget {
@@ -17,6 +20,7 @@ class MyLawyerDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     return Drawer(
       backgroundColor: themeProvider.themeMode==ThemeMode.dark? AppColors.black12:Colors.grey.shade100,
       child: ListView(
@@ -124,7 +128,7 @@ class MyLawyerDrawer extends StatelessWidget {
               ),
             ),
             onTap: () {
-
+              userProvider.logout().then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginAsLawyerScreen())));
             },
           ),
 

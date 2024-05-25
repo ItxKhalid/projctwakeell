@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -8,6 +9,7 @@ import 'package:projctwakeell/themeChanger/themeChangerProvider/theme_changer_pr
 import 'package:projctwakeell/themeChanger/themes/themes.dart';
 import 'package:projctwakeell/user_provider.dart';
 import 'Views/HomePageClientScreen/home_page_client_screen.dart';
+import 'Views/SplashScreen/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var user = FirebaseAuth.instance.currentUser;
     return ScreenUtilInit(
       designSize: const Size(393, 852),
       minTextAdapt: true,
@@ -42,9 +45,10 @@ class MyApp extends StatelessWidget {
           themeMode: themeProvider.themeMode,
           theme: AppThemes.lightTheme,
           darkTheme: AppThemes.darkTheme,
-          home: userProvider.loggedInUser != null
-              ? HomePageClientScreen(loggedInUser: userProvider.loggedInUser!)
-              : const LoginAsClientScreen(),
+          home: SplashScreen(),
+          // home: userProvider.loggedInUser != null
+          //     ? HomePageClientScreen(loggedInUser: userProvider.loggedInUser!)
+          //     : const LoginAsClientScreen(),
         );
       },
     );

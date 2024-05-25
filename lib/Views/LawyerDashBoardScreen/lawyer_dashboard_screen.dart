@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +27,16 @@ class LawyerDashboardScreen extends StatefulWidget {
 class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
   //we are taking key to open drawer on tab on any icon
   GlobalKey<ScaffoldState> _key = GlobalKey();
+  final User? user = FirebaseAuth.instance.currentUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
+    _firestore
+        .collection('lawyer')
+        .where('uid', isEqualTo: user?.uid)
+        .snapshots();
     return Scaffold(
       key: _key,
       body: SafeArea(
@@ -51,7 +59,6 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                           fontWeight: FontWeight.w400,
                           fontFamily:'Acme'),
                     ),
-
                     GestureDetector(
                       onTap: () {
                         _key.currentState!.openDrawer();
@@ -63,8 +70,6 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                   ],
                 ),
               ),
-
-
               Padding(
                 padding: EdgeInsets.only(top: 19.h),
                 child: CustomText(
@@ -94,7 +99,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                                     : AppColors.black,
                                 fontFamily: 'Acme',
                               )),
-                          TextSpan(text: ' Abdul Waheed!',
+                          TextSpan(text: ' ${AppConst.getUserName}!',
                               style: TextStyle(
                                 fontWeight:FontWeight.w400 ,
                                 fontSize: 28.sp,

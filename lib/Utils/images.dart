@@ -1,4 +1,6 @@
-//import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 class AppImages {
   static String logoimg = "assets/images/logo.png";
   static String image1 = "assets/images/image1.png";
@@ -16,10 +18,30 @@ class AppImages {
   static String image11 = "assets/images/image11.png";
   static String image12 = "assets/images/image12.png";
   static String image13 = "assets/images/image13.png";
+}
 
+class AppConst {
+  // void toastMassage(String massage,bool onError){
+  //   Fluttertoast.showToast(
+  //       msg: massage,
+  //       toastLength: Toast.LENGTH_LONG,
+  //       gravity: ToastGravity.TOP,
+  //       timeInSecForIosWeb: 3,
+  //       backgroundColor: onError==false ? Colors.green.withOpacity(0.9) :  Colors.redAccent,
+  //       textColor: onError==false ? Colors.white : Colors.white,
+  //       fontSize: MySize.size16
+  //   );
+  // }
 
+  static String saveUserName = 'saveUserName';
+  static String saveUserType = 'saveUserType';
+  static String getUserName = '';
+  static String getUserType = '';
 
-
-
-
+  static spinKitWave() => const Center(
+        child: SpinKitWave(
+          size: 70,
+          color: Colors.teal,
+        ),
+      );
 }

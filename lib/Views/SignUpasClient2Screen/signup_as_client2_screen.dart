@@ -9,6 +9,7 @@ import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Utils/images.dart';
 import 'package:projctwakeell/Views/HomePageClientScreen/home_page_client_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Widgets/custom_Container_button.dart';
 import '../../Widgets/custom_container_textform_field.dart';
@@ -293,6 +294,18 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
 
 
                             });
+
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setString(AppConst.saveUserType, 'client');
+                            AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
+                            Get.snackbar('Congratulations', 'Successfully SignUp as a Client!',
+                                backgroundColor: AppColors.tealB3,
+                                colorText: AppColors.white,
+                                borderRadius: 20.r,
+                                icon: Icon(Icons.done,color: AppColors.white,),
+                                snackPosition: SnackPosition.TOP);
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) =>HomePageClientScreen(loggedInUser: loggedInUser!,)));
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
                                 Get.snackbar('Error', 'The password provided is too weak!',

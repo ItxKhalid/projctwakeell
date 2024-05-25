@@ -12,6 +12,7 @@ import 'package:projctwakeell/Widgets/custom_text.dart';
 import 'package:projctwakeell/service/Userclass.dart';
 import 'package:projctwakeell/themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'package:projctwakeell/user_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../SignUpAsClientScreen/signup_as_client_screen.dart';
 
 class LoginAsClientScreen extends StatefulWidget {
@@ -203,7 +204,9 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             email: email,
                             password: password,
                           );
-
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          await prefs.setString(AppConst.saveUserType, 'client');
+                          AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
                           // Fetch additional user data if needed
                           User? user = userCredential.user;
                           if (user != null) {
