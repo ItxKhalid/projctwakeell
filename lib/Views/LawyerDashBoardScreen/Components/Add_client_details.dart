@@ -86,7 +86,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
                       // If a matching client is found, set the contact number
                       if (selectedClientData != null) {
                         _contactNumberController.text = selectedClientData!.phoneNumber ?? '';
-                        _fullNameController.text=selectedClientData!.firstName!+" "+selectedClientData!.firstName!;
+                        _fullNameController.text=selectedClientData!.firstName!+" "+selectedClientData!.lastName!;
                       } else {
                         _contactNumberController.text = ''; // No client selected, clear the text field
                       }
@@ -180,6 +180,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                         'ClientfullName': fullName,
                         'ClientcaseType': caseType,
                         'ClientcaseDetails': caseDetails,
+                        'Client_Id': selectedClientData!.userId,
+
                         'ClientcontactNumber': contactNumber,
                         'lawerUID': uid,
                         'lawerEmail': email,
@@ -187,11 +189,11 @@ class _AddClientScreenState extends State<AddClientScreen> {
                       await FirebaseFirestore.instance.collection('ClientsData').add(clientData).then((value) =>
                       {
                         Get.back(),
-                        Get.snackbar('Successfully', 'Client Add',
+                        Get.snackbar('Successfully', 'Client Details Add',
                       backgroundColor: AppColors.blue,
                       colorText: AppColors.white,
                       borderRadius: 20.r,
-                      icon: Icon(Icons.error_outline, color: AppColors.white,),
+                      icon: Icon(Icons.check, color: AppColors.white,),
                       snackPosition: SnackPosition.TOP),
                       _selectedClient=null,
                           setState(() {
