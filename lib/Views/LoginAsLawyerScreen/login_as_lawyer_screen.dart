@@ -8,6 +8,7 @@ import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Utils/images.dart';
 import 'package:projctwakeell/Views/PinCodeLawyerScreen/pin_code_lawyer_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Widgets/custom_Container_button.dart';
 import '../../Widgets/custom_container_textform_field.dart';
 import '../../Widgets/custom_text.dart';
@@ -185,7 +186,13 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                   padding:  EdgeInsets.only(top: 10.h,left:38.w,right: 38.w),
                   child: GestureDetector(
                     onTap: () async {
-
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(child: AppConst.spinKitWave());
+                        },
+                        barrierDismissible: false,
+                      );
                       String email = emailController1.text.trim();
                       String password = passController1.text.trim();
                       if(email.isNotEmpty && password.isNotEmpty){
@@ -194,7 +201,9 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                             email: email,
                             password: password,
                           );
-
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          await prefs.setString(AppConst.saveUserType, 'lawyer');
+                          AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
                           Get.snackbar(
                             'Congratulations',
                             'Successfully Login as a Lawyer!',
@@ -204,9 +213,11 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                             icon: Icon(Icons.done, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
+                          Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageLawyerScreen()));
 
                         }on FirebaseAuthException catch (e) {
+                          Navigator.pop(context);
                           if (e.code == 'user-not-found') {
                             Get.snackbar(
                               'Error',
