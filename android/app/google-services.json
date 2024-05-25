@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435984390450",
+    "project_id": "wakeel-5dda8",
+    "storage_bucket": "wakeel-5dda8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435984390450:android:a11c5deaf666a5d68cdf2b",
+        "android_client_info": {
+          "package_name": "com.example.projctwakeell"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSjg_bkPH7XQPr_L0GJBHBTuaMBIRp_lE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
