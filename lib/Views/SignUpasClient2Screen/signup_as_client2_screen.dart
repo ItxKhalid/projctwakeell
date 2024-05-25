@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,17 @@ class SignUpAsClient2Screen extends StatefulWidget {
     required this.firstName,
     required this.email,
     required this.lastName,
+    required this.cnic,
+    required this.number,
+    required this.gender,
   }) : super(key: key);
 
   final String firstName;
   final String email;
   final String lastName;
+  final String cnic;
+  final String number;
+  final String gender;
 
   State<SignUpAsClient2Screen> createState() => _SignUpAsClient2ScreenState();
 }
@@ -246,18 +253,46 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                       String cpassword =confirmpasswordController.text.trim();
                       if(password.isNotEmpty && cpassword.isNotEmpty){
                             try {
-                            UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                            email: widget.email,
-                            password: password,
-                            );
-                            Get.snackbar('Congratulations', 'Successfully SignUp as a Client!',
-                                backgroundColor: AppColors.tealB3,
-                                colorText: AppColors.white,
-                                borderRadius: 20.r,
-                                icon: Icon(Icons.done,color: AppColors.white,),
-                                snackPosition: SnackPosition.TOP);
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) =>HomePageClientScreen(loggedInUser: loggedInUser!,)));
+                              void userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                email: widget.email,
+                                password: password,
+                              ).then((value) async {
+                                // Create an instance of UserModel with the retrieved data
+                                UserModel user = UserModel(
+                                  userId: value.user!.uid, // Use the uid from Firebase as userId
+                                  firstName: widget.firstName,
+                                  lastName: widget.lastName,
+                                  email: widget.email,
+                                  cnic: widget.cnic,
+                                  phoneNumber: widget.number,
+                                  gender: widget.gender,
+                                );
+
+                                // Save user data to Firestore
+                                await FirebaseFirestore.instance.collection('client').add(user.toMap());
+
+                                // Show Snackbar
+                                Get.snackbar(
+                                  'Congratulations',
+                                  'Successfully SignUp as a Client!',
+                                  backgroundColor: AppColors.tealB3,
+                                  colorText: AppColors.white,
+                                  borderRadius: 20.r,
+                                  icon: Icon(Icons.done, color: AppColors.white),
+                                  snackPosition: SnackPosition.TOP,
+                                );
+
+                                // Navigate to the next screen with user data
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomePageClientScreen(loggedInUser: user),
+                                  ),
+                                );
+
+
+
+                            });
                             } on FirebaseAuthException catch (e) {
                               if (e.code == 'weak-password') {
                                 Get.snackbar('Error', 'The password provided is too weak!',

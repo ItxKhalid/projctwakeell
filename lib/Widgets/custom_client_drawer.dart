@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:projctwakeell/Views/LoginAsClientScreen/login_as_client_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -154,7 +156,10 @@ class MyClientDrawer extends StatelessWidget {
                 fontFamily: 'Mulish',
               ),
             ),
-            onTap: () {
+            onTap: () async{
+              await FirebaseAuth.instance.signOut().then((value) =>  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginAsClientScreen()
+              ))
+              );
               // Implement your logout functionality here
             },
           ),

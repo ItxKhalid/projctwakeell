@@ -305,7 +305,10 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                       String gender = genderController.getSelectedGender().trim();
                       if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty && cnic.isNotEmpty && phoneNumber.isNotEmpty)
                       {
-                        try {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpAsClient2Screen
+                          (firstName: firstName,lastName:lastName, email: email,cnic: cnic,number: phoneNumber,gender: gender,)));
+
+                        /*try {
                           DocumentReference docRef = await FirebaseFirestore.instance.collection('client').add({
                             'firstName': firstName,
                             'lastName': lastName,
@@ -314,8 +317,6 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                             'phoneNumber': phoneNumber,
                             'gender': gender,
                           });
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpAsClient2Screen
-                            (firstName: firstName,lastName:lastName, email: email,)));
 
                           // Show success snackbar
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -342,7 +343,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                               content: Text('Failed to register your account: $e'),
                             ),
                           );
-                        }
+                        }*/
                       }
                   else
                   {
