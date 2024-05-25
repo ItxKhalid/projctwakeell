@@ -198,6 +198,13 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                       String password = passController.text.trim();
                       if (email.isNotEmpty && password.isNotEmpty) {
                         try {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Center(child: AppConst.spinKitWave());
+                            },
+                            barrierDismissible: false,
+                          );
                           UserCredential userCredential =
                           await FirebaseAuth.instance
                               .signInWithEmailAndPassword(
@@ -224,7 +231,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             // Update UserProvider
                             final userProvider = Provider.of<UserProvider>(context, listen: false);
                             await userProvider.setLoggedInUser(loggedInUser);
-
+ Navigator.pop(context);
                             Get.snackbar(
                               'Congratulations',
                               'Successfully logged in as a Client!',
@@ -246,6 +253,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                           }
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'user-not-found') {
+                            Navigator.pop(context);
                             Get.snackbar(
                               'Error',
                               'No user found for that email.',
@@ -267,6 +275,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             );
                           }
                         } catch (e) {
+                          Navigator.pop(context);
                           Get.snackbar(
                             'Error',
                             e.toString(),

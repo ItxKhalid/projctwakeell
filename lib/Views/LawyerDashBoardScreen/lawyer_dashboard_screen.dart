@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Views/LawyerDashBoardScreen/Components/Lawyer_message_screen.dart';
+import 'package:projctwakeell/Views/LawyerDashBoardScreen/Components/myClient_screen.dart';
 import 'package:projctwakeell/Widgets/custom_drawer.dart';
 import 'package:provider/provider.dart';
 import '../../Utils/images.dart';
@@ -167,6 +168,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
 
                         GestureDetector(
                             onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> MyClientScreens()));
 
                             },
                             child:Container(
