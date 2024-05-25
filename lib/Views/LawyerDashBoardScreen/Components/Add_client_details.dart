@@ -53,25 +53,25 @@ class _AddClientScreenState extends State<AddClientScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Add Client Details'),
+        title: Text('Add Client Details'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Client Full Name',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               DropdownButtonFormField<String>(
                 value: _selectedClient,
                 onChanged: (String? newValue) {
@@ -86,7 +86,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
                       // If a matching client is found, set the contact number
                       if (selectedClientData != null) {
                         _contactNumberController.text = selectedClientData!.phoneNumber ?? '';
-                        _fullNameController.text=selectedClientData!.firstName!+" "+selectedClientData!.firstName!;
+                        _fullNameController.text=selectedClientData!.firstName!+" "+selectedClientData!.lastName!;
                       } else {
                         _contactNumberController.text = ''; // No client selected, clear the text field
                       }
@@ -101,54 +101,54 @@ class _AddClientScreenState extends State<AddClientScreen> {
                     child: Text('${client.firstName} ${client.lastName}'),
                   );
                 }).toList(),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Select client',
                 ),
               ),
 
-              const SizedBox(height: 16.0),
-              const Text(
+              SizedBox(height: 16.0),
+              Text(
                 'Case Type',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: _caseTypeController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter case type',
                 ),
               ),
-              const SizedBox(height: 16.0),
-              const Text(
+              SizedBox(height: 16.0),
+              Text(
                 'Case Details',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: _caseDetailsController,
                 maxLines: 3,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter case details',
                 ),
               ),
-              const SizedBox(height: 16.0),
-              const Text(
+              SizedBox(height: 16.0),
+              Text(
                 'Contact Number',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8.0),
+              SizedBox(height: 8.0),
               TextFormField(
                 controller: _contactNumberController,
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter contact number',
                 ),
               ),
-              const SizedBox(height: 32.0),
+              SizedBox(height: 32.0),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -158,6 +158,12 @@ class _AddClientScreenState extends State<AddClientScreen> {
                     String caseType = _caseTypeController.text;
                     String caseDetails = _caseDetailsController.text;
                     String contactNumber = _contactNumberController.text;
+
+
+
+
+
+
                     // Print the values for demonstration
                     print('Full Name: $fullName');
                     print('Case Type: $caseType');
@@ -174,6 +180,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                         'ClientfullName': fullName,
                         'ClientcaseType': caseType,
                         'ClientcaseDetails': caseDetails,
+                        'Client_Id': selectedClientData!.userId,
+
                         'ClientcontactNumber': contactNumber,
                         'lawerUID': uid,
                         'lawerEmail': email,
@@ -181,11 +189,11 @@ class _AddClientScreenState extends State<AddClientScreen> {
                       await FirebaseFirestore.instance.collection('ClientsData').add(clientData).then((value) =>
                       {
                         Get.back(),
-                        Get.snackbar('Successfully', 'Client Add',
+                        Get.snackbar('Successfully', 'Client Details Add',
                             backgroundColor: AppColors.blue,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white,),
+                            icon: Icon(Icons.check, color: AppColors.white,),
                             snackPosition: SnackPosition.TOP),
                         _selectedClient=null,
                         setState(() {
@@ -283,7 +291,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.tealB3,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Save',
                     style: TextStyle(color: Colors.white), // Set text color to white
                   ),

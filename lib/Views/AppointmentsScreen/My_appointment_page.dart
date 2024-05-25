@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+import 'package:projctwakeell/Utils/images.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 import '../../Utils/colors.dart';
 import '../../service/Userclass.dart';
+import '../LawyerDashBoardScreen/Components/dialog.dart';
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({Key? key}) : super(key: key);
@@ -22,42 +24,27 @@ class _AppointmentPageState extends State<AppointmentPage> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
 
-  List<Event> events = [
-    Event(name: 'Meeting', startDate: DateTime.now().subtract(const Duration(days: 1))),
-    Event(name: 'Dentist Appointment', startDate: DateTime.now().add(const Duration(days: 1))),
-    Event(name: 'Gym Session', startDate: DateTime.now().add(const Duration(days: 2))),
-    Event(name: 'Family Dinner', startDate: DateTime.now().add(const Duration(days: 3))),
-    Event(name: 'Conference', startDate: DateTime.now().add(const Duration(days: 4))),
-  ];
-
   @override
   void initState() {
     super.initState();
     _calendarFormat = CalendarFormat.month;
     _focusedDay = DateTime.now();
     _selectedDay = DateTime.now();
-    fetchClientData().then((clientData) {
-      setState(() {
-        clients = clientData;
-      });
-    });
+    fetchAppointments();
   }
-  List<UserModel> clients = [];
 
-  String? _selectedClient;
-  UserModel? selectedClientData;
-  Future<List<UserModel>> fetchClientData() async {
-    List<UserModel> clients = [];
-
+  Future<List<Map<String, dynamic>>> fetchAppointments() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('client').get();
-      clients = querySnapshot.docs.map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('appointments').get();
+      return querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
     } catch (e) {
-      print("Error fetching client data: $e");
+      print("Error fetching appointments: $e");
+      return [];
     }
-    return clients;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +66,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ],
       ),
       body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -95,7 +83,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       });
                     },
                     icon: const Icon(Icons.calendar_today, color: Colors.teal),
-                    label: const Text('Month', style: TextStyle(color: Colors.teal)),
+                    label: const Text('Month',
+                        style: TextStyle(color: Colors.teal)),
                   ),
                   const SizedBox(width: 10), // Add space between buttons
                   ElevatedButton.icon(
@@ -104,8 +93,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         _calendarFormat = CalendarFormat.twoWeeks;
                       });
                     },
-                    icon: const Icon(Icons.calendar_view_month, color: Colors.teal),
-                    label: const Text('Two Weeks', style: TextStyle(color: Colors.teal)), // Changed text color here
+                    icon: const Icon(Icons.calendar_view_month,
+                        color: Colors.teal),
+                    label: const Text('Two Weeks',
+                        style: TextStyle(
+                            color: Colors.teal)), // Changed text color here
                   ),
                   const SizedBox(width: 10), // Add space between buttons
                   ElevatedButton.icon(
@@ -114,8 +106,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         _calendarFormat = CalendarFormat.week;
                       });
                     },
-                    icon: const Icon(Icons.calendar_view_week, color: Colors.teal),
-                    label: const Text('Week', style: TextStyle(color: Colors.teal)), // Changed text color here
+                    icon: const Icon(Icons.calendar_view_week,
+                        color: Colors.teal),
+                    label: const Text('Week',
+                        style: TextStyle(
+                            color: Colors.teal)), // Changed text color here
                   ),
                 ],
               ),
@@ -161,7 +156,20 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 ),
               ),
             ),
-            EventList(events: events),
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: fetchAppointments(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: AppConst.spinKitWave());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No events found'));
+                } else {
+                  return EventList(events: snapshot.data!);
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -169,303 +177,59 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   void _showAddEventDialog(BuildContext context) {
-    TextEditingController startDateController = TextEditingController();
-    TextEditingController endDateController = TextEditingController();
-    TextEditingController titleController = TextEditingController();
-    TextEditingController _fullNameController = TextEditingController();
-    List<UserModel> clients = [];
-
-    String? _selectedClient;
-    UserModel? selectedClientData;
-    Future<List<UserModel>> fetchClientData() async {
-      List<UserModel> clients = [];
-
-      try {
-        QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('client').get();
-        clients = querySnapshot.docs.map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
-      } catch (e) {
-        print("Error fetching client data: $e");
-      }
-      return clients;
-    }
-    @override
-    void initState() {
-      super.initState();
-      fetchClientData().then((clientData) {
-        setState(() {
-          clients = clientData;
-        });
-      });
-    }
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Event'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
-                    if (pickedDate != null) {
-                      endDateController.text = pickedDate.toString();
-                    }
-                  },
-                  decoration: const InputDecoration(labelText: 'Title'),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: startDateController,
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
-                    if (pickedDate != null) {
-                      startDateController.text = pickedDate.toString();
-                    }
-                  },
-                  decoration: const InputDecoration(labelText: 'Start Date'),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: endDateController,
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
-                    if (pickedDate != null) {
-                      endDateController.text = pickedDate.toString();
-                    }
-                  },
-                  decoration: const InputDecoration(labelText: 'End Date'),
-                ),
-                const SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: _selectedClient,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedClient = newValue;
-                      if (_selectedClient != null) {
-                        // Find the selected client from the list
-                        selectedClientData = clients.firstWhere(
-                              (client) => '${client.firstName} ${client.lastName}' == _selectedClient,
-
-                        );
-                        // If a matching client is found, set the contact number
-                        if (selectedClientData != null) {
-                          _fullNameController.text=selectedClientData!.firstName!+" "+selectedClientData!.firstName!;
-                        }
-                      }
-                    });
-                  },
-                  items: clients.map((client) {
-                    return DropdownMenuItem<String>(
-                      value: '${client.firstName} ${client.lastName}',
-                      child: Text('${client.firstName} ${client.lastName}'),
-                    );
-                  }).toList(),
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Select client',
-                  ),
-                ),
-                // const TextField(decoration: InputDecoration(labelText: 'Repeated')),
-                // const SizedBox(height: 10),
-                // const TextField(decoration: InputDecoration(labelText: 'Alarm and Reminders')),
-              ],
-            ),
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.check),
-                    onPressed: ()async {
-                      // Handle save logic here
-                      String fullName = _fullNameController.text;
-                      String startDate = startDateController.text;
-                      String endDate = endDateController.text;
-                      if (fullName.isNotEmpty)
-                      {
-                        /// save client data
-                        String uid = FirebaseAuth.instance.currentUser!.uid;
-                        String? email = FirebaseAuth.instance.currentUser!.email;
-
-                        // Construct a map for the client data
-                        Map<String, dynamic> clientData = {
-                          'clientName': fullName,
-                          'startDate': startDate,
-                          'endDate': endDate,
-                          'title': titleController.text.trim(),
-                        };
-                        await FirebaseFirestore.instance.collection('appointments').add(clientData).then((value) =>
-                        {
-                          Get.snackbar('Successfully', 'Appointment add',
-                              backgroundColor: AppColors.blue,
-                              colorText: AppColors.white,
-                              borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP),
-                          _selectedClient=null,
-                          setState(() {
-                          }),
-                        });
-
-
-
-
-
-                        /*try {
-                          DocumentReference docRef = await FirebaseFirestore.instance.collection('client').add({
-                            'firstName': firstName,
-                            'lastName': lastName,
-                            'email': email,
-                            'cnic': cnic,
-                            'phoneNumber': phoneNumber,
-                            'gender': gender,
-                          });
-
-                          // Show success snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Registration successful! ID: ${docRef.id}'),
-                            ),
-                          );
-
-                          // Clear text controllers
-                          firstnameController.clear();
-                          lastnameController.clear();
-                          emailController.clear();
-                          cnicController.clear();
-                          fullPhoneNumber = '';
-                          setState(() {
-                            selectedGender = '';
-                          });
-
-
-                        } catch (e) {
-                          // Show error snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Failed to register your account: $e'),
-                            ),
-                          );
-                        }*/
-                      }
-                      else
-                      {
-                        if (fullName.isEmpty) {
-                          Get.snackbar('Error', 'Full Name Required!',
-                              backgroundColor: AppColors.red,
-                              colorText: AppColors.white,
-                              borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                        }
-
-                        else if (endDate.isEmpty) {
-                          Get.snackbar('Error', 'Please select end date',
-                              backgroundColor: AppColors.red,
-                              colorText: AppColors.white,
-                              borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-
-                        }
-                        else if (startDate.isEmpty) {
-                          Get.snackbar('Error', 'Please select start date!',
-                              backgroundColor: AppColors.red,
-                              colorText: AppColors.white,
-                              borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                        }
-
-                      }
-
-
-                      // Clear the text fields after saving
-
-                    }
-                ),
-              ],
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AddEventDialog();
+          },
         );
       },
     );
   }
 }
 
-class Event {
-  final String name;
-  final DateTime startDate;
-
-  Event({required this.name, required this.startDate});
-}
-
 class EventList extends StatelessWidget {
-  final List<Event> events;
+  final List<Map<String, dynamic>> events;
 
   const EventList({Key? key, required this.events}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 260,
-      child: ListView.builder(
-        itemCount: events.length,
-        itemBuilder: (BuildContext context, int index) {
-          Event event = events[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Add padding
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200], // Light grey background color
-                borderRadius: BorderRadius.circular(10), // Rounded corners
-              ),
-              child: ListTile(
-                title: Text(
-                  event.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  DateFormat('MM/dd/yyyy hh:mm a').format(event.startDate),
-                  style: const TextStyle(),
-                ),
-                onTap: () {
-                  // Add your action when tapping on an event
-                },
-              ),
+    return ListView.builder(
+      itemCount: events.length,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        Map<String, dynamic> event = events[index];
+        String title = event['title'] ?? 'No Title';
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          // Add padding
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200], // Light grey background color
+              borderRadius: BorderRadius.circular(10), // Rounded corners
             ),
-          );
-        },
-      ),
+            child: ListTile(
+              title: Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.black),
+              ),
+              subtitle: Text(
+                event['startDate'].toString(),
+                // Custom date format
+                style: const TextStyle(),
+              ),
+              onTap: () {
+                // Add your action when tapping on an event
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
