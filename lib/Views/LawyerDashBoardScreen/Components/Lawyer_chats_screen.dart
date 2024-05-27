@@ -221,14 +221,14 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    lastMessage,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
+                  // const SizedBox(height: 3),
+                  // Text(
+                  //   lastMessage,
+                  //   style: const TextStyle(
+                  //     color: Colors.black,
+                  //     fontSize: 14,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

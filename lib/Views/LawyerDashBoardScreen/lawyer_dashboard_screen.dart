@@ -13,10 +13,12 @@ import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../AppointmentsScreen/My_appointment_page.dart';
 import '../LawyerProfileScreen/Lawyer_profile_page.dart';
+import '../chatBotScreen.dart';
 import 'Components/Add_client_details.dart';
 import 'Components/Lawyer_analytics.dart';
 import 'Components/Lawyer_chats_screen.dart';
 import 'Components/Lawyer_earning.dart';
+import 'Components/my_docs.dart';
 
 class LawyerDashboardScreen extends StatefulWidget {
   const LawyerDashboardScreen({super.key});
@@ -67,6 +69,13 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
 
     return Scaffold(
       key: _key,
+        floatingActionButton: FloatingActionButton(
+          clipBehavior: Clip.hardEdge,
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatBotScreen()));
+          },
+          child: Image.asset('assets/images/chatbot.png',fit: BoxFit.fitHeight,height: 100),
+        ),
       body: SafeArea(
         child:SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -159,7 +168,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                       children: [
                         GestureDetector(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> LawyerProfileScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const LawyerProfileScreen()));
                             },
                             child:Container(
                               alignment: Alignment.bottomCenter,
@@ -195,7 +204,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
 
                         GestureDetector(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> MyClientScreens()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const MyClientScreens()));
 
                             },
                             child:Container(
@@ -241,7 +250,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                       children: [
                         GestureDetector(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> AppointmentPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const AppointmentPage()));
                             },
                             child:Container(
                               alignment: Alignment.bottomCenter,
@@ -278,7 +287,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
 
                         GestureDetector(
                             onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> AddClientScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const AddClientScreen()));
                             },
                             child:Container(
                               alignment: Alignment.bottomCenter,
@@ -323,7 +332,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                       children: [
                         GestureDetector(
                             onTap: (){
-
+                              Navigator.push(context,MaterialPageRoute(builder: (context) => const MyDocument()));
                             },
                             child:Container(
                               alignment: Alignment.bottomCenter,
@@ -358,53 +367,8 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                             ),
                         ),
                         GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> LawyerAnalyticsScreen()));
-                            },
-                            child:Container(
-                              alignment: Alignment.bottomCenter,
-                              width: 124.w,
-                              height: 122.h,
-                              decoration: BoxDecoration(
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.black12: Colors.grey.shade200,
-                                // color: AppColors.black12,
-                                border: Border.all( color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                  // color: AppColors.white,
-                                ),
-                              ),
-                              child:Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.analytics,
-                                    color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                  ),
-                                  SizedBox(height: 10.h,),
-                                  CustomText(
-                                      textAlign: TextAlign.center,
-                                      text:'Analytics',
-                                      color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                      // color: AppColors.white,
-                                      fontSize: 17.sp,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily:'Mulish'),
-                                ],
-                              ) ,
-
-                            ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.only(top: 31.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                        onTap: (){
-                             Navigator.push(context, MaterialPageRoute(builder: (context)=>LawyerChatsScreen()));
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const LawyerChatsScreen()));
                           },
                           child: Container(
                             alignment: Alignment.bottomCenter,
@@ -435,48 +399,129 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                                     fontFamily:'Mulish'),
                               ],
                             ) ,
-                          
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>LawyerEarningScreen()));
-                          },
-                          child: Container(
-                            alignment: Alignment.bottomCenter,
-                            width: 124.w,
-                            height: 122.h,
-                            decoration: BoxDecoration(
-                              color: themeProvider.themeMode==ThemeMode.dark? AppColors.black12: Colors.grey.shade200,
-                              // color: AppColors.black12,
-                              border: Border.all(color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                // color: AppColors.white,
-                              ),
-                            ),
-                            child:Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(Icons.money_rounded,
-                                  color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                ),
-                                SizedBox(height: 10.h,),
-                                CustomText(
-                                    textAlign: TextAlign.center,
-                                    text:'My Earnings',
-                                    color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                    // color: AppColors.white,
-                                    fontSize: 17.sp,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily:'Mulish'),
-                              ],
-                            ) ,
 
                           ),
-                        ),
+                        )
+                        // GestureDetector(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=> LawyerAnalyticsScreen()));
+                        //     },
+                        //     child:Container(
+                        //       alignment: Alignment.bottomCenter,
+                        //       width: 124.w,
+                        //       height: 122.h,
+                        //       decoration: BoxDecoration(
+                        //         color: themeProvider.themeMode==ThemeMode.dark? AppColors.black12: Colors.grey.shade200,
+                        //         // color: AppColors.black12,
+                        //         border: Border.all( color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                        //           // color: AppColors.white,
+                        //         ),
+                        //       ),
+                        //       child:Column(
+                        //         crossAxisAlignment: CrossAxisAlignment.center,
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: [
+                        //           Icon(Icons.analytics,
+                        //             color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                        //           ),
+                        //           SizedBox(height: 10.h,),
+                        //           CustomText(
+                        //               textAlign: TextAlign.center,
+                        //               text:'Analytics',
+                        //               color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                        //               // color: AppColors.white,
+                        //               fontSize: 17.sp,
+                        //               fontWeight: FontWeight.w500,
+                        //               fontFamily:'Mulish'),
+                        //         ],
+                        //       ) ,
+                        //
+                        //     ),
+                        // ),
                       ],
                     ),
                   ),
+
+                  // Padding(
+                  //   padding: EdgeInsets.only(top: 31.h),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //     children: [
+                  //       GestureDetector(
+                  //       onTap: (){
+                  //            Navigator.push(context, MaterialPageRoute(builder: (context)=>LawyerChatsScreen()));
+                  //         },
+                  //         child: Container(
+                  //           alignment: Alignment.bottomCenter,
+                  //           width: 124.w,
+                  //           height: 122.h,
+                  //           decoration: BoxDecoration(
+                  //             color: themeProvider.themeMode==ThemeMode.dark? AppColors.black12: Colors.grey.shade200,
+                  //             // color: AppColors.black12,
+                  //             border: Border.all(  color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                  //               // color: AppColors.white,
+                  //             ),
+                  //           ),
+                  //           child:Column(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             crossAxisAlignment: CrossAxisAlignment.center,
+                  //             children: [
+                  //               Icon(Icons.message_rounded,
+                  //                 color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                  //               ),
+                  //               SizedBox(height: 10.h,),
+                  //               CustomText(
+                  //                   textAlign: TextAlign.center,
+                  //                   text:'Messages',
+                  //                   color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                  //                   // color: AppColors.white,
+                  //                   fontSize: 17.sp,
+                  //                   fontWeight: FontWeight.w500,
+                  //                   fontFamily:'Mulish'),
+                  //             ],
+                  //           ) ,
+                  //
+                  //         ),
+                  //       ),
+                  //       GestureDetector(
+                  //         onTap: (){
+                  //           Navigator.push(context, MaterialPageRoute(builder: (context)=>LawyerEarningScreen()));
+                  //         },
+                  //         child: Container(
+                  //           alignment: Alignment.bottomCenter,
+                  //           width: 124.w,
+                  //           height: 122.h,
+                  //           decoration: BoxDecoration(
+                  //             color: themeProvider.themeMode==ThemeMode.dark? AppColors.black12: Colors.grey.shade200,
+                  //             // color: AppColors.black12,
+                  //             border: Border.all(color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                  //               // color: AppColors.white,
+                  //             ),
+                  //           ),
+                  //           child:Column(
+                  //             mainAxisAlignment: MainAxisAlignment.center,
+                  //             crossAxisAlignment: CrossAxisAlignment.center,
+                  //             children: [
+                  //               Icon(Icons.money_rounded,
+                  //                 color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                  //               ),
+                  //               SizedBox(height: 10.h,),
+                  //               CustomText(
+                  //                   textAlign: TextAlign.center,
+                  //                   text:'My Earnings',
+                  //                   color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                  //                   // color: AppColors.white,
+                  //                   fontSize: 17.sp,
+                  //                   fontWeight: FontWeight.w500,
+                  //                   fontFamily:'Mulish'),
+                  //             ],
+                  //           ) ,
+                  //
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -485,7 +530,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
           ),
         ),
       ),
-      drawer: MyLawyerDrawer(),
+      drawer: const MyLawyerDrawer(),
     );
   }
 }

@@ -10,6 +10,7 @@ import '../../Utils/images.dart';
 import '../../Widgets/custom_client_drawer.dart';
 import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../chatBotScreen.dart';
 import 'Components/Client_chats_screen.dart';
 import 'Components/Lawyer screen.dart';
 import 'Components/client_appointment_screen.dart';
@@ -37,6 +38,13 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
 
     return Scaffold(
       key: _key,
+        floatingActionButton: FloatingActionButton(
+          clipBehavior: Clip.hardEdge,
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatBotScreen()));
+          },
+          child: Image.asset('assets/images/chatbot.png',fit: BoxFit.fitHeight,height: 100),
+        ),
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,

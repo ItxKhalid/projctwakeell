@@ -103,7 +103,11 @@ class _LawyerMessageScreenState extends State<LawyerMessageScreen> {
                       },
                     );
                   } else {
-                    return Container();
+                    return const Scaffold(
+                      body: Center(
+                        child: Text('No messages yet!',style: TextStyle(color: Colors.white)),
+                      ),
+                    );
                   }
                 },
               ),

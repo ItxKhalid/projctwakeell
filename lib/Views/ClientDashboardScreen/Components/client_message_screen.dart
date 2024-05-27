@@ -103,7 +103,11 @@ class _ClientMessageScreenState extends State<ClientMessageScreen> {
                       },
                     );
                   } else {
-                    return Container();
+                    return const Scaffold(
+                      body: Center(
+                        child: Text('No messages yet!',style: TextStyle(color: Colors.white)),
+                      ),
+                    );
                   }
                 },
               ),

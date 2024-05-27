@@ -34,9 +34,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   Future<List<Map<String, dynamic>>> fetchAppointments() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('appointments').get();
+          await FirebaseFirestore.instance.collection('appointments').where('lawyerId', isEqualTo: uid).get();
       return querySnapshot.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();

@@ -55,7 +55,9 @@ dependencies:
   share_plus: ^9.0.0
   flutter_spinkit:
   firebase_storage:
-
+  file_picker:
+  flutter_pdfview:
+  open_filex:
 
 dev_dependencies:
   flutter_test:
