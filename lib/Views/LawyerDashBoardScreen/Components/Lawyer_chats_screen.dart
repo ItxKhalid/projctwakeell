@@ -1,13 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../../Utils/colors.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'Add_client_details.dart';
 import 'Lawyer_message_screen.dart';
 
 class LawyerChatsScreen extends StatefulWidget {
-  const LawyerChatsScreen({Key? key});
+  const LawyerChatsScreen({Key? key}) : super(key: key);
 
   @override
   State<LawyerChatsScreen> createState() => _LawyerChatsScreenState();
@@ -25,6 +27,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
       return;
     }
 
+    // Combine search for firstName and lastName
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('client')
         .where('firstName', isGreaterThanOrEqualTo: query)
@@ -34,6 +37,23 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
     setState(() {
       searchResults = querySnapshot.docs;
     });
+  }
+  ///set RoomId for one to one chat
+  String chatRoomId(String user1, String user2) {
+    if (user1.isEmpty || user2.isEmpty) {
+      // Handle empty strings as needed, e.g., return a default value
+      return 'defaultRoomId';
+    }
+
+    // Make sure both strings are in lowercase before creating the ID
+    user1 = user1.toLowerCase();
+    user2 = user2.toLowerCase();
+
+    if (user1[0].codeUnits[0] > user2[0].codeUnits[0]) {
+      return "$user1$user2";
+    } else {
+      return "$user2$user1";
+    }
   }
 
   @override
@@ -126,19 +146,25 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
             ),
           ),
           Expanded(
-            child: searchResults.isEmpty
-                ? Center(
-              child: Text(
-                'No clients found',
-                style: TextStyle(fontSize: 18.0),
-              ),
-            )
-                : ListView.builder(
-              itemCount: searchResults.length,
-              itemBuilder: (context, index) {
-                var clientData =
-                searchResults[index].data() as Map<String, dynamic>;
-                return _buildChatItem(clientData);
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection('client').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('No clients found'));
+                } else {
+                  searchResults = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: searchResults.length,
+                    itemBuilder: (context, index) {
+                      var clientData = searchResults[index].data() as Map<String, dynamic>;
+                      return _buildChatItem(clientData);
+                    },
+                  );
+                }
               },
             ),
           ),
@@ -152,15 +178,17 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
     String lastName = clientData['lastName'] ?? '';
     String name = '$firstName $lastName'.trim();
     String lastMessage = clientData['lastMessage'] ?? 'No message';
-    String timestamp = clientData['timestamp'] ?? 'No timestamp';
-
+    Timestamp timestamp = clientData['timestamp'] ?? Timestamp.now();
+    String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String roomId = chatRoomId(uid,clientData['userId']);
     return GestureDetector(
       onTap: () {
         // Navigate to chat page and pass client name
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => LawyerMessageScreen(clientName: name),
+            builder: (context) => LawyerMessageScreen(clientName: name,clientId: clientData['userId'],chatRoomId: roomId),
           ),
         );
       },
@@ -209,8 +237,8 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  timestamp,
-                  style: TextStyle(
+                  formattedTimestamp,
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.black54,
                   ),

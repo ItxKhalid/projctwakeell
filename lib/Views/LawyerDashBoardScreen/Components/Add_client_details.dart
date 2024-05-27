@@ -198,7 +198,9 @@ class _AddClientScreenState extends State<AddClientScreen> {
                       await FirebaseFirestore.instance.collection('ClientsData').add(clientData).then((value) =>
                       {
                         Get.back(),
+
                         Navigator.pop(context),
+
 
                         Get.snackbar('Successfully', 'Client Details Add',
                             backgroundColor: AppColors.blue,

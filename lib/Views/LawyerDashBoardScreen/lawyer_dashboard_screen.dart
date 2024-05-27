@@ -29,15 +29,42 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
   //we are taking key to open drawer on tab on any icon
   GlobalKey<ScaffoldState> _key = GlobalKey();
   final User? user = FirebaseAuth.instance.currentUser;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String lawyerName = '';
 
   @override
+  void initState() {
+    super.initState();
+    fetchLawyerName();
+  }
+
+  Future<void> fetchLawyerName() async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('lawyer')
+          .where('uid', isEqualTo: uid)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot userDoc = querySnapshot.docs.first;
+        setState(() {
+          lawyerName = '${userDoc['firstName']} ${userDoc['lastName']}' ?? 'User';
+        });
+      } else {
+        setState(() {
+          print('ididididididiidididididid$uid');
+          lawyerName = 'User';
+        });
+      }
+    } catch (e) {
+      print("Error fetching lawyer name: $e");
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
-    _firestore
-        .collection('lawyer')
-        .where('uid', isEqualTo: user?.uid)
-        .snapshots();
+
     return Scaffold(
       key: _key,
       body: SafeArea(
@@ -100,7 +127,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                                     : AppColors.black,
                                 fontFamily: 'Acme',
                               )),
-                          TextSpan(text: ' ${AppConst.getUserName}!',
+                          TextSpan(text: ' $lawyerName!',
                               style: TextStyle(
                                 fontWeight:FontWeight.w400 ,
                                 fontSize: 28.sp,
