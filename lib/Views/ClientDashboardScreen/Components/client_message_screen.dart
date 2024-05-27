@@ -1,148 +1,215 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:projctwakeell/Utils/images.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:projctwakeell/Widgets/custome_appbar_client.dart';
-import 'package:projctwakeell/service/Userclass.dart';
-import 'package:projctwakeell/service/chat_room_model.dart';
-import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart'; // Add this for image picking
+import 'package:uuid/uuid.dart';
 import '../../../Utils/colors.dart';
+import '../../../Widgets/custom_appbar.dart';
+import '../../../Widgets/massage_bubbels.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 
 class ClientMessageScreen extends StatefulWidget {
-  final User? firebaseUser;
-  final UserModel targetUser;
-  final UserModel userModel;
-  final ChatRoomModel chatRoom;
+  final String clientName;
+  final String clientId;
+  final String chatRoomId;
 
-  const ClientMessageScreen({
-    Key? key,
-    required this.firebaseUser,
-    required this.targetUser,
-    required this.userModel,
-    required this.chatRoom,
-  }) : super(key: key);
+
+  const ClientMessageScreen({Key? key, required this.clientName, required this.chatRoomId,required this.clientId}) : super(key: key);
 
   @override
   State<ClientMessageScreen> createState() => _ClientMessageScreenState();
 }
 
 class _ClientMessageScreenState extends State<ClientMessageScreen> {
-  DatabaseReference? _messagesRef;
-  TextEditingController _messageController = TextEditingController();
-  String lastMessage = '';
+  ScrollController _scrollController = ScrollController();
+  String lawyerId = FirebaseAuth.instance.currentUser!.uid;
+  final firestore.FirebaseFirestore _firestore = firestore.FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool scrollbool = false;
 
-  @override
-  void initState() {
-    super.initState();
-   // _messagesRef = FirebaseDatabase.instance.reference().child('messages').child(widget.chatRoom.chatRoomId);
-
-    _fetchLastMessage();
-  }
-
-  void _fetchLastMessage() {
-    _messagesRef!.orderByChild('timestamp').limitToLast(1).onChildAdded.listen((event) {
-      setState(() {
-        Map<String, dynamic> messageData = Map<String, dynamic>.from(event.snapshot.value as Map);
-        lastMessage = messageData['content'] ?? 'No message';
-      });
-    });
-  }
-
+  double itemHeight = 50.0;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: CustomAppBar(
+          name: widget.clientName,
+          imageassets: 'assets/images/image11.png',
+          onPhonePressed: () {
+            // Handle phone icon pressed
+          },
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<firestore.QuerySnapshot>(
+                stream: _firestore
+                    .collection('chatroom')
+                    .doc(widget.chatRoomId)
+                    .collection('chats')
+                    .orderBy("time", descending: true)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<firestore.QuerySnapshot> snapshot) {
+                  if (snapshot.data != null) {
+                    if (_scrollController.hasClients) {
+                      double maxScrollExtent =
+                          _scrollController.position.maxScrollExtent;
+                      double offset = _scrollController.offset;
+                      double reversedOffset = maxScrollExtent - offset;
+                      int bottomItemIndex =
+                      (reversedOffset / itemHeight).ceil();
 
-    return Scaffold(
-      appBar: CustomAppBarClient(
-        name: widget.targetUser.firstName ?? '',
-        imageassets: 'assets/images/image11.png',
-        onPhonePressed: () {
-          // Handle phone icon pressed
-        },
-        subtitle: '',
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder(
-              stream: _messagesRef!.orderByChild('timestamp').onValue,
-              builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
+                      // print("----------------------current index          ${bottomItemIndex}--------------------------");
+                      if (bottomItemIndex > 2) {
+                        scrollbool = false;
+                      } else {
+                        scrollbool = true;
+                      }
+                    }
 
-                if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
-                  return Center(
-                    child: Text(
-                      'No messages yet',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  );
-                }
-
-                Map<dynamic, dynamic> data = snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
-                List<Map<String, dynamic>> messagesList = [];
-                data.forEach((key, value) {
-                  messagesList.add(Map<String, dynamic>.from(value));
-                });
-                messagesList.sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
-
-                return ListView.builder(
-                  itemCount: messagesList.length,
-                  itemBuilder: (context, index) {
-                    var messageData = messagesList[index];
-                    bool isSentByUser = messageData['senderId'] == widget.firebaseUser!.uid;
-
-                    return _buildChatItem(messageData, isSentByUser);
-                  },
-                );
-              },
-            ),
-          ),
-          _buildInputArea(themeProvider),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChatItem(Map<dynamic, dynamic> messageData, bool isSentByUser) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      child: Row(
-        mainAxisAlignment: isSentByUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!isSentByUser)
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/images/image11.png'),
-            ),
-          SizedBox(width: 8.w),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
-            decoration: BoxDecoration(
-              color: isSentByUser ? AppColors.tealB3 : Colors.grey[200],
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Text(
-              messageData['content'],
-              style: TextStyle(
-                color: isSentByUser ? Colors.white : AppColors.black,
-                fontSize: 16.sp,
+                    if (snapshot.data!.docs.length > 3 &&
+                        scrollbool == true) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (_scrollController.hasClients) {
+                          _scrollController.jumpTo(
+                              _scrollController.position.maxScrollExtent);
+                        }
+                      });
+                      scrollbool = false;
+                    }
+                    return ListView.builder(
+                      // controller: _scrollController,
+                      reverse: true,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        Map<String, dynamic> map = snapshot.data!.docs[index]
+                            .data() as Map<String, dynamic>;
+                        return messages(size, map, context);
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               ),
             ),
-          ),
-          if (isSentByUser)
-            SizedBox(width: 8.w),
-          if (isSentByUser)
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/images/image11.png'),
-            ),
-        ],
+            _buildInputArea(themeProvider),
+          ],
+        ),
       ),
     );
   }
 
- Widget _buildInputArea(ThemeChangerProvider themeProvider) {
+  Widget _buildInputArea(ThemeChangerProvider themeProvider) {
+    String lawyerId = FirebaseAuth.instance.currentUser!.uid;
+    var messageController = TextEditingController();
+    final firestore.FirebaseFirestore _firestore = firestore.FirebaseFirestore.instance;
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    File? imageFile;
+
+    ///for audio
+    @override
+    void dispose() {
+      messageController.dispose();
+      _scrollController.dispose();
+      super.dispose();
+    }
+
+    ///For image
+
+
+
+    Future uploadImage() async {
+      String fileName = const Uuid().v1();
+      int status = 1;
+
+      await _firestore
+          .collection('chatroom')
+          .doc(widget.chatRoomId)
+          .collection('chats')
+          .doc(fileName)
+          .set({
+        "sendByUser": _auth.currentUser!.uid,
+        "message": "",
+        "type": "img",
+        "time": firestore.FieldValue.serverTimestamp(),
+      });
+
+      var ref =
+      FirebaseStorage.instance.ref().child('images').child("$fileName.jpg");
+
+      var uploadTask = await ref.putFile(imageFile!).catchError((error) async {
+        await _firestore
+            .collection('chatroom')
+            .doc(widget.chatRoomId)
+            .collection('chats')
+            .doc(fileName)
+            .delete();
+
+        status = 0;
+      });
+
+      if (status == 1) {
+        String imageUrl = await uploadTask.ref.getDownloadURL();
+
+        await _firestore
+            .collection('chatroom')
+            .doc(widget.chatRoomId)
+            .collection('chats')
+            .doc(fileName)
+            .update({"message": imageUrl});
+
+        print(imageUrl);
+      }
+    }
+
+
+    void onSendMessage() async {
+      if (messageController.text.isNotEmpty) {
+        // firestore.DocumentSnapshot userSnapshot = await _firestore.collection('users').doc(_auth.currentUser!.uid).get();
+        // String _auth.currentUser!.uid = userSnapshot['name'];
+        Map<String, dynamic> messages = {
+          "sendByUser": _auth.currentUser!.uid,
+          "message": messageController.text,
+          "type": "text",
+          "time": firestore.FieldValue.serverTimestamp(),
+        };
+
+        messageController.clear();
+        await _firestore
+            .collection('chatroom')
+            .doc(widget.chatRoomId)
+            .collection('chats')
+            .add(messages);
+      } else {
+        print("Enter Some Text");
+      }
+    }
+    Future getImage() async {
+      ImagePicker _picker = ImagePicker();
+
+      await _picker.pickImage(source: ImageSource.gallery).then((xFile) {
+        if (xFile != null) {
+          imageFile = File(xFile.path);
+          uploadImage();
+        }
+      });
+    }
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       child: Row(
@@ -154,11 +221,11 @@ class _ClientMessageScreenState extends State<ClientMessageScreen> {
                 children: [
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(Icons.emoji_emotions, color: AppColors.tealB3, size: 28.sp,),
+                    icon: Icon(Icons.emoji_emotions, color: AppColors.tealB3, size: 28.sp),
                   ),
                   Expanded(
                     child: TextFormField(
-                      controller: _messageController,
+                      controller: messageController,
                       cursorColor: AppColors.tealB3,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -173,17 +240,16 @@ class _ClientMessageScreenState extends State<ClientMessageScreen> {
                           fontFamily: 'Inter',
                         ),
                       ),
-                      onFieldSubmitted: (value) {
-                        _sendMessage();
-                      },
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      // await _sendImage();
+                    },
                     icon: Icon(Icons.attach_file_rounded, color: AppColors.tealB3, size: 28.sp),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => getImage(),
                     icon: Icon(Icons.camera_alt_rounded, color: AppColors.tealB3, size: 28.sp),
                   )
                 ],
@@ -191,28 +257,165 @@ class _ClientMessageScreenState extends State<ClientMessageScreen> {
             ),
           ),
           MaterialButton(
-            onPressed: _sendMessage,
-            shape: CircleBorder(),
+            onPressed: onSendMessage,
+            shape: const CircleBorder(),
             color: AppColors.tealB3,
             padding: EdgeInsets.all(12.r),
             minWidth: 0,
-            child: Icon(Icons.send, color: AppColors.white, size: 30.sp,),
+            child: Icon(Icons.send, color: AppColors.white, size: 30.sp),
           )
         ],
       ),
     );
   }
 
-  void _sendMessage() {
-    if (_messageController.text.trim().isEmpty) return;
 
-    _messagesRef!.push().set({
-      'content': _messageController.text.trim(),
-      'senderId': widget.firebaseUser!.uid,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-    });
+  Widget messages(Size size, Map<String, dynamic> map, BuildContext context) {
+    return GestureDetector(
+      onLongPress: () {
+        showDeleteMessageDialog(context, _firestore
+            .collection('chatroom')
+            .doc(widget.chatRoomId)
+            .collection('chats')
+            .doc(map['id']));
+      },
+      child: map['type'] == "text"
+          ? Container(
+        width: size.width,
+        alignment: map['sendByUser'] == _auth.currentUser!.uid
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: map['sendByUser'] == _auth.currentUser!.uid
+                  ? 100
+                  : 8.0,
+              right: map['sendByUser'] == _auth.currentUser!.uid
+                  ? 8
+                  : 100,
+              top: 10,
+              bottom: 10),
+          child: CustomPaint(
+            // size: const Size.fromWidth(50),
+            painter: MessageBubble(
+                color: map['sendByUser'] == _auth.currentUser!.uid
+                    ? const Color(0xffDAF0F3)
+                    : const Color(0xffC795B2),
+                alignment: map['sendByUser'] == _auth.currentUser!.uid
+                    ? Alignment.topRight
+                    : Alignment.topLeft,
+                tail: true),
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: map['sendByUser'] == _auth.currentUser!.uid
+                      ? 15
+                      : 20,
+                  right: map['sendByUser'] == _auth.currentUser!.uid
+                      ? 20:15,
+                  top: 10,
+                  bottom: 10),
+              child: Text(
+                map['message'].toString(),
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontSize: 15,
+                    color: map['sendByUser'] != _auth.currentUser!.uid
+                        ? Colors.white
+                        : Colors.black),
+              ),
+            ),
+          ),
+        ),
+      )
+          :  Container(
+        width: size.width,
+        alignment: map['sendByUser'] == _auth.currentUser!.uid
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
+        child: Container(
+          height: size.height / 2.5,
+          width: size.width,
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          alignment: map['sendByUser'] == _auth.currentUser!.uid
+              ? Alignment.centerRight
+              : Alignment.centerLeft,
+          child: InkWell(
+            onTap: () => Get.to(
+              ShowImage(
+                imageUrl: map['message'],
+              ),
+            ),
+            child: Container(
+              height: size.height / 2.5,
+              width: size.width / 2,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black45),
+                  borderRadius: BorderRadius.circular(15)),
+              alignment: map['message'] != "" ? null : Alignment.center,
+              child: map['message'] != ""
+                  ? ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(
+                  map['message'],
+                  fit: BoxFit.cover,
+                ),
+              )
+                  : const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      ),
+    );
 
-    _messageController.clear();
+  }
+  Future<void> showDeleteMessageDialog(BuildContext context, firestore.DocumentReference messageRef) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Delete Message"),
+            content: const Text("Are you sure you want to delete this message?"),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text("Delete"),
+                onPressed: () async {
+                  _firestore
+                      .collection('chatroom')
+                      .doc(widget.chatRoomId)
+                      .collection('chats').doc('id').delete();
+                  // Use the provided messageRef to delete the document
+                  await messageRef.delete().then((value) => Navigator.of(context).pop());
+                },
+              ),
+            ],
+          );
+        }
+    );
   }
 }
 
+class ShowImage extends StatelessWidget {
+  final String imageUrl;
+
+  const ShowImage({required this.imageUrl, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: Container(
+        height: size.height,
+        width: size.width,
+        color: Colors.black,
+        child: Image.network(imageUrl, fit: BoxFit.fill),
+      ),
+    );
+  }
+}
