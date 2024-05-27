@@ -62,18 +62,18 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text('Chats'),
+        title: const Text('Chats'),
         centerTitle: true,
       ),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
             child: Row(
               children: [
                 Expanded(
@@ -85,18 +85,18 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                     ),
                     child: Row(
                       children: [
-                        SizedBox(width: 8.0),
+                        const SizedBox(width: 8.0),
                         Icon(Icons.search, color: AppColors.tealB3),
-                        SizedBox(width: 8.0),
+                        const SizedBox(width: 8.0),
                         Expanded(
                           child: TextFormField(
                             controller: searchController,
                             cursorColor: AppColors.tealB3,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Search client',
                               border: InputBorder.none,
                             ),
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                             onChanged: (value) {
                               searchClients(value);
                             },
@@ -106,7 +106,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 Expanded(
                   flex: 1,
                   child: Stack(
@@ -193,7 +193,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
         );
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
+        margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
@@ -203,28 +203,28 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.only(top: 4),
+              padding: const EdgeInsets.only(top: 4),
               child: const CircleAvatar(
                 backgroundImage: AssetImage('assets/images/image11.png'),
               ),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
-                  SizedBox(height: 3),
+                  const SizedBox(height: 3),
                   Text(
                     lastMessage,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
                     ),
@@ -232,7 +232,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                 ],
               ),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

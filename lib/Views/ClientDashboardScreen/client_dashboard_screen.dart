@@ -417,10 +417,7 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => SearchScreen(
-                                      userModel: widget.userModel,
-                                      firebaseUser: null, loggedInUser: loggedInUser,
-                                    ),
+                                    builder: (context) => const ClientChatsScreen()
                                   ),
                                 );
                               },
