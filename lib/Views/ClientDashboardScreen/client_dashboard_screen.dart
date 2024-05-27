@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Views/ClientDashboardScreen/suggestionScreen.dart';
 import 'package:projctwakeell/Views/LawyerDashBoardScreen/Components/Lawyer_message_screen.dart';
@@ -11,6 +13,7 @@ import '../../Utils/images.dart';
 import '../../Widgets/custom_client_drawer.dart';
 import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../LawyerDashBoardScreen/Components/my_docs.dart';
 import '../chatBotScreen.dart';
 import 'Components/Client_chats_screen.dart';
 import 'Components/Lawyer screen.dart';
@@ -337,42 +340,47 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              alignment: Alignment.bottomCenter,
-                              width: 124.w,
-                              height: 122.h,
-                              decoration: BoxDecoration(
-                                color: themeProvider.themeMode == ThemeMode.dark
-                                    ? AppColors.black12
-                                    : Colors.grey.shade200,
-                                border: Border.all(
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const MyDocument()));
+                              },
+                              child: Container(
+                                alignment: Alignment.bottomCenter,
+                                width: 124.w,
+                                height: 122.h,
+                                decoration: BoxDecoration(
                                   color: themeProvider.themeMode == ThemeMode.dark
-                                      ? AppColors.white
-                                      : AppColors.black,
+                                      ? AppColors.black12
+                                      : Colors.grey.shade200,
+                                  border: Border.all(
+                                    color: themeProvider.themeMode == ThemeMode.dark
+                                        ? AppColors.white
+                                        : AppColors.black,
+                                  ),
                                 ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.file_copy_rounded,
-                                    color: themeProvider.themeMode == ThemeMode.dark
-                                        ? AppColors.white
-                                        : AppColors.black,
-                                  ),
-                                  SizedBox(height: 10.h),
-                                  CustomText(
-                                    textAlign: TextAlign.center,
-                                    text: 'My\nDocuments',
-                                    color: themeProvider.themeMode == ThemeMode.dark
-                                        ? AppColors.white
-                                        : AppColors.black,
-                                    fontSize: 17.sp,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Mulish',
-                                  ),
-                                ],
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.file_copy_rounded,
+                                      color: themeProvider.themeMode == ThemeMode.dark
+                                          ? AppColors.white
+                                          : AppColors.black,
+                                    ),
+                                    SizedBox(height: 10.h),
+                                    CustomText(
+                                      textAlign: TextAlign.center,
+                                      text: 'My\nDocuments',
+                                      color: themeProvider.themeMode == ThemeMode.dark
+                                          ? AppColors.white
+                                          : AppColors.black,
+                                      fontSize: 17.sp,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Mulish',
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Container(
