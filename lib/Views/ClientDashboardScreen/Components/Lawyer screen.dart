@@ -17,7 +17,7 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
     super.initState();
     // Get the current user's UID from Firebase Authentication
     // You can use your preferred method to get the UID here
-    currentUserUID =  FirebaseAuth.instance.currentUser!.uid;
+    currentUserUID = FirebaseAuth.instance.currentUser!.uid;
   }
 
   @override
@@ -43,11 +43,18 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
             );
           }
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+            // Store lawyer IDs to avoid duplicates
+            Set<String> uniqueLawyerIds = Set<String>();
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
                 var clientData = snapshot.data!.docs[index];
-                String lawyerId = clientData['lawerUID'];
+                String lawyerId = clientData['lawyerUid'];
+                // Check if lawyer ID is unique, if not, skip
+                if (uniqueLawyerIds.contains(lawyerId)) {
+                  return SizedBox.shrink(); // Skip rendering duplicate lawyer
+                }
+                uniqueLawyerIds.add(lawyerId); // Add lawyer ID to the set
                 return StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('lawyer')
@@ -64,14 +71,12 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
                       var lawyerData = lawyerSnapshot.data!.docs.first;
                       return Card(
                         child: ListTile(
-                          title: Text(lawyerData['firstName']),
+                          title: Text(lawyerData['firstName'] + " " + lawyerData['lastName']),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Email: ${lawyerData['email']}'),
-                              Text('Case Description: ${lawyerData['email']}'),
+                              Text('Gender: ${lawyerData['gender']}'),
                               Text('Phone Number: ${lawyerData['phoneNumber']}'),
-                              // Text('Lawyer: ${lawyerData['firstName']} ${lawyerData['lastName']}'),
                               Text('License Number: ${lawyerData['licenseNumber']}'),
                             ],
                           ),

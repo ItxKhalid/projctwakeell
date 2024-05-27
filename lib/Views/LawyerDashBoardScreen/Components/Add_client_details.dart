@@ -192,7 +192,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
                         'Client_Id': selectedClientData!.userId,
 
                         'ClientcontactNumber': contactNumber,
-                        'lawerUID': uid,
+                        'lawyerUid': uid,
                         'lawerEmail': email,
                       };
                       await FirebaseFirestore.instance.collection('ClientsData').add(clientData).then((value) =>
