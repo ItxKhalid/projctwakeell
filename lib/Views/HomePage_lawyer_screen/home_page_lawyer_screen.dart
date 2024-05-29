@@ -10,6 +10,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../Utils/images.dart';
 import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../chatBotScreen.dart';
 
 class HomePageLawyerScreen extends StatefulWidget {
   const HomePageLawyerScreen({super.key});
@@ -30,6 +31,14 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
     return Scaffold(
       key: _key,
+      floatingActionButton: FloatingActionButton(
+        clipBehavior: Clip.hardEdge,
+        shape: OvalBorder(),
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatBotScreen()));
+        },
+        child: Image.asset('assets/images/chatbot.png',fit: BoxFit.fitHeight,height: 100),
+      ),
       body: SafeArea(
         child:SingleChildScrollView(
           scrollDirection: Axis.vertical,

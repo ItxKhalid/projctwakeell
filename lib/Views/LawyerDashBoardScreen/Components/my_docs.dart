@@ -30,6 +30,7 @@ class _MyDocumentState extends State<MyDocument> {
       appBar: const CustomAppBar(name: 'My Documents'),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.teal,
         onPressed: () async {
           await pickDocument(context);
         },

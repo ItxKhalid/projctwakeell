@@ -12,6 +12,7 @@ import '../../Utils/images.dart';
 import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../AppointmentsScreen/My_appointment_page.dart';
+import '../ClientDashboardScreen/Components/client_profile_screen.dart';
 import '../LawyerProfileScreen/Lawyer_profile_page.dart';
 import '../chatBotScreen.dart';
 import 'Components/Add_client_details.dart';
@@ -71,6 +72,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
       key: _key,
         floatingActionButton: FloatingActionButton(
           clipBehavior: Clip.hardEdge,
+          shape: OvalBorder(),
           onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatBotScreen()));
           },
@@ -167,39 +169,51 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const LawyerProfileScreen()));
-                            },
-                            child:Container(
-                              alignment: Alignment.bottomCenter,
-                              width: 124.w,
-                              height: 122.h,
-                              decoration: BoxDecoration(
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.black12: Colors.grey.shade200,
-                                // color: AppColors.black12,
-                                border: Border.all(     color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black
-                                  // color: AppColors.white,
-                                ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ClientProfileScreen(),
                               ),
-                              child:Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.person,
-                                    color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                  ),
-                                  SizedBox(height: 10.h,),
-                                  CustomText(
-                                      text:'My Profile',
-                                      color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
-                                      // color: AppColors.white,
-                                      fontSize: 17.sp,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily:'Mulish'),
-                                ],
-                              ) ,
-
+                            );
+                          },
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            width: 124.w,
+                            height: 122.h,
+                            decoration: BoxDecoration(
+                              color: themeProvider.themeMode == ThemeMode.dark
+                                  ? AppColors.black12
+                                  : Colors.grey.shade200,
+                              border: Border.all(
+                                color: themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
+                              ),
                             ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  color: themeProvider.themeMode == ThemeMode.dark
+                                      ? AppColors.white
+                                      : AppColors.black,
+                                ),
+                                SizedBox(height: 10.h),
+                                CustomText(
+                                  text: 'My Profile',
+                                  color: themeProvider.themeMode == ThemeMode.dark
+                                      ? AppColors.white
+                                      : AppColors.black,
+                                  fontSize: 17.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Mulish',
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
 
                         GestureDetector(

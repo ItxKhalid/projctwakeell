@@ -11,6 +11,7 @@ import '../../Widgets/custom_client_drawer.dart';
 import '../../Widgets/custom_text.dart';
 import '../../service/Userclass.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../chatBotScreen.dart';
 
 class HomePageClientScreen extends StatefulWidget {
   const HomePageClientScreen({super.key, required this.loggedInUser});
@@ -33,6 +34,14 @@ class _HomePageClientScreenState extends State<HomePageClientScreen> {
 
     return Scaffold(
       key: _key,
+        floatingActionButton: FloatingActionButton(
+          clipBehavior: Clip.hardEdge,
+          shape: OvalBorder(),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatBotScreen()));
+          },
+          child: Image.asset('assets/images/chatbot.png',fit: BoxFit.fitHeight,height: 100),
+        ),
       body: SafeArea(
         child:SingleChildScrollView(
           scrollDirection: Axis.vertical,

@@ -244,8 +244,6 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                     ),
                   ),
                 ),
-
-
                 Padding(
                   padding:  EdgeInsets.only(top: 20.h,left:38.w,right: 38.w),
                   child: GestureDetector(

@@ -51,8 +51,9 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
       print("User id: $uid, Email: $email");
 
       try {
+        var userType = AppConst.getUserType == 'lawyer' ? 'lawyer' : 'client';
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-            .collection('client')
+            .collection(userType)
             .where('email', isEqualTo: email)
             .limit(1)
             .get();

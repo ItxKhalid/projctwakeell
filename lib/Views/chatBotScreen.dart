@@ -32,17 +32,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
-                    children: messages.map((message) {
-                      return ListTile(
-                        title: Text(
-                          message['sender'] == 'bot' ? 'Bot' : 'You',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Text(message['message']!),
-                      );
-                    }).toList(),
+                    children: _buildMessagesWithDividers(),
                   ),
                 ),
               ),
@@ -82,9 +72,34 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     );
   }
 
+  List<Widget> _buildMessagesWithDividers() {
+    List<Widget> messageWidgets = [];
+    for (int i = 0; i < messages.length; i++) {
+      messageWidgets.add(
+        ListTile(
+          title: Text(
+            messages[i]['sender'] == 'bot' ? 'Bot' : 'You',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Text(messages[i]['message']!),
+        ),
+      );
+      if (i % 2 == 1 && i < messages.length - 1) {
+        // Add a divider after each pair of messages (user + bot)
+        messageWidgets.add(Divider());
+      }
+    }
+    return messageWidgets;
+  }
+
   Future<void> _sendQuery(String query) async {
     try {
-      messages.add({'sender': 'user', 'message': query});
+      setState(() {
+        messages.add({'sender': 'user', 'message': query});
+      });
+
       var headers = {'Content-Type': 'application/json'};
       var requestBody = json.encode({"prompt": query});
       var response = await http.post(

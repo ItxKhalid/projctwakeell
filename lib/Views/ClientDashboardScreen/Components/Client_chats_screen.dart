@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../../../Utils/colors.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'client_message_screen.dart';
@@ -18,7 +18,7 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
   List<DocumentSnapshot> searchResults = [];
   TextEditingController searchController = TextEditingController();
 
-  Future<void> searchClients(String query) async {
+  Future<void> searchLawyers(String query) async {
     if (query.isEmpty) {
       setState(() {
         searchResults = [];
@@ -26,7 +26,6 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
       return;
     }
 
-    // Combine search for firstName and lastName
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('lawyer')
         .where('firstName', isGreaterThanOrEqualTo: query)
@@ -37,14 +36,12 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
       searchResults = querySnapshot.docs;
     });
   }
-  ///set RoomId for one to one chat
+
   String chatRoomId(String user1, String user2) {
     if (user1.isEmpty || user2.isEmpty) {
-      // Handle empty strings as needed, e.g., return a default value
       return 'defaultRoomId';
     }
 
-    // Make sure both strings are in lowercase before creating the ID
     user1 = user1.toLowerCase();
     user2 = user2.toLowerCase();
 
@@ -92,12 +89,12 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
                             controller: searchController,
                             cursorColor: AppColors.tealB3,
                             decoration: const InputDecoration(
-                              hintText: 'Search client',
+                              hintText: 'Search lawyer',
                               border: InputBorder.none,
                             ),
                             style: const TextStyle(color: Colors.black),
                             onChanged: (value) {
-                              searchClients(value);
+                              searchLawyers(value);
                             },
                           ),
                         ),
@@ -105,7 +102,6 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -125,7 +121,15 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
+            child: searchResults.isNotEmpty
+                ? ListView.builder(
+              itemCount: searchResults.length,
+              itemBuilder: (context, index) {
+                var lawyerData = searchResults[index].data() as Map<String, dynamic>;
+                return _buildChatItem(lawyerData);
+              },
+            )
+                : StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('lawyer').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -135,12 +139,11 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
                 } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(child: Text('No lawyer found'));
                 } else {
-                  searchResults = snapshot.data!.docs;
                   return ListView.builder(
-                    itemCount: searchResults.length,
+                    itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      var clientData = searchResults[index].data() as Map<String, dynamic>;
-                      return _buildChatItem(clientData);
+                      var lawyerData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                      return _buildChatItem(lawyerData);
                     },
                   );
                 }
@@ -152,81 +155,76 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
     );
   }
 
-  Widget _buildChatItem(Map<String, dynamic> clientData) {
-    String firstName = clientData['firstName'] ?? '';
-    String lastName = clientData['lastName'] ?? '';
+  Widget _buildChatItem(Map<String, dynamic> lawyerData) {
+    String firstName = lawyerData['firstName'] ?? '';
+    String lastName = lawyerData['lastName'] ?? '';
     String name = '$firstName $lastName'.trim();
-    // String lastMessage = clientData['lastMessage'] ?? 'No message';
-    Timestamp timestamp = clientData['timestamp'] ?? Timestamp.now();
+    Timestamp timestamp = lawyerData['timestamp'] ?? Timestamp.now();
     String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    String roomId = chatRoomId(uid,clientData['uid']);
+    String roomId = chatRoomId(uid, lawyerData['uid']);
     return GestureDetector(
-      onTap: () {
-        // Navigate to chat page and pass client name
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ClientMessageScreen(clientName: name,clientId: clientData['uid'],chatRoomId: roomId),
+        onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ClientMessageScreen(
+            clientName: name,
+            clientId: lawyerData['uid'],
+            chatRoomId: roomId,
           ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Colors.grey[200],
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 4),
-              child: const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/image11.png'),
-              ),
+      );
+    },
+    child: Container(
+    margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
+    padding: const EdgeInsets.all(10.0),
+    decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(10.0),
+    color: Colors.grey[200],
+    ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 4),
+            child: const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/image11.png'),
             ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  // Text(
-                  //   lastMessage,
-                  //   style: const TextStyle(
-                  //     color: Colors.black,
-                  //     fontSize: 14,
-                  //   ),
-                  // ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  formattedTimestamp,
+                  name,
                   style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
+                const SizedBox(height: 3),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                formattedTimestamp,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black54,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
+    ),
     );
   }
 }

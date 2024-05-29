@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:projctwakeell/Utils/images.dart';
 
 class MyLawyerScreens extends StatefulWidget {
   const MyLawyerScreens({Key? key});
@@ -34,7 +35,7 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
+              child:AppConst.spinKitWave(),
             );
           }
           if (snapshot.hasError) {
@@ -49,7 +50,7 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
                 var clientData = snapshot.data!.docs[index];
-                String lawyerId = clientData['lawyerUid'];
+                String lawyerId = clientData['lawerUID'];
                 // Check if lawyer ID is unique, if not, skip
                 if (uniqueLawyerIds.contains(lawyerId)) {
                   return SizedBox.shrink(); // Skip rendering duplicate lawyer

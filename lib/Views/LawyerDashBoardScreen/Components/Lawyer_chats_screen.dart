@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../Utils/colors.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
-import 'Add_client_details.dart';
 import 'Lawyer_message_screen.dart';
 
 class LawyerChatsScreen extends StatefulWidget {
@@ -18,34 +17,43 @@ class LawyerChatsScreen extends StatefulWidget {
 class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
   List<DocumentSnapshot> searchResults = [];
   TextEditingController searchController = TextEditingController();
+  bool isSearching = false;
 
   Future<void> searchClients(String query) async {
     if (query.isEmpty) {
       setState(() {
+        isSearching = false;
         searchResults = [];
       });
       return;
     }
 
-    // Combine search for firstName and lastName
+    String lowercaseQuery = query.toLowerCase();
+
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('client')
-        .where('firstName', isGreaterThanOrEqualTo: query)
-        .where('firstName', isLessThanOrEqualTo: query + '\uf8ff')
+        .where('firstName', isGreaterThanOrEqualTo: lowercaseQuery)
+        .where('firstName', isLessThanOrEqualTo: lowercaseQuery + '\uf8ff')
+        .get();
+
+    QuerySnapshot querySnapshotLastName = await FirebaseFirestore.instance
+        .collection('client')
+        .where('lastName', isGreaterThanOrEqualTo: lowercaseQuery)
+        .where('lastName', isLessThanOrEqualTo: lowercaseQuery + '\uf8ff')
         .get();
 
     setState(() {
-      searchResults = querySnapshot.docs;
+      isSearching = true;
+      searchResults = querySnapshot.docs + querySnapshotLastName.docs;
     });
   }
-  ///set RoomId for one to one chat
+
+  /// Set RoomId for one-to-one chat
   String chatRoomId(String user1, String user2) {
     if (user1.isEmpty || user2.isEmpty) {
-      // Handle empty strings as needed, e.g., return a default value
       return 'defaultRoomId';
     }
 
-    // Make sure both strings are in lowercase before creating the ID
     user1 = user1.toLowerCase();
     user2 = user2.toLowerCase();
 
@@ -102,29 +110,18 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                             },
                           ),
                         ),
+                        IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                            setState(() {
+                              isSearching = false;
+                              searchResults = [];
+                            });
+                          },
+                        ),
                       ],
                     ),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  flex: 1,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AddClientScreen(),
-                            ),
-                          );
-                        },
-                        icon: Icon(Icons.add_circle_outline,
-                            color: AppColors.tealB3, size: 40.0),
-                      ),
-                    ],
                   ),
                 ),
               ],
@@ -146,7 +143,15 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
+            child: isSearching
+                ? ListView.builder(
+              itemCount: searchResults.length,
+              itemBuilder: (context, index) {
+                var clientData = searchResults[index].data() as Map<String, dynamic>;
+                return _buildChatItem(clientData);
+              },
+            )
+                : StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('client').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -154,13 +159,12 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No clients found'));
+                  return const Center(child: Text('No client found'));
                 } else {
-                  searchResults = snapshot.data!.docs;
                   return ListView.builder(
-                    itemCount: searchResults.length,
+                    itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      var clientData = searchResults[index].data() as Map<String, dynamic>;
+                      var clientData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
                       return _buildChatItem(clientData);
                     },
                   );
@@ -177,18 +181,20 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
     String firstName = clientData['firstName'] ?? '';
     String lastName = clientData['lastName'] ?? '';
     String name = '$firstName $lastName'.trim();
-    String lastMessage = clientData['lastMessage'] ?? 'No message';
     Timestamp timestamp = clientData['timestamp'] ?? Timestamp.now();
     String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    String roomId = chatRoomId(uid,clientData['userId']);
+    String roomId = chatRoomId(uid, clientData['userId']);
     return GestureDetector(
       onTap: () {
-        // Navigate to chat page and pass client name
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => LawyerMessageScreen(clientName: name,clientId: clientData['userId'],chatRoomId: roomId),
+            builder: (context) => LawyerMessageScreen(
+              clientName: name,
+              clientId: clientData['userId'],
+              chatRoomId: roomId,
+            ),
           ),
         );
       },
@@ -221,14 +227,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                       fontSize: 16,
                     ),
                   ),
-                  // const SizedBox(height: 3),
-                  // Text(
-                  //   lastMessage,
-                  //   style: const TextStyle(
-                  //     color: Colors.black,
-                  //     fontSize: 14,
-                  //   ),
-                  // ),
+                  const SizedBox(height: 3),
                 ],
               ),
             ),

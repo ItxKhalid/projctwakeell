@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';// Import the upcoming screen
+import 'package:intl/intl.dart';
+import 'package:projctwakeell/Utils/colors.dart';// Import the upcoming screen
 
 class ClientAppointmentScreen extends StatefulWidget {
   const ClientAppointmentScreen({Key? key}) : super(key: key);
@@ -27,8 +28,11 @@ class _ClientAppointmentScreenState extends State<ClientAppointmentScreen> with 
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          bottom: TabBar(
-            tabs: [
+          bottom:  TabBar(
+            dividerColor: AppColors.blackA19,
+            indicatorColor: Colors.teal,
+            labelStyle: const TextStyle(color: Colors.teal),
+            tabs: const [
               Tab(text: 'Upcoming', icon: Icon(Icons.new_label_rounded)),
               Tab(text: 'Past', icon: Icon(Icons.paste)),
               Tab(text: 'Cancelled', icon: Icon(Icons.cancel)),
@@ -38,12 +42,12 @@ class _ClientAppointmentScreenState extends State<ClientAppointmentScreen> with 
         body: TabBarView(
           children: [
             // Upcoming appointments screen
-            ClientUpcomingScreen(),
+            const ClientUpcomingScreen(),
             // Past appointments screen
-            PasAppointmenttScreen(),
+            const PasAppointmenttScreen(),
             // Cancelled appointments screen
             Container(
-              child: Center(
+              child: const Center(
                 child: Text('Cancelled Appointments'),
               ),
             ),
@@ -69,7 +73,7 @@ class _ClientAppointmentScreenState extends State<ClientAppointmentScreen> with 
 }
 
 class ClientUpcomingScreen extends StatefulWidget {
-  const ClientUpcomingScreen({Key? key}) : super(key: key);
+  const ClientUpcomingScreen({super.key});
 
   @override
   _ClientUpcomingScreenState createState() => _ClientUpcomingScreenState();
@@ -95,7 +99,7 @@ class _ClientUpcomingScreenState extends State<ClientUpcomingScreen> {
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -120,7 +124,7 @@ class _ClientUpcomingScreenState extends State<ClientUpcomingScreen> {
                     .snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> lawyerSnapshot) {
                   if (lawyerSnapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                   if (lawyerSnapshot.hasError) {
                     return Text('Error: ${lawyerSnapshot.error}');
@@ -142,13 +146,13 @@ class _ClientUpcomingScreenState extends State<ClientUpcomingScreen> {
                       ),
                     );
                   }
-                  return Text('No lawyer found for this client');
+                  return const Text('No lawyer found for this client');
                 },
               );
             },
           );
         }
-        return Center(
+        return const Center(
           child: Text('No Appointments found.'),
         );
       },
@@ -204,7 +208,7 @@ class _PasAppointmenttScreenState extends State<PasAppointmenttScreen> {
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -229,7 +233,7 @@ class _PasAppointmenttScreenState extends State<PasAppointmenttScreen> {
                     .snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> lawyerSnapshot) {
                   if (lawyerSnapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                   if (lawyerSnapshot.hasError) {
                     return Text('Error: ${lawyerSnapshot.error}');
@@ -251,13 +255,13 @@ class _PasAppointmenttScreenState extends State<PasAppointmenttScreen> {
                       ),
                     );
                   }
-                  return Text('No lawyer found for this client');
+                  return const Text('No lawyer found for this client');
                 },
               );
             },
           );
         }
-        return Center(
+        return const Center(
           child: Text('No Appointments found.'),
         );
       },
