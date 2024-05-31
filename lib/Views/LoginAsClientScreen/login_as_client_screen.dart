@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +15,7 @@ import 'package:projctwakeell/themeChanger/themeChangerProvider/theme_changer_pr
 import 'package:projctwakeell/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../SignUpAsClientScreen/signup_as_client_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginAsClientScreen extends StatefulWidget {
   const LoginAsClientScreen({super.key});
@@ -62,7 +64,8 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 52.h, left: 113.w, right: 114.w),
+                  padding:
+                      EdgeInsets.only(top: 52.h, left: 113.w, right: 114.w),
                   child: Image.asset(
                     AppImages.image4,
                     width: 168.w,
@@ -76,7 +79,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                     alignment: Alignment.center,
                     child: CustomText(
                       textAlign: TextAlign.center,
-                      text: 'Log In as a client',
+                      text: AppLocalizations.of(context)!.log_in_as_a+AppLocalizations.of(context)!.client,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white
                           : AppColors.black,
@@ -98,7 +101,8 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 20, left: 20.w, right: 20.w),
+                      padding:
+                          EdgeInsets.only(top: 20, left: 20.w, right: 20.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -156,15 +160,15 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                               },
                               icon: passVisibility
                                   ? Icon(
-                                Icons.visibility,
-                                color: AppColors.tealB3,
-                                size: 20,
-                              )
+                                      Icons.visibility,
+                                      color: AppColors.tealB3,
+                                      size: 20,
+                                    )
                                   : Icon(
-                                Icons.visibility_off,
-                                color: AppColors.grey41,
-                                size: 20,
-                              ),
+                                      Icons.visibility_off,
+                                      color: AppColors.grey41,
+                                      size: 20,
+                                    ),
                             ),
                             validator: (value) {},
                             onFieldSubmitted: (value) {},
@@ -205,33 +209,47 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             },
                             barrierDismissible: false,
                           );
-                          UserCredential userCredential =
-                          await FirebaseAuth.instance
+                          UserCredential userCredential = await FirebaseAuth
+                              .instance
                               .signInWithEmailAndPassword(
-                            email: email,
-                            password: password,
-                          );
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          await prefs.setString(AppConst.saveUserType, 'client');
-                          AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
-                          // Fetch additional user data if needed
+                                  email: email, password: password);
                           User? user = userCredential.user;
-                          if (user != null) {
-                            // Create UserModel instance from user data
+                          if (user != null && user.emailVerified) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString(
+                                AppConst.saveUserType, 'client');
+                            AppConst.getUserType =
+                                prefs.getString(AppConst.saveUserType)!;
+
+                            // Retrieve user data from SharedPreferences
+                            String? userId = prefs.getString('user_id');
+                            String? userEmail = prefs.getString('user_email');
+                            String? userFName = prefs.getString('user_fName');
+                            String? userLName = prefs.getString('user_lName');
+                            String? userCnic = prefs.getString('user_cnic');
+                            String? userGender = prefs.getString('user_gender');
+                            String? userNumber = prefs.getString('user_number');
+
                             UserModel loggedInUser = UserModel(
-                              userId: user.uid,
-                              firstName: 'First Name', // Replace with actual data
-                              lastName: 'Last Name',   // Replace with actual data
-                              email: user.email ?? '',
-                              cnic: 'CNIC',            // Replace with actual data
-                              phoneNumber: 'Phone Number', // Replace with actual data
-                              gender: 'Gender',        // Replace with actual data
+                              userId: userId,
+                              firstName: userFName,
+                              lastName: userLName,
+                              email: userEmail,
+                              cnic: userCnic,
+                              phoneNumber: userNumber,
+                              gender: userGender,
                             );
 
-                            // Update UserProvider
-                            final userProvider = Provider.of<UserProvider>(context, listen: false);
+                            await FirebaseFirestore.instance.collection('client').doc(user.uid).set(loggedInUser.toMap());
+
+
+                            final userProvider = Provider.of<UserProvider>(
+                                context,
+                                listen: false);
                             await userProvider.setLoggedInUser(loggedInUser);
- Navigator.pop(context);
+
+                            Navigator.pop(context);
                             Get.snackbar(
                               'Congratulations',
                               'Successfully logged in as a Client!',
@@ -246,21 +264,33 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HomePageClientScreen(
-                                  loggedInUser: loggedInUser,
-                                ),
+                                    loggedInUser: loggedInUser),
                               ),
+                            );
+                          } else {
+                            Navigator.pop(context);
+                            Get.snackbar(
+                              'Error',
+                              'Email is not verified. Please verify your email before logging in.',
+                              backgroundColor: AppColors.red,
+                              colorText: AppColors.white,
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
                             );
                           }
                         } on FirebaseAuthException catch (e) {
+                          Navigator.pop(context);
                           if (e.code == 'user-not-found') {
-                            Navigator.pop(context);
                             Get.snackbar(
                               'Error',
                               'No user found for that email.',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
-                              borderRadius: 20.0,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (e.code == 'wrong-password') {
@@ -269,8 +299,9 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                               'Wrong password provided.',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
-                              borderRadius: 20.0,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           }
@@ -281,8 +312,9 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             e.toString(),
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
-                            borderRadius: 20.0,
-                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }
@@ -294,17 +326,21 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
-                        } else if (!RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(emailController.text)) {
+                        } else if (!RegExp(
+                                r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+                            .hasMatch(emailController.text)) {
                           Get.snackbar(
                             'Error',
                             'Invalid Email!',
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (password.isEmpty) {
@@ -314,7 +350,8 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (password.length < 6) {
@@ -324,7 +361,8 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }

@@ -10,6 +10,8 @@ import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Utils/images.dart';
 import 'package:projctwakeell/Views/LoginAsLawyerScreen/login_as_lawyer_screen.dart';
 import 'package:projctwakeell/Views/SignUpAsClientScreen/signup_as_client_screen.dart';
+import 'package:projctwakeell/Views/verification_screen.dart';
+import 'package:projctwakeell/service/Userclass.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -256,11 +258,9 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                     padding:  EdgeInsets.only(top: 20.h,left:38.w,right: 38.w),
                     child: GestureDetector(
                       onTap: () async {
-
-
-                        String password =password1Controller.text.trim();
-                        String cpassword =confirmpasswordController.text.trim();
-                        if(password.isNotEmpty && cpassword.isNotEmpty){
+                        String password = password1Controller.text.trim();
+                        String cpassword = confirmpasswordController.text.trim();
+                        if (password.isNotEmpty && cpassword.isNotEmpty) {
                           try {
                             showDialog(
                               context: context,
@@ -269,53 +269,88 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                               },
                               barrierDismissible: false,
                             );
-                            void userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            // Create the user with email and password
+                            UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                               email: widget.email,
                               password: password,
-                            ).then((value) async {
-                              DocumentReference docRef = await FirebaseFirestore
-                                  .instance
-                                  .collection('lawyer')
-                                  .add({
-                                'firstName': widget.firstName,
-                                'lastName': widget.lastName,
-                                'email': widget.email,
-                                'licenseNumber': widget.licenseNumber,
-                                'phoneNumber': widget.phoneNumber,
-                                'gender': widget.gender,
-                                'uid': value.user!.uid,
-                              });
-                            });
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            await prefs.setString(AppConst.saveUserName, widget.firstName+widget.lastName);
-                            AppConst.getUserName = prefs.getString(AppConst.saveUserName)!;
-                            await prefs.setString(AppConst.saveUserType, 'lawyer');
-                            AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
-                            Get.snackbar('Congratulations', 'Successfully SignUp as a Lawyer!',
+                            );
+
+                            // Send verification email
+                            await userCredential.user!.sendEmailVerification().then((value) {
+                              Get.snackbar(
+                                'Email Sent',
+                                'A verification email has been sent to ${widget.email}. Please verify your email to proceed.',
                                 backgroundColor: AppColors.tealB3,
                                 colorText: AppColors.white,
                                 borderRadius: 20.r,
-                                icon: Icon(Icons.done,color: AppColors.white,),
-                                snackPosition: SnackPosition.TOP);
+                                icon: Icon(Icons.email, color: AppColors.white),
+                                snackPosition: SnackPosition.TOP,
+                              );
+                            });
+                            User? user = userCredential.user;
+                            // Add the user data to Firestore
+                            LawyerModel loggedInUser = LawyerModel(
+                              userId: user!.uid,
+                              email: user.email ?? '',
+                              firstName: widget.firstName,
+                              lNo: widget.licenseNumber,
+                              gender: widget.gender,
+                              lastName: widget.lastName,
+                              phoneNumber: widget.phoneNumber,
+                              // Set other properties as needed
+                            );
+
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setString(AppConst.saveUserName, widget.firstName + widget.lastName);
+                            AppConst.getUserName = prefs.getString(AppConst.saveUserName)!;
+                            await prefs.setString(AppConst.saveUserType, 'lawyer');
+                            AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
+                            await prefs.setString('lawyer_id', loggedInUser.userId!);
+                            await prefs.setString('lawyer_email', widget.email);
+                            await prefs.setString('lawyer_fName', widget.firstName);
+                            await prefs.setString('lawyer_lName', widget.lastName);
+                            await prefs.setString('lawyer_licenseNumber', widget.licenseNumber);
+                            await prefs.setString('lawyer_gender', widget.gender);
+                            await prefs.setString('lawyer_number', widget.phoneNumber);
+                            Get.snackbar(
+                              'Congratulations',
+                              'Successfully SignUp as a Lawyer! Verification email has been sent.',
+                              backgroundColor: AppColors.tealB3,
+                              colorText: AppColors.white,
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.done, color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+
                             Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const HomePageLawyerScreen()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  VerificationScreen(email: widget.email),
+                              ),
+                            );
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'weak-password') {
-                              Get.snackbar('Error', 'The password provided is too weak!',
-                                  backgroundColor: AppColors.red,
-                                  colorText: AppColors.white,
-                                  borderRadius: 20.r,
-                                  icon: Icon(Icons.error_outline,color: AppColors.white,),
-                                  snackPosition: SnackPosition.TOP);
+                              Get.snackbar(
+                                'Error',
+                                'The password provided is too weak!',
+                                backgroundColor: AppColors.red,
+                                colorText: AppColors.white,
+                                borderRadius: 20.r,
+                                icon: Icon(Icons.error_outline, color: AppColors.white),
+                                snackPosition: SnackPosition.TOP,
+                              );
                               print('The password provided is too weak.');
                             } else if (e.code == 'email-already-in-use') {
-                              Get.snackbar('Error', 'The account already exists for that email!',
-                                  backgroundColor: AppColors.red,
-                                  colorText: AppColors.white,
-                                  borderRadius: 20.r,
-                                  icon: Icon(Icons.error_outline,color: AppColors.white,),
-                                  snackPosition: SnackPosition.TOP);
+                              Get.snackbar(
+                                'Error',
+                                'The account already exists for that email!',
+                                backgroundColor: AppColors.red,
+                                colorText: AppColors.white,
+                                borderRadius: 20.r,
+                                icon: Icon(Icons.error_outline, color: AppColors.white),
+                                snackPosition: SnackPosition.TOP,
+                              );
                               print('The account already exists for that email.');
                             }
                             Navigator.pop(context);
@@ -323,52 +358,62 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                             print(e.toString());
                             Navigator.pop(context);
                           }
-                        }
-                        if (password1Controller.text.isEmpty) {
-                          Get.snackbar('Error', 'Password Required!',
+                        } else {
+                          if (password1Controller.text.isEmpty) {
+                            Get.snackbar(
+                              'Error',
+                              'Password Required!',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                        }
-                        else if (password.length < 6) {
-                          Get.snackbar('Error', 'Password must be at least 6 characters long!',
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+                          } else if (password.length < 6) {
+                            Get.snackbar(
+                              'Error',
+                              'Password must be at least 6 characters long!',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                        }
-                        else if (cpassword.isEmpty) {
-                          Get.snackbar('Error', 'Confirm Password Required!',
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+                          } else if (cpassword.isEmpty) {
+                            Get.snackbar(
+                              'Error',
+                              'Confirm Password Required!',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                        }
-                        else if (!passwordsMatch()) {
-                          Get.snackbar('Error', 'Passwords do not match!',
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+                          } else if (!passwordsMatch()) {
+                            Get.snackbar(
+                              'Error',
+                              'Passwords do not match!',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                          return;
-                        }
-                        else {
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+                            return;
+                          }
                         }
                       },
-                      child: CustomButton(borderRadius: BorderRadius.circular(10.r),
-                          height: 55.h,
-                          width: 317.w,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Mulish',
-                          fontSize: 22.2.sp,
-                          text: 'Create my account',
-                          backgroundColor: AppColors.tealB3,
-                          color: AppColors.white),
+                      child: CustomButton(
+                        borderRadius: BorderRadius.circular(10.r),
+                        height: 55.h,
+                        width: 317.w,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Mulish',
+                        fontSize: 22.2.sp,
+                        text: 'Create my account',
+                        backgroundColor: AppColors.tealB3,
+                        color: AppColors.white,
+                      ),
                     ),
                   ),
 

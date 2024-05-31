@@ -14,6 +14,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../../Utils/images.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'client_editprofile_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ClientProfileScreen extends StatefulWidget {
   const ClientProfileScreen({Key? key}) : super(key: key);
@@ -80,22 +82,23 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Icon(Icons.arrow_back, color: AppColors.white),
+                    ),
                     Align(
                       alignment: Alignment.topLeft,
                       child: CustomText(
                           textAlign: TextAlign.left,
-                          text: 'Wakeel Naama',
+                          text: AppLocalizations.of(context)!.wakeel_naama,
                           color: AppColors.tealB3,
                           fontSize: 20.91.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Acme'),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
-                      child: Icon(Icons.menu, color: AppColors.tealB3),
-                    ),
+
                   ],
                 ),
               ),
@@ -135,7 +138,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Mulish',
                         fontSize: 18.sp,
-                        text: 'Change Picture',
+                        text: AppLocalizations.of(context)!.change_picture,
                         backgroundColor: AppColors.tealB3,
                         color: AppColors.white,
                       ),
@@ -155,7 +158,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Mulish',
                         fontSize: 18.sp,
-                        text: 'Edit Profile',
+                        text: AppLocalizations.of(context)!.edit_profile,
                         backgroundColor: AppColors.tealB3,
                         color: AppColors.white,
                       ),
@@ -170,7 +173,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                   child: RichText(
                     text: TextSpan(children: <TextSpan>[
                       TextSpan(
-                          text: 'Welcome Back',
+                          text: AppLocalizations.of(context)!.welcome_back,
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 22.sp,
@@ -196,13 +199,13 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
               AppConst.getUserType == 'lawyer'
                   ? _buildInfoRow(context, Icons.confirmation_num, 'License:',
                       _userData != null ? _userData!['licenseNumber'] : '')
-                  : _buildInfoRow(context, Icons.confirmation_num, 'CNIC:',
+                  : _buildInfoRow(context, Icons.confirmation_num, '${AppLocalizations.of(context)!.cnic}:',
                       _userData != null ? _userData!['cnic'] : ''),
-              _buildInfoRow(context, Icons.email, 'Email:',
+              _buildInfoRow(context, Icons.email, '${AppLocalizations.of(context)!.email}:',
                   _userData != null ? _userData!['email'] : ''),
-              _buildInfoRow(context, Icons.call, 'Mobile:',
+              _buildInfoRow(context, Icons.call, '${AppLocalizations.of(context)!.mobile}:',
                   _userData != null ? _userData!['phoneNumber'] : ''),
-              _buildInfoRow(context, Icons.person, 'Gender:',
+              _buildInfoRow(context, Icons.person, '${AppLocalizations.of(context)!.gender}:',
                   _userData != null ? _userData!['gender'] : ''),
               Padding(
                 padding: EdgeInsets.only(top: 50.h, left: 38.w, right: 38.w),
@@ -217,12 +220,12 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                     fontWeight: FontWeight.w400,
                     fontFamily: 'Mulish',
                     fontSize: 22.2.sp,
-                    text: 'My Cases',
+                    text: AppLocalizations.of(context)!.my_cases,
                     backgroundColor: AppColors.tealB3,
                     color: AppColors.white,
                   ),
                 ),
-              ),
+                ),
             ],
           ),
         ),

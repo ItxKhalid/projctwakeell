@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Widgets/custom_Container_button.dart';
 import '../../Widgets/custom_container_textform_field.dart';
 import '../../Widgets/custom_text.dart';
+import '../../service/Userclass.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../../user_provider.dart';
 import '../HomePage_lawyer_screen/home_page_lawyer_screen.dart';
 import '../PinCodeScreen/pin_code_screen.dart';
 import '../SignUpAsClientScreen/signup_as_client_screen.dart';
@@ -186,37 +189,87 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                   padding:  EdgeInsets.only(top: 10.h,left:38.w,right: 38.w),
                   child: GestureDetector(
                     onTap: () async {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Center(child: AppConst.spinKitWave());
-                        },
-                        barrierDismissible: false,
-                      );
                       String email = emailController1.text.trim();
                       String password = passController1.text.trim();
-                      if(email.isNotEmpty && password.isNotEmpty){
+                      if (email.isNotEmpty && password.isNotEmpty) {
                         try {
-                          UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: email,
-                            password: password,
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Center(child: AppConst.spinKitWave());
+                            },
+                            barrierDismissible: false,
                           );
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          await prefs.setString(AppConst.saveUserType, 'lawyer');
-                          AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
-                          Get.snackbar(
-                            'Congratulations',
-                            'Successfully Login as a Lawyer!',
-                            backgroundColor: AppColors.tealB3,
-                            colorText: AppColors.white,
-                            borderRadius: 20.r,
-                            icon: Icon(Icons.done, color: AppColors.white),
-                            snackPosition: SnackPosition.TOP,
-                          );
-                          Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePageLawyerScreen()));
+                          UserCredential userCredential = await FirebaseAuth
+                              .instance
+                              .signInWithEmailAndPassword(
+                              email: email, password: password);
+                          User? user = userCredential.user;
+                          if (user != null && user.emailVerified) {
+                            SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                            await prefs.setString(
+                                AppConst.saveUserType, 'lawyer');
+                            AppConst.getUserType =
+                            prefs.getString(AppConst.saveUserType)!;
 
-                        }on FirebaseAuthException catch (e) {
+                            // Retrieve user data from SharedPreferences
+                            String? lawyerId = prefs.getString('lawyer_id');
+                            String? lawyerEmail = prefs.getString('lawyer_email');
+                            String? lawyerFName = prefs.getString('lawyer_fName');
+                            String? lawyerLName = prefs.getString('lawyer_lName');
+                            String? lawyerLicense = prefs.getString('lawyer_licenseNumber');
+                            String? lawyerGender = prefs.getString('lawyer_gender');
+                            String? lawyerNumber = prefs.getString('lawyer_number');
+
+                            LawyerModel loggedInUser = LawyerModel(
+                              userId: lawyerId,
+                              firstName: lawyerFName,
+                              lastName: lawyerLName,
+                              email: lawyerEmail,
+                              lNo: lawyerLicense,
+                              phoneNumber: lawyerNumber,
+                              gender: lawyerGender,
+                            );
+
+                            await FirebaseFirestore.instance.collection('lawyer').doc(user.uid).set(loggedInUser.toMap());
+
+                            final userProvider = Provider.of<UserProvider>(
+                                context,
+                                listen: false);
+                            await userProvider.setLoggedInLawyer(loggedInUser);
+
+                            Navigator.pop(context);
+                            Get.snackbar(
+                              'Congratulations',
+                              'Successfully logged in as a Lawyer!',
+                              backgroundColor: AppColors.tealB3,
+                              colorText: AppColors.white,
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.done, color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomePageLawyerScreen(),
+                              ),
+                            );
+                          } else {
+                            Navigator.pop(context);
+                            Get.snackbar(
+                              'Error',
+                              'Email is not verified. Please verify your email before logging in.',
+                              backgroundColor: AppColors.red,
+                              colorText: AppColors.white,
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
+                              snackPosition: SnackPosition.TOP,
+                            );
+                          }
+                        } on FirebaseAuthException catch (e) {
                           Navigator.pop(context);
                           if (e.code == 'user-not-found') {
                             Get.snackbar(
@@ -224,8 +277,9 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                               'No user found for that email.',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
-                              borderRadius: 20.0,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (e.code == 'wrong-password') {
@@ -234,66 +288,74 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                               'Wrong password provided.',
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
-                              borderRadius: 20.0,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              borderRadius: 20.r,
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           }
-                        }
-                        catch(e) {
+                        } catch (e) {
+                          Navigator.pop(context);
                           Get.snackbar(
                             'Error',
                             e.toString(),
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
-                            borderRadius: 20.0,
-                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        }
+                      } else {
+                        if (email.isEmpty) {
+                          Get.snackbar(
+                            'Error',
+                            'Email Required!',
+                            backgroundColor: AppColors.red,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        } else if (!RegExp(
+                            r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+                            .hasMatch(emailController1.text)) {
+                          Get.snackbar(
+                            'Error',
+                            'Invalid Email!',
+                            backgroundColor: AppColors.red,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        } else if (password.isEmpty) {
+                          Get.snackbar(
+                            'Error',
+                            'Password Required!',
+                            backgroundColor: AppColors.red,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        } else if (password.length < 6) {
+                          Get.snackbar(
+                            'Error',
+                            'Password must be at least 6 characters long!',
+                            backgroundColor: AppColors.red,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline,
+                                color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }
                       }
-                      if (emailController1.text.isEmpty) {
-                        Get.snackbar(
-                          'Error', 'Email Required!',
-                          backgroundColor: AppColors.red,
-                          colorText: AppColors.white,
-                          borderRadius: 20.r,
-                          icon: Icon(Icons.error_outline, color: AppColors.white),
-                          snackPosition: SnackPosition.TOP,
-                        );
-                      } else if (!RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(emailController1.text)) {
-                        Get.snackbar(
-                          'Error',
-                          'Invalid Email!',
-                          backgroundColor: AppColors.red,
-                          colorText: AppColors.white,
-                          borderRadius: 20.r,
-                          icon: Icon(Icons.error_outline, color: AppColors.white),
-                          snackPosition: SnackPosition.TOP,
-                        );
-                      }
-                      else if (passController1.text.isEmpty) {
-                        Get.snackbar(
-                          'Error',
-                          'Password Required!',
-                          backgroundColor: AppColors.red,
-                          colorText: AppColors.white,
-                          borderRadius: 20.r,
-                          icon: Icon(Icons.error_outline, color: AppColors.white),
-                          snackPosition: SnackPosition.TOP,
-                        );
-                      }
-                      else if (passController1.text.length < 6) {
-                        Get.snackbar('Error', 'Password must be at least 6 characters long!',
-                            backgroundColor: AppColors.red,
-                            colorText: AppColors.white,
-                            borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
-                      }
-                      else {
-
-                          }
                     },
 
                     child: CustomButton(borderRadius: BorderRadius.circular(10.r),

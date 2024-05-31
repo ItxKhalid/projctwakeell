@@ -32,18 +32,21 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () async {
-      final userProvider = Provider.of<UserProvider>(context,listen: false);
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
       final prefs = await SharedPreferences.getInstance();
-      AppConst.getUserType =
-          prefs.getString(AppConst.saveUserType).toString();
-      if (userProvider.loggedInUser != null) {
-        Get.offAll(() =>  HomePageClientScreen(loggedInUser: userProvider.loggedInUser!));
-      } else if(user != null && AppConst.getUserType == 'lawyer'){
-        Get.offAll(() =>  const HomePageLawyerScreen());
-      }else if(userProvider.loggedInUser == null){
-        Get.to(()=>const LoginAsClientScreen());
-      }else if(user == null){
-        Get.to(()=>const LoginAsLawyerScreen());
+      AppConst.getUserType = prefs.getString(AppConst.saveUserType).toString();
+      AppConst.getUserName = prefs.getString(AppConst.saveUserName).toString();
+
+
+      if (userProvider.loggedInUser != null ) {
+        Get.offAll(() => HomePageClientScreen(loggedInUser: userProvider.loggedInUser!));
+      } else if(
+      userProvider.loggedInLawyer != null){
+        Get.offAll(() => const HomePageLawyerScreen());
+      }
+      else if (userProvider.loggedInUser == null ||
+          userProvider.loggedInLawyer == null) {
+        Get.to(() =>  AppConst.getUserType == 'lawyer' ? const LoginAsLawyerScreen() : const LoginAsClientScreen());
       }
     });
   }
@@ -71,7 +74,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 text: 'Wakeel Naama',
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white // Dark theme color
-                    : AppColors.black, // Light theme color
+                    : AppColors.black,
+                // Light theme color
                 fontSize: 36.8.sp,
                 fontWeight: FontWeight.w400,
                 fontFamily: 'Acme',

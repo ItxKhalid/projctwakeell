@@ -7,14 +7,17 @@ import 'package:share_plus/share_plus.dart';
 
 // Importing other necessary files
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../Controllers/translation_controller.dart';
 import '../Utils/colors.dart';
 import '../Views/ClientDashboardScreen/client_dashboard_screen.dart';
 import '../Views/FeedBackFormScreen/feedback_form_screen.dart';
 import '../Views/HomePageClientScreen/home_page_client_screen.dart';
 import '../Views/LoginAsClientScreen/login_as_client_screen.dart';
 import '../service/Userclass.dart';
+import '../service/translation_model.dart';
 import '../user_provider.dart';
 import 'custom_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // MyClientDrawer widget
 class MyClientDrawer extends StatelessWidget {
@@ -25,6 +28,10 @@ class MyClientDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List myLanguages = [
+      "en",
+      "ur",
+    ];
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     return Drawer(
@@ -38,7 +45,7 @@ class MyClientDrawer extends StatelessWidget {
             child: Align(
               alignment: Alignment.center,
               child: CustomText(
-                text: 'Settings',
+                text: AppLocalizations.of(context)!.settings,
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
                     : AppColors.black,
@@ -62,7 +69,7 @@ class MyClientDrawer extends StatelessWidget {
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Home',
+              AppLocalizations.of(context)!.home,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -87,7 +94,7 @@ class MyClientDrawer extends StatelessWidget {
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Dashboard',
+              AppLocalizations.of(context)!.dashboard,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -115,7 +122,7 @@ class MyClientDrawer extends StatelessWidget {
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Feedback',
+              AppLocalizations.of(context)!.feedback,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -140,7 +147,7 @@ class MyClientDrawer extends StatelessWidget {
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Terms & Conditions',
+              AppLocalizations.of(context)!.terms_and_condition,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -160,7 +167,7 @@ class MyClientDrawer extends StatelessWidget {
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Privacy Policy',
+              AppLocalizations.of(context)!.privacy_policy,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -180,7 +187,7 @@ class MyClientDrawer extends StatelessWidget {
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Share',
+              AppLocalizations.of(context)!.share,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -194,14 +201,13 @@ class MyClientDrawer extends StatelessWidget {
               Share.share('com.example.projctwakeell'); // Share your app
             },
           ),
-          SizedBox(height: 60.h),
           ListTile(
-            leading: Icon(Icons.logout,
+            leading: Icon(Icons.language_outlined,
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
                     : AppColors.tealB3),
             title: Text(
-              'Log out',
+              AppLocalizations.of(context)!.language,
               style: TextStyle(
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white
@@ -211,7 +217,70 @@ class MyClientDrawer extends StatelessWidget {
                 fontFamily: 'Mulish',
               ),
             ),
-
+            trailing: Consumer<LanguageChangeController>(
+              builder: (context, languageChangeController, child) {
+                return Container(
+                  height: 35,
+                  width: 100,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: AppColors.tealB3,
+                    borderRadius: BorderRadius.circular(26),
+                    border: Border.all(color: AppColors.tealB3, width: 2),
+                  ),
+                  child: ListView.builder(
+                    itemCount: translationList.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          languageChangeController.setCurrent(index);
+                          languageChangeController.changeLanguage(
+                              Locale(translationList[index].languageName));
+                        },
+                        child: Container(
+                          width: 48,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26),
+                            color: languageChangeController.current != index
+                                ? AppColors.tealB3
+                                : Colors.white,
+                          ),
+                          child: Center(
+                            child: CustomText(
+                              text: myLanguages[index],
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Acme',
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 60.h),
+          ListTile(
+            leading: Icon(Icons.logout,
+                color: themeProvider.themeMode == ThemeMode.dark
+                    ? AppColors.white
+                    : AppColors.tealB3),
+            title: Text(
+              AppLocalizations.of(context)!.log_out,
+              style: TextStyle(
+                color: themeProvider.themeMode == ThemeMode.dark
+                    ? AppColors.white
+                    : AppColors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 20.sp,
+                fontFamily: 'Mulish',
+              ),
+            ),
             onTap: () {
               userProvider.logout().then((value) => Navigator.push(
                   context,
@@ -227,7 +296,9 @@ class MyClientDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(),
               child: SwitchListTile(
                 title: Text(
-                  themeProvider.themeMode == ThemeMode.dark ? "Night" : "Day",
+                  themeProvider.themeMode == ThemeMode.dark
+                      ? AppLocalizations.of(context)!.night
+                      : AppLocalizations.of(context)!.day,
                   style: TextStyle(
                     color: themeProvider.themeMode == ThemeMode.dark
                         ? AppColors.white

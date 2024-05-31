@@ -243,6 +243,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projctwakeell/Utils/images.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:projctwakeell/Widgets/custom_appbar.dart';
 
 class SuggestionScreen extends StatefulWidget {
@@ -257,34 +258,36 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
   String? responseApi;
 
   // List of categories for the grid view
-  final List<String> categories = [
-    'Family',
-    'Maintenance of minors',
-    'Custody of minors',
-    'Hesitation rights',
-    'Khula',
-    'Divorce',
-    'Guardian minor or property',
-    'Property rights',
-    'Inheritance',
-    'Sales & purchase',
-    'Rent matters',
-    'Ebicion of house',
-    'Criminal',
-    'Fraud',
-    'Check out',
-    'Theft /threats',
-    'Assault',
-  ];
 
   int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
+    final List<String> categories = [
+      localizations.family,
+      localizations.maintenance_of_minors,
+      localizations.custody_of_minors,
+      localizations.hesitation_rights,
+      localizations.khula,
+      localizations.divorce,
+      localizations.guardian_minor_or_property,
+      localizations.property_rights,
+      localizations.inheritance,
+      localizations.sales_purchase,
+      localizations.rent_matters,
+      localizations.eviction_of_house,
+      localizations.criminal,
+      localizations.fraud,
+      localizations.check_out,
+      localizations.theft_threats,
+      localizations.assault,
+    ];
     return SafeArea(
       child: Scaffold(
-        appBar: const CustomAppBar(
-          name: 'Cases Categories',
+        appBar:  CustomAppBar(
+          name: AppLocalizations.of(context)!.case_category,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
@@ -390,7 +393,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
         'Content-Type': 'application/json',
       };
       var request =
-      http.Request('POST', Uri.parse('http://aipython.hamzaworld.com'));
+          http.Request('POST', Uri.parse('http://aipython.hamzaworld.com'));
       request.body = json.encode({"prompt": query});
       request.headers.addAll(headers);
 
@@ -422,7 +425,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Recommended Lawyer"),
+          title:  Text(AppLocalizations.of(context)!.recommended_lawyer),
           content: Text(response),
           actions: [
             TextButton(
@@ -439,7 +442,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
 
   Future<List<DocumentSnapshot>> _fetchLawyers() async {
     QuerySnapshot querySnapshot =
-    await FirebaseFirestore.instance.collection('lawyer').get();
+        await FirebaseFirestore.instance.collection('lawyer').get();
     return querySnapshot.docs;
   }
 
@@ -457,10 +460,10 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
       var headers = {
         'Content-Type': 'application/json',
       };
-      var request = http.Request('POST', Uri.parse('https://developer900.pythonanywhere.com'));
-      request.body = json.encode({
-        "input_prompt": "hi i have a case ${widget.query}"
-      });
+      var request = http.Request(
+          'POST', Uri.parse('https://developer900.pythonanywhere.com'));
+      request.body =
+          json.encode({"input_prompt": "hi i have a case ${widget.query}"});
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
@@ -475,7 +478,8 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
         print(response.reasonPhrase);
       }
     } catch (e) {
-      Navigator.pop(context); // Ensure the loading dialog is dismissed in case of an error
+      Navigator.pop(
+          context); // Ensure the loading dialog is dismissed in case of an error
       print(e);
       setState(() {
         loading = false;
@@ -488,7 +492,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Case Time Prediction"),
+          title:  Text(AppLocalizations.of(context)!.case_time_prediction),
           content: Text(response),
           actions: [
             TextButton(
@@ -503,80 +507,89 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Recommended Lawyer"),
+        title:  Text(AppLocalizations.of(context)!.recommended_lawyer),
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          if (responseApi != null)
-            Stack(
-              fit: StackFit.loose,
               children: [
-                Card(
-                  elevation: 1,
-                  margin: const EdgeInsets.all(26),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(child: Text(responseApi!)),
+                if (responseApi != null)
+                  Stack(
+                    fit: StackFit.loose,
+                    children: [
+                      Card(
+                        elevation: 1,
+                        margin: const EdgeInsets.all(26),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(child: Text(responseApi!)),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 25,
+                        child: ElevatedButton(
+                            style: const ButtonStyle(
+                                shape: MaterialStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)))),
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.teal)),
+                            onPressed: _fetchCaseTimePrediction,
+                            // Handle case time prediction here
+                            child:  Text(AppLocalizations.of(context)!.case_time,
+                                style: TextStyle(color: Colors.white))),
+                      )
+                    ],
+                  ),
+                Expanded(
+                  child: FutureBuilder<List<DocumentSnapshot>>(
+                    future: _fetchLawyers(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                            child: Text("Error fetching lawyers"));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return  Center(child: Text(AppLocalizations.of(context)!.no_lawyers_found));
+                      } else {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            var lawyer = snapshot.data![index].data()
+                                as Map<String, dynamic>;
+                            return ListTile(
+                              leading: PhysicalModel(
+                                color: Colors.white,
+                                clipBehavior: Clip.hardEdge,
+                                shape: BoxShape.circle,
+                                child: CircleAvatar(
+                                  radius: 30,
+                                  child: lawyer['image'] == null
+                                      ? Image.asset(AppImages.profileimg,
+                                          fit: BoxFit.cover)
+                                      : Image.network(lawyer['image']),
+                                ),
+                              ),
+                              title: Text(lawyer['firstName'] +
+                                  " " +
+                                  lawyer['lastName']),
+                              subtitle: Text(lawyer['licenseNumber']),
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 25,
-                  child: ElevatedButton(
-                      style: const ButtonStyle(
-                          shape: MaterialStatePropertyAll(OvalBorder()),
-                          backgroundColor: MaterialStatePropertyAll(Colors.teal)),
-                      onPressed: _fetchCaseTimePrediction, // Handle case time prediction here
-                      child: const Text('Case Time', style: TextStyle(color: Colors.white))),
-                )
               ],
             ),
-          Expanded(
-            child: FutureBuilder<List<DocumentSnapshot>>(
-              future: _fetchLawyers(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text("Error fetching lawyers"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No lawyers found"));
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      var lawyer =
-                      snapshot.data![index].data() as Map<String, dynamic>;
-                      return ListTile(
-                        leading: PhysicalModel(
-                          color: Colors.white,
-                          clipBehavior: Clip.hardEdge,
-                          shape: BoxShape.circle,
-                          child: CircleAvatar(
-                            radius: 30,
-                            child: lawyer['image'] == null
-                                ? Image.asset(AppImages.profileimg, fit: BoxFit.cover)
-                                : Image.network(lawyer['image']),
-                          ),
-                        ),
-                        title: Text(lawyer['firstName'] + " " + lawyer['lastName']),
-                        subtitle: Text(lawyer['licenseNumber']),
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

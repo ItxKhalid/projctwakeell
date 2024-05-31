@@ -18,6 +18,7 @@ import '../../service/Userclass.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../LoginAsClientScreen/login_as_client_screen.dart';
 import '../SignUpAsLawyerScreen/signup_as_lawyer_screen.dart';
+import '../verification_screen.dart';
 
 class SignUpAsClient2Screen extends StatefulWidget {
   const SignUpAsClient2Screen({
@@ -60,6 +61,58 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
     return password == confirmPassword;
   }
 
+  Future<void> sendVerificationEmail(User user) async {
+    await user.sendEmailVerification();
+  }
+
+  Future<void> checkEmailVerification(User user) async {
+    user.reload();
+    if (user.emailVerified) {
+      // Create an instance of UserModel with the retrieved data
+      UserModel newUser = UserModel(
+        userId: user.uid, // Use the uid from Firebase as userId
+        firstName: widget.firstName,
+        lastName: widget.lastName,
+        email: widget.email,
+        cnic: widget.cnic,
+        phoneNumber: widget.number,
+        gender: widget.gender,
+      );
+
+      // Save user data to Firestore
+      await FirebaseFirestore.instance.collection('client').doc(user.uid).set(newUser.toMap());
+
+      // Show Snackbar
+      Get.snackbar(
+        'Congratulations',
+        'Successfully SignUp as a Client!',
+        backgroundColor: AppColors.tealB3,
+        colorText: AppColors.white,
+        borderRadius: 20.r,
+        icon: Icon(Icons.done, color: AppColors.white),
+        snackPosition: SnackPosition.TOP,
+      );
+
+      // Navigate to the next screen with user data
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePageClientScreen(loggedInUser: newUser),
+        ),
+      );
+    } else {
+      Get.snackbar(
+        'Error',
+        'Please verify your email to proceed!',
+        backgroundColor: AppColors.red,
+        colorText: AppColors.white,
+        borderRadius: 20.r,
+        icon: Icon(Icons.error_outline, color: AppColors.white),
+        snackPosition: SnackPosition.TOP,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
@@ -87,7 +140,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
 
                       GestureDetector(
                         onTap: (){
-                          Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginAsClientScreen()));
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=>const LoginAsClientScreen()));
                         },
                         child: CustomText(
                             textAlign: TextAlign.right,
@@ -214,7 +267,6 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                               fontFamily: 'Inter',
                             ),
                           ),
-
                           SizedBox(height: 13.h,),
                           CustomContainerTextFormField(
                             contentpadding: EdgeInsets.only(left: 15.w),
@@ -237,144 +289,168 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                             onFieldSubmitted: (value) {},
                             controller: confirmpasswordController,
                           ),
-
-
                         ],
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding:  EdgeInsets.only(top: 20.h,left:38.w,right: 38.w),
-                  child: GestureDetector(
-                    onTap: () async {
-                      String password =passwordController.text.trim();
-                      String cpassword =confirmpasswordController.text.trim();
-                      if(password.isNotEmpty && cpassword.isNotEmpty){
-                            try {
-                              void userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                email: widget.email,
-                                password: password,
-                              ).then((value) async {
-                                // Create an instance of UserModel with the retrieved data
-                                UserModel user = UserModel(
-                                  userId: value.user!.uid, // Use the uid from Firebase as userId
-                                  firstName: widget.firstName,
-                                  lastName: widget.lastName,
-                                  email: widget.email,
-                                  cnic: widget.cnic,
-                                  phoneNumber: widget.number,
-                                  gender: widget.gender,
-                                );
+            Padding(
+              padding: EdgeInsets.only(top: 20.h, left: 38.w, right: 38.w),
+              child: GestureDetector(
+                onTap: () async {
+                  String email = widget.email;
+                  String password = passwordController.text.trim();
+                  if (email.isNotEmpty && password.isNotEmpty) {
+                    try {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(child: AppConst.spinKitWave());
+                        },
+                        barrierDismissible: false,
+                      );
+                      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      User? user = userCredential.user;
+                      if (user != null) {
+                        // Create UserModel instance from user data
+                        UserModel loggedInUser = UserModel(
+                          userId: user.uid,
+                          email: user.email ?? '',
+                          firstName: widget.firstName,
+                          cnic: widget.cnic,
+                          gender: widget.gender,
+                          lastName: widget.lastName,
+                          phoneNumber: widget.number,
+                          // Set other properties as needed
+                        );
 
-                                // Save user data to Firestore
-                                await FirebaseFirestore.instance.collection('client').add(user.toMap());
+                        // Save the user model to SharedPreferences
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('user_id', loggedInUser.userId!);
+                        await prefs.setString('user_email', loggedInUser.email!);
+                        await prefs.setString('user_fName', loggedInUser.firstName!);
+                        await prefs.setString('user_lName', loggedInUser.lastName!);
+                        await prefs.setString('user_cnic', loggedInUser.cnic!);
+                        await prefs.setString('user_gender', loggedInUser.gender!);
+                        await prefs.setString('user_number', loggedInUser.phoneNumber!);
+                        // Save other properties as needed
 
-                                // Show Snackbar
-                                Get.snackbar(
-                                  'Congratulations',
-                                  'Successfully SignUp as a Client!',
-                                  backgroundColor: AppColors.tealB3,
-                                  colorText: AppColors.white,
-                                  borderRadius: 20.r,
-                                  icon: Icon(Icons.done, color: AppColors.white),
-                                  snackPosition: SnackPosition.TOP,
-                                );
+                        // Send email verification
+                        await user.sendEmailVerification().then((value) {
+                          Get.snackbar(
+                            'Email Sent',
+                            'A verification email has been sent to ${widget.email}. Please verify your email to proceed.',
+                            backgroundColor: AppColors.tealB3,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.email, color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        });
 
-                                // Navigate to the next screen with user data
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePageClientScreen(loggedInUser: user),
-                                  ),
-                                );
-
-
-
-                            });
-
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            await prefs.setString(AppConst.saveUserType, 'client');
-                            AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
-                            Get.snackbar('Congratulations', 'Successfully SignUp as a Client!',
-                                backgroundColor: AppColors.tealB3,
-                                colorText: AppColors.white,
-                                borderRadius: 20.r,
-                                icon: Icon(Icons.done,color: AppColors.white,),
-                                snackPosition: SnackPosition.TOP);
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) =>HomePageClientScreen(loggedInUser: loggedInUser!,)));
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'weak-password') {
-                                Get.snackbar('Error', 'The password provided is too weak!',
-                                    backgroundColor: AppColors.red,
-                                    colorText: AppColors.white,
-                                    borderRadius: 20.r,
-                                    icon: Icon(Icons.error_outline,color: AppColors.white,),
-                                    snackPosition: SnackPosition.TOP);
-                                print('The password provided is too weak.');
-                              } else if (e.code == 'email-already-in-use') {
-                                Get.snackbar('Error', 'The account already exists for that email!',
-                                    backgroundColor: AppColors.red,
-                                    colorText: AppColors.white,
-                                    borderRadius: 20.r,
-                                    icon: Icon(Icons.error_outline,color: AppColors.white,),
-                                    snackPosition: SnackPosition.TOP);
-                                print('The account already exists for that email.');
-                              }
-                            } catch (e) {
-                              print(e.toString());
-                            }
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VerificationScreen(email: email),
+                          ),
+                        );
                       }
-                      if (password.isEmpty) {
-                        Get.snackbar('Error', 'Password Required!',
+                      } on FirebaseAuthException catch (e) {
+                        Navigator.pop(context);
+                        if (e.code == 'weak-password') {
+                          Get.snackbar(
+                            'Error',
+                            'The password provided is too weak!',
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
-                      }
-                      else if (passwordController.text.length < 6) {
-                        Get.snackbar('Error', 'Password must be at least 6 characters long!',
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        } else if (e.code == 'email-already-in-use') {
+                          Get.snackbar(
+                            'Error',
+                            'The account already exists for that email!',
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
+                            snackPosition: SnackPosition.TOP,
+                          );
+                        }
+                      } catch (e) {
+                        Navigator.pop(context);
+                        Get.snackbar(
+                          'Error',
+                          e.toString(),
+                          backgroundColor: AppColors.red,
+                          colorText: AppColors.white,
+                          borderRadius: 20.r,
+                          icon: Icon(Icons.error_outline, color: AppColors.white),
+                          snackPosition: SnackPosition.TOP,
+                        );
                       }
-                      else if (cpassword.isEmpty) {
-                        Get.snackbar('Error', 'Confirm Password Required!',
-                            backgroundColor: AppColors.red,
-                            colorText: AppColors.white,
-                            borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
+                    } else {
+                      if (email.isEmpty) {
+                        Get.snackbar(
+                          'Error',
+                          'Email Required!',
+                          backgroundColor: AppColors.red,
+                          colorText: AppColors.white,
+                          borderRadius: 20.r,
+                          icon: Icon(Icons.error_outline, color: AppColors.white),
+                          snackPosition: SnackPosition.TOP,
+                        );
+                      } else if (!RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(widget.email)) {
+                        Get.snackbar(
+                          'Error',
+                          'Invalid Email!',
+                          backgroundColor: AppColors.red,
+                          colorText: AppColors.white,
+                          borderRadius: 20.r,
+                          icon: Icon(Icons.error_outline, color: AppColors.white),
+                          snackPosition: SnackPosition.TOP,
+                        );
+                      } else if (password.isEmpty) {
+                        Get.snackbar(
+                          'Error',
+                          'Password Required!',
+                          backgroundColor: AppColors.red,
+                          colorText: AppColors.white,
+                          borderRadius: 20.r,
+                          icon: Icon(Icons.error_outline, color: AppColors.white),
+                          snackPosition: SnackPosition.TOP,
+                        );
+                      } else if (password.length < 6) {
+                        Get.snackbar(
+                          'Error',
+                          'Password must be at least 6 characters long!',
+                          backgroundColor: AppColors.red,
+                          colorText: AppColors.white,
+                          borderRadius: 20.r,
+                          icon: Icon(Icons.error_outline, color: AppColors.white),
+                          snackPosition: SnackPosition.TOP,
+                        );
                       }
-                      else if (!passwordsMatch()) {
-                        Get.snackbar('Error', 'Passwords do not match!',
-                            backgroundColor: AppColors.red,
-                            colorText: AppColors.white,
-                            borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
-                        return;
-                      }
-
-
-                    },
-                    child: CustomButton(borderRadius: BorderRadius.circular(10.r),
-                        height: 55.h,
-                        width: 317.w,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Mulish',
-                        fontSize: 22.2.sp,
-                        text: 'Create my account',
-                        backgroundColor: AppColors.tealB3,
-                        color: AppColors.white),
-                  ),
+                    }
+                  },
+                child: CustomButton(
+                  borderRadius: BorderRadius.circular(10.r),
+                  height: 55.h,
+                  width: 317.w,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Mulish',
+                  fontSize: 22.2.sp,
+                  text: 'Create my account',
+                  backgroundColor: AppColors.tealB3,
+                  color: AppColors.white,
                 ),
-
-
+              ),
+            ),
                 Padding(
                   padding:  EdgeInsets.only(top: 15.h),
                   child: Align(
@@ -392,12 +468,10 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                             fontWeight: FontWeight.w600,
                             fontFamily:'Mulish'),
                         GestureDetector(
-                          onTap: (){
-
-                          },
+                          onTap: (){},
                           child: GestureDetector(
                             onTap: (){
-                              Navigator.push(context,MaterialPageRoute(builder: (context)=>SignupAsLawyerScreen()));
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=>const SignupAsLawyerScreen()));
                             },
                             child: CustomText(
                                 text:' Join as a',
@@ -422,6 +496,49 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+class EmailVerificationScreen extends StatelessWidget {
+  final User user;
+
+  const EmailVerificationScreen({Key? key, required this.user}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Email Verification'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('A verification email has been sent to ${user.email}.'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                await user.reload();
+                if (user.emailVerified) {
+                  Navigator.pop(context);
+                  // Save user data to Firestore after email verification
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginAsClientScreen(), // pass necessary user data
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Please verify your email before proceeding!')),
+                  );
+                }
+              },
+              child: Text('Proceed'),
+            ),
+          ],
         ),
       ),
     );

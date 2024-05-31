@@ -15,6 +15,8 @@ class CustomContainerTextFormField extends StatefulWidget {
   bool? obscureText;
   double width;
   double height;
+  bool? readOnly;
+
   EdgeInsetsGeometry? contentpadding;
 
   CustomContainerTextFormField({super.key,
@@ -22,6 +24,7 @@ class CustomContainerTextFormField extends StatefulWidget {
     this.obscuringCharacter,
     this.sufixIcon,
     this.autofillHints,
+    this.readOnly = false,
     required this.validator,
     required this.keyboardtype,
     required this.onFieldSubmitted,
@@ -43,6 +46,7 @@ class _CustomContainerTextFormFieldState extends State<CustomContainerTextFormFi
 width: widget.width,
       height: widget.height,
       child: TextFormField(
+        readOnly: widget.readOnly!,
         cursorColor: AppColors.tealB3,
         controller: widget.controller,
         style: TextStyle(

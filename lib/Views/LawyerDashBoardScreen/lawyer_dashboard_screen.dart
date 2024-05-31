@@ -138,7 +138,7 @@ class _LawyerDashboardScreenState extends State<LawyerDashboardScreen> {
                                     : AppColors.black,
                                 fontFamily: 'Acme',
                               )),
-                          TextSpan(text: ' $lawyerName!',
+                          TextSpan(text: AppConst.getUserName,
                               style: TextStyle(
                                 fontWeight:FontWeight.w400 ,
                                 fontSize: 28.sp,
