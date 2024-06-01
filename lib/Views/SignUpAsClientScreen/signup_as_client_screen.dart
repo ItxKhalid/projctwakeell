@@ -1,13 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Views/LoginAsClientScreen/login_as_client_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Controllers/DropDownGenderController.dart';
 import '../../Widgets/custom_Container_button.dart';
 import '../../Widgets/custom_container_textform_field.dart';
@@ -64,7 +61,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                     children: [
                       CustomText(
                           textAlign: TextAlign.left,
-                          text:'Wakeel Naama',
+                          text:AppLocalizations.of(context)!.wakeel_naama,
                           color: AppColors.tealB3,
                           fontSize: 20.91.sp,
                           fontWeight: FontWeight.w400,
@@ -76,7 +73,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                         },
                         child: CustomText(
                             textAlign: TextAlign.right,
-                            text:'Log In',
+                            text: AppLocalizations.of(context)!.log_in,
                             color: AppColors.tealB3,
                             fontSize: 20.91.sp,
                             fontWeight: FontWeight.w600,
@@ -93,7 +90,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                     alignment: Alignment.center,
                     child: CustomText(
                         textAlign: TextAlign.center,
-                        text:'Sign up as a client',
+                        text:'${AppLocalizations.of(context)!.sign_up_as_a} ${AppLocalizations.of(context)!.client}',
                         color: themeProvider.themeMode == ThemeMode.dark
                             ? AppColors.white // Dark theme color
                             : AppColors.black,
@@ -127,7 +124,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                                     alignment:Alignment.topLeft,
                                     child: CustomText(
                                         textAlign: TextAlign.left,
-                                        text:'First name',
+                                        text:AppLocalizations.of(context)!.first_name,
                                         color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
                                         //color: AppColors.white,
                                         fontSize: 18.sp,
@@ -139,8 +136,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                                     contentpadding: EdgeInsets.only(left: 15.w),
                                     width: 131.w,
                                     height: 38.h,
-                                    validator: (value) {
-                                    },
+                                    validator: (value) {},
                                     keyboardtype: TextInputType.text,
                                     onFieldSubmitted: (value) {
                                     },
@@ -156,7 +152,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                                     alignment:Alignment.topRight,
                                     child: CustomText(
                                         textAlign: TextAlign.right,
-                                        text:'Last name',
+                                        text:AppLocalizations.of(context)!.last_name,
                                         color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
                                        // color: AppColors.white,
                                         fontSize: 18.sp,
@@ -185,7 +181,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                             alignment:Alignment.topLeft,
                             child: CustomText(
                                 textAlign: TextAlign.left,
-                                text:'Email address',
+                                text:AppLocalizations.of(context)!.email_address,
                                 color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
                                 //color: AppColors.white,
                                 fontSize: 18.sp,
@@ -211,7 +207,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                             alignment:Alignment.topLeft,
                             child: CustomText(
                                 textAlign: TextAlign.left,
-                                text:'CNIC number',
+                                text:AppLocalizations.of(context)!.cNIC_number,
                                 //color: AppColors.white,
                                 color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
                                 fontSize: 18.sp,
@@ -237,7 +233,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                             alignment:Alignment.topLeft,
                             child: CustomText(
                                 textAlign: TextAlign.left,
-                                text:'Mobile number',
+                                text:AppLocalizations.of(context)!.mobile_number,
                                 //color: AppColors.white,
                                 color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
                                 fontSize: 18.sp,
@@ -274,7 +270,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                             alignment:Alignment.topLeft,
                             child: CustomText(
                                 textAlign: TextAlign.left,
-                                text:'Gender',
+                                text: AppLocalizations.of(context)!.gender,
                                 color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
                                 //color: AppColors.white,
                                 fontSize: 18.sp,
@@ -303,137 +299,114 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                       String cnic = cnicController.text.trim();
                       String phoneNumber = fullPhoneNumber.trim();
                       String gender = genderController.getSelectedGender().trim();
-                      if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty && cnic.isNotEmpty && phoneNumber.isNotEmpty)
-                      {
+                      if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty && cnic.isNotEmpty && phoneNumber.isNotEmpty) {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpAsClient2Screen
-                          (firstName: firstName,lastName:lastName, email: email,cnic: cnic,number: phoneNumber,gender: gender,)));
-
-                        /*try {
-                          DocumentReference docRef = await FirebaseFirestore.instance.collection('client').add({
-                            'firstName': firstName,
-                            'lastName': lastName,
-                            'email': email,
-                            'cnic': cnic,
-                            'phoneNumber': phoneNumber,
-                            'gender': gender,
-                          });
-
-                          // Show success snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Registration successful! ID: ${docRef.id}'),
-                            ),
+                          (firstName: firstName, lastName: lastName, email: email, cnic: cnic, number: phoneNumber, gender: gender,)));
+                      } else {
+                        if (firstName.isEmpty) {
+                          Get.snackbar(
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.first_name_required,
+                            backgroundColor: AppColors.red,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline, color: AppColors.white,),
+                            snackPosition: SnackPosition.TOP,
                           );
-
-                          // Clear text controllers
-                          firstnameController.clear();
-                          lastnameController.clear();
-                          emailController.clear();
-                          cnicController.clear();
-                          fullPhoneNumber = '';
-                          setState(() {
-                            selectedGender = '';
-                          });
-
-
-                        } catch (e) {
-                          // Show error snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Failed to register your account: $e'),
-                            ),
+                          canNavigate = false;
+                        } else if (lastName.isEmpty) {
+                          // Validate Last Name
+                          Get.snackbar(
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.last_name_required,
+                            backgroundColor: AppColors.red,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(Icons.error_outline, color: AppColors.white,),
+                            snackPosition: SnackPosition.TOP,
                           );
-                        }*/
-                      }
-                  else
-                  {
-                      if (firstName.isEmpty) {
-                        Get.snackbar('Error', 'First Name Required!',
+                          canNavigate = false;
+                        } else if (email.isEmpty) {
+                          Get.snackbar(
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.email_required,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
                             icon: Icon(Icons.error_outline, color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
-                        canNavigate = false;
-                      }
-                      else if (lastName.isEmpty) {
-                        // Validate Last Name
-                        Get.snackbar('Error', 'Last Name is Required!',
-                            backgroundColor: AppColors.red,
-                            colorText: AppColors.white,
-                            borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
-                        canNavigate = false;
-                      }
-                      else if (email.isEmpty) {
-                        Get.snackbar('Error', 'Email Required!',
-                            backgroundColor: AppColors.red,
-                            colorText: AppColors.white,
-                            borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline, color: AppColors.white,),
-                            snackPosition: SnackPosition.TOP);
-                        canNavigate = false;
-                      }
-                      else {
-                        // Check for email format
-                        RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
-                        if (!emailRegex.hasMatch(emailController.text)) {
-                          Get.snackbar('Error', 'Invalid Email!',
+                            snackPosition: SnackPosition.TOP,
+                          );
+                          canNavigate = false;
+                        } else {
+                          // Check for email format
+                          RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+                          if (!emailRegex.hasMatch(emailController.text)) {
+                            Get.snackbar(
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.invalid_email,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
                               icon: Icon(Icons.error_outline, color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                          canNavigate = false;
-                        }
-                        else if (cnic.isEmpty) {
-                          Get.snackbar('Error', 'CNIC Required!',
+                              snackPosition: SnackPosition.TOP,
+                            );
+                            canNavigate = false;
+                          } else if (cnic.isEmpty) {
+                            Get.snackbar(
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.cnic_required,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
                               icon: Icon(Icons.error_outline, color: AppColors.white,),
-                              snackPosition: SnackPosition.TOP);
-                          canNavigate = false;
-                        }
-                        else {
-                          // Check for CNIC format
-                          final cnicRegex = RegExp(r'^\d{5}-\d{7}-\d{1}$');
-                          if (!cnicRegex.hasMatch(cnicController.text)) {
-                            Get.snackbar('Error', 'Invalid CNIC!',
+                              snackPosition: SnackPosition.TOP,
+                            );
+                            canNavigate = false;
+                          } else {
+                            // Check for CNIC format
+                            final cnicRegex = RegExp(r'^\d{5}-\d{7}-\d{1}$');
+                            if (!cnicRegex.hasMatch(cnicController.text)) {
+                              Get.snackbar(
+                                AppLocalizations.of(context)!.error,
+                                AppLocalizations.of(context)!.invalid_cnic,
                                 colorText: AppColors.white,
                                 backgroundColor: Colors.red,
                                 borderRadius: 20.r,
                                 icon: Icon(Icons.error_outline, color: AppColors.white,),
-                                snackPosition: SnackPosition.TOP);
-                            canNavigate = false;
-                          }
-                          else if(phoneNumber.isEmpty){
-                            Get.snackbar('Error', 'Mobile Number Required!',
+                                snackPosition: SnackPosition.TOP,
+                              );
+                              canNavigate = false;
+                            } else if (phoneNumber.isEmpty) {
+                              Get.snackbar(
+                                AppLocalizations.of(context)!.error,
+                                AppLocalizations.of(context)!.mobileNumberRequired,
                                 colorText: AppColors.white,
                                 backgroundColor: Colors.red,
                                 borderRadius: 20.r,
                                 icon: Icon(Icons.error_outline, color: AppColors.white,),
-                                snackPosition: SnackPosition.TOP);
-                            canNavigate = false;
+                                snackPosition: SnackPosition.TOP,
+                              );
+                              canNavigate = false;
+                            }
                           }
                         }
                       }
-                  }
-
                       // Navigate if all conditions are met
-
+                      if (canNavigate) {
+                        // Your navigation logic here
+                      }
                     },
                     child: CustomButton(
-                        borderRadius: BorderRadius.circular(10.r),
-                        height: 55.h,
-                        width: 317.w,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Mulish',
-                        fontSize: 22.2.sp,
-                        text: 'Next',
-                        backgroundColor: AppColors.tealB3,
-                        color: AppColors.white),
+                      borderRadius: BorderRadius.circular(10.r),
+                      height: 55.h,
+                      width: 317.w,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Mulish',
+                      fontSize: 22.2.sp,
+                      text: AppLocalizations.of(context)!.next,
+                      backgroundColor: AppColors.tealB3,
+                      color: AppColors.white,
+                    ),
                   ),
                 ),
 
@@ -447,7 +420,7 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CustomText(
-                            text:'Here to Offer Legal Expertise?',
+                            text: AppLocalizations.of(context)!.hereOfferLegalExpertise,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.white // Dark theme color
                                 : AppColors.black,
@@ -456,10 +429,10 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                             fontFamily:'Mulish'),
                         GestureDetector(
                           onTap: (){
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>SignupAsLawyerScreen()));
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>const SignupAsLawyerScreen()));
                           },
                           child: CustomText(
-                              text:' Join as a',
+                              text:' ${AppLocalizations.of(context)!.sign_up_as_a}',
                               color: AppColors.tealB3,
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
@@ -470,9 +443,8 @@ class _SignupAsClientScreenState extends State<SignupAsClientScreen> {
                     ),
                   ),
                 ),
-
                 CustomText(
-                    text:'Lawyer',
+                    text:AppLocalizations.of(context)!.lawyer,
                     color: AppColors.tealB3,
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,

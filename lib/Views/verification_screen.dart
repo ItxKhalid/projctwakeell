@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../service/Userclass.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -66,8 +66,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
       AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
 
       Get.snackbar(
-        'Congratulations',
-        'Successfully verified and signed up as a Client!',
+        AppLocalizations.of(context)!.congratulations,
+        AppLocalizations.of(context)!.successfullyVerifiedSignedUpClient,
         backgroundColor: AppColors.tealB3,
         colorText: AppColors.white,
         borderRadius: 20.r,
@@ -78,13 +78,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginAsClientScreen(),
+          builder: (context) => const LoginAsClientScreen(),
         ),
       );
     } else {
       Get.snackbar(
-        'Error',
-        'Email not verified yet. Please check your inbox.',
+        AppLocalizations.of(context)!.error,
+        AppLocalizations.of(context)!.pleaseCheckYourInbox,
         backgroundColor: AppColors.red,
         colorText: AppColors.white,
         borderRadius: 20.r,
@@ -120,8 +120,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
       AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
 
       Get.snackbar(
-        'Congratulations',
-        'Successfully verified and signed up as a Lawyer!',
+        AppLocalizations.of(context)!.congratulations,
+        AppLocalizations.of(context)!.successfullyVerifiedSignedUpLawyer,
         backgroundColor: AppColors.tealB3,
         colorText: AppColors.white,
         borderRadius: 20.r,
@@ -132,13 +132,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginAsLawyerScreen(),
+          builder: (context) => const LoginAsLawyerScreen(),
         ),
       );
     } else {
       Get.snackbar(
-        'Error',
-        'Email not verified yet. Please check your inbox.',
+        AppLocalizations.of(context)!.error,
+        AppLocalizations.of(context)!.pleaseCheckYourInbox,
         backgroundColor: AppColors.red,
         colorText: AppColors.white,
         borderRadius: 20.r,
@@ -171,7 +171,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   alignment: Alignment.center,
                   child: CustomText(
                       textAlign: TextAlign.center,
-                      text: 'Wakeel Naama',
+                      text: AppLocalizations.of(context)!.wakeel_naama,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.tealB3 // Dark theme color
                           : AppColors.black,
@@ -186,8 +186,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   alignment: Alignment.center,
                   child: CustomText(
                       textAlign: TextAlign.center,
-                      text:
-                          'A verification email has been sent to ${widget.email}.\n Please verify your email to proceed.',
+                      text: AppLocalizations.of(context)!
+                          .verification_email_sent_to_email
+                          .replaceFirst('%email%', widget.email),
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white // Dark theme color
                           : AppColors.black,
@@ -207,7 +208,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         alignment: Alignment.topLeft,
                         child: CustomText(
                           textAlign: TextAlign.left,
-                          text: 'Email',
+                          text: AppLocalizations.of(context)!.email,
                           color: themeProvider.themeMode == ThemeMode.dark
                               ? AppColors.white
                               : AppColors.black,
@@ -232,13 +233,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
                 padding: EdgeInsets.only(
                     top: 20.h, left: 38.w, right: 38.w, bottom: 30),
                 child: GestureDetector(
                   onTap: () async {
-                     AppConst.getUserType == "lawyer"
+                    AppConst.getUserType == "lawyer"
                         ? await checkLawyerEmailVerified(context)
                         : await checkEmailVerified(context);
                   },
@@ -249,7 +250,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                       fontWeight: FontWeight.w500,
                       fontFamily: 'Mulish',
                       fontSize: 22.2.sp,
-                      text: 'Proceed',
+                      text: AppLocalizations.of(context)!.proceed,
                       border: Border.all(color: AppColors.tealB3),
                       color: AppColors.white),
                 ),

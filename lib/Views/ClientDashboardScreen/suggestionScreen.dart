@@ -1,250 +1,15 @@
-// // import 'dart:convert';
-// //
-// // import 'package:flutter/material.dart';
-// // import 'package:http/http.dart ' as http;
-// // class SuggestionScreen extends StatefulWidget {
-// //   const SuggestionScreen({super.key});
-// //
-// //   @override
-// //   State<SuggestionScreen> createState() => _SuggestionScreenState();
-// // }
-// //
-// // class _SuggestionScreenState extends State<SuggestionScreen> {
-// //   TextEditingController controller =TextEditingController();
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return  SafeArea(
-// //       child: Scaffold(
-// //         body: Padding(
-// //           padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 40),
-// //           child: SingleChildScrollView(
-// //             child: Column(children: [
-// //               TextFormField(style: const TextStyle(color: Colors.white),maxLines: null,
-// //                   controller: controller,
-// //               onSaved: (value){
-// //                 if(controller.text != null)
-// //                   Api(query: controller.text);
-// //               },
-// //               decoration: InputDecoration(hintText: 'Write your Query here',
-// //                 suffixIcon: InkWell(onTap:loading==false? (){
-// //                   if(controller.text != null) {
-// //                     Api(query: controller.text);
-// //                   }
-// //                   setState(() {
-// //
-// //                   });
-// //                 }:(){},
-// //                     child:const Icon(Icons.send)),
-// //
-// //                 hintStyle: const TextStyle(color: Colors.grey),
-// //                 border: const OutlineInputBorder()
-// //               )),
-// //               const SizedBox(height: 20),
-// //            loading==false? loading==false && responseApi !=null?
-// //               Container(padding: const EdgeInsets.all(10),
-// //
-// //                 decoration: BoxDecoration(shape: BoxShape.rectangle,border: Border.all(color: Colors.grey)),
-// //               child: Center(child: Text('$responseApi'))):const SizedBox.shrink():const CircularProgressIndicator()
-// //             ],),
-// //           ),
-// //         ),
-// //       ),
-// //     );
-// //   }
-// //
-// // bool loading=false;
-// //   String? responseApi;
-// //
-// //   void Api({required String query})async{
-// //
-// //     try {
-// //       loading=true;
-// //       var headers = {
-// //         'Content-Type': 'application/json'
-// //       };
-// //       var request = http.Request(
-// //           'POST', Uri.parse('https://developer900.pythonanywhere.com'));
-// //       request.body = json.encode({
-// //         "input_prompt": "$query"
-// //       });
-// //       request.headers.addAll(headers);
-// //
-// //       http.StreamedResponse response = await request.send();
-// //       var geer = await http.Response.fromStream(response);
-// //       if (response.statusCode == 200) {
-// //         controller.clear();
-// //         loading=false;
-// //         responseApi=jsonDecode(geer.body);
-// //
-// //
-// //         setState(() {
-// //
-// //         });
-// //         print(await response.stream.bytesToString());
-// //       }
-// //       else {
-// //         print(response.reasonPhrase);
-// //       }
-// //     }catch (e){
-// //       print(e);
-// //     }
-// //
-// //   }
-// // }
-// import 'dart:convert';
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:projctwakeell/Utils/images.dart';
-// import 'package:projctwakeell/Widgets/custom_appbar.dart';
-//
-// class SuggestionScreen extends StatefulWidget {
-//   const SuggestionScreen({super.key});
-//
-//   @override
-//   State<SuggestionScreen> createState() => _SuggestionScreenState();
-// }
-//
-// class _SuggestionScreenState extends State<SuggestionScreen> {
-//   bool loading = false;
-//   String? responseApi;
-//
-//   // List of categories for the grid view
-//   final List<String> categories = [
-//     'Family',
-//     'Maintenance of minors',
-//     'Custody of minors',
-//     'Hesitation rights',
-//     'Khula',
-//     'Divorce',
-//     'Guardian minor or property',
-//     'Property rights',
-//     'Inheritance',
-//     'Sales & purchase',
-//     'Rent matters',
-//     'Ebicion of house',
-//     'Criminal',
-//     'Fraud',
-//     'Check out',
-//     'Theft /threats',
-//     'Assault',
-//   ];
-//
-//   void Api({required String query}) async {
-//     try {
-//       setState(() {
-//         loading = true;
-//       });
-//
-//       var headers = {
-//         'Content-Type': 'application/json',
-//       };
-//       var request = http.Request(
-//           'POST', Uri.parse('https://developer900.pythonanywhere.com'));
-//       request.body = json.encode({"input_prompt": query});
-//       request.headers.addAll(headers);
-//
-//       http.StreamedResponse response = await request.send();
-//       var responseData = await http.Response.fromStream(response);
-//       if (response.statusCode == 200) {
-//         setState(() {
-//           responseApi = jsonDecode(responseData.body);
-//           loading = false;
-//         });
-//       } else {
-//         print(response.reasonPhrase);
-//         setState(() {
-//           loading = false;
-//         });
-//       }
-//     } catch (e) {
-//       print(e);
-//       setState(() {
-//         loading = false;
-//       });
-//     }
-//   }
-//
-//   int? selectedIndex;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         appBar: const CustomAppBar(
-//           name: 'Cases Categories',
-//         ),
-//         body: Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-//           child: SingleChildScrollView(
-//             child: Column(
-//               children: [
-//                 GridView.builder(
-//                   shrinkWrap: true,
-//                   physics: const NeverScrollableScrollPhysics(),
-//                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//                     crossAxisCount: 2,
-//                     mainAxisSpacing: 10,
-//                     crossAxisSpacing: 10,
-//                     childAspectRatio: 4,
-//                   ),
-//                   itemCount: categories.length,
-//                   itemBuilder: (context, index) {
-//                     return GestureDetector(
-//                       onTap: loading
-//                           ? null
-//                           : () {
-//                               setState(() {
-//                                 selectedIndex = index;
-//                               });
-//                               Api(query: 'case about ${categories[index]}');
-//                             },
-//                       child: Container(
-//                         decoration: BoxDecoration(
-//                           color: selectedIndex == index
-//                               ? Colors.grey
-//                               : Colors.teal,
-//                           borderRadius: BorderRadius.circular(10),
-//                         ),
-//                         child: Center(
-//                           child: Text(
-//                             categories[index],
-//                             style: const TextStyle(color: Colors.white),
-//                             textAlign: TextAlign.center,
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                 ),
-//                 const SizedBox(height: 50),
-//                 loading
-//                     ? AppConst.spinKitWave()
-//                     : responseApi != null
-//                         ? Card(
-//                             elevation: 1,
-//                             margin: const EdgeInsets.all(10),
-//                             child: Padding(
-//                               padding: const EdgeInsets.all(8.0),
-//                               child: Center(child: Text('$responseApi')),
-//                             ),
-//                           )
-//                         : const SizedBox.shrink(),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:projctwakeell/Utils/images.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:projctwakeell/Utils/images.dart';
 import 'package:projctwakeell/Widgets/custom_appbar.dart';
+
+import 'Components/client_message_screen.dart';
 
 class SuggestionScreen extends StatefulWidget {
   const SuggestionScreen({super.key});
@@ -429,7 +194,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
           content: Text(response),
           actions: [
             TextButton(
-              child: const Text("OK"),
+              child:  Text(AppLocalizations.of(context)!.oK),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -496,7 +261,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
           content: Text(response),
           actions: [
             TextButton(
-              child: const Text("OK"),
+              child:  Text(AppLocalizations.of(context)!.oK),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -506,6 +271,23 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
       },
     );
   }
+
+
+  String chatRoomId(String user1, String user2) {
+    if (user1.isEmpty || user2.isEmpty) {
+      return 'defaultRoomId';
+    }
+
+    user1 = user1.toLowerCase();
+    user2 = user2.toLowerCase();
+
+    if (user1[0].codeUnits[0] > user2[0].codeUnits[0]) {
+      return "$user1$user2";
+    } else {
+      return "$user2$user1";
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -543,45 +325,26 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
                             onPressed: _fetchCaseTimePrediction,
                             // Handle case time prediction here
                             child:  Text(AppLocalizations.of(context)!.case_time,
-                                style: TextStyle(color: Colors.white))),
+                                style: const TextStyle(color: Colors.white))),
                       )
                     ],
                   ),
                 Expanded(
-                  child: FutureBuilder<List<DocumentSnapshot>>(
-                    future: _fetchLawyers(),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection('lawyer').snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
-                        return const Center(
-                            child: Text("Error fetching lawyers"));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return  Center(child: Text(AppLocalizations.of(context)!.no_lawyers_found));
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text('No lawyer found'));
                       } else {
                         return ListView.builder(
-                          itemCount: snapshot.data!.length,
+                          itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
-                            var lawyer = snapshot.data![index].data()
-                                as Map<String, dynamic>;
-                            return ListTile(
-                              leading: PhysicalModel(
-                                color: Colors.white,
-                                clipBehavior: Clip.hardEdge,
-                                shape: BoxShape.circle,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  child: lawyer['image'] == null
-                                      ? Image.asset(AppImages.profileimg,
-                                          fit: BoxFit.cover)
-                                      : Image.network(lawyer['image']),
-                                ),
-                              ),
-                              title: Text(lawyer['firstName'] +
-                                  " " +
-                                  lawyer['lastName']),
-                              subtitle: Text(lawyer['licenseNumber']),
-                            );
+                            var lawyerData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                            return _buildChatItem(lawyerData);
                           },
                         );
                       }
@@ -590,6 +353,74 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
                 ),
               ],
             ),
+    );
+  }
+  Widget _buildChatItem(Map<String, dynamic> lawyerData) {
+    String firstName = lawyerData['firstName'] ?? '';
+    String lastName = lawyerData['lastName'] ?? '';
+    String licenseNumber = lawyerData['email'] ?? '';
+    String name = '$firstName $lastName'.trim();
+    Timestamp timestamp = lawyerData['timestamp'] ?? Timestamp.now();
+    String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    String roomId = chatRoomId(uid, lawyerData['userId']);
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClientMessageScreen(
+              clientName: name,
+              clientId: lawyerData['userId'],
+              chatRoomId: roomId,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.grey[200],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 4),
+              child: const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/image11.png'),
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    '$licenseNumber',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

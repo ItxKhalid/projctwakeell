@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../Controllers/DropDownGenderController.dart';
 import '../../../Utils/colors.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GenderDropDownComponent extends StatefulWidget {
   const GenderDropDownComponent({Key? key}) : super(key: key);
@@ -56,8 +57,8 @@ class _GenderDropDownComponentState extends State<GenderDropDownComponent> {
                   controller.changeGenderDropDown(value!);
                 },
                 items: [
-                  'Female',
                   'Male',
+                  'Female',
                   'Other',
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(

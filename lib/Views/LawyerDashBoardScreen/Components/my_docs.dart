@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:projctwakeell/Utils/images.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:projctwakeell/Widgets/custom_appbar.dart';
 
 class MyDocument extends StatefulWidget {
@@ -27,7 +28,7 @@ class _MyDocumentState extends State<MyDocument> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(name: 'My Documents'),
+      appBar:  CustomAppBar(name: AppLocalizations.of(context)!.my_documents),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
@@ -50,7 +51,7 @@ class _MyDocumentState extends State<MyDocument> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No documents found'));
+            return  Center(child: Text(AppLocalizations.of(context)!.no_documents_found));
           }
 
           List<DocumentSnapshot> documents = snapshot.data!.docs;
@@ -137,8 +138,8 @@ class _MyDocumentState extends State<MyDocument> {
 
       // Optionally, update the document with the ID if you want to keep a reference within the document itself
       await docRef.update({'id': documentId});
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Documents Uploaded.'),
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        content: Text(AppLocalizations.of(context)!.documents_uploaded),
       ));
       setState(() {
         _files.clear();
@@ -196,7 +197,7 @@ class PDFViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('PDF Viewer')),
+      appBar: AppBar(title:  Text(AppLocalizations.of(context)!.pDF_viewer)),
       body: PDFView(
         filePath: url,
       ),

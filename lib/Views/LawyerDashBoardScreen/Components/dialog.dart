@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../Utils/colors.dart';
 import '../../../Utils/images.dart';
 
@@ -31,8 +31,11 @@ class _AddEventDialogState extends State<AddEventDialog> {
 
   Future<void> fetchClientData() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('client').get();
-      List<UserModel> clientList = querySnapshot.docs.map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>)).toList();
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('client').get();
+      List<UserModel> clientList = querySnapshot.docs
+          .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
       setState(() {
         clients = clientList;
       });
@@ -41,7 +44,8 @@ class _AddEventDialogState extends State<AddEventDialog> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -59,14 +63,14 @@ class _AddEventDialogState extends State<AddEventDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Event'),
+      title: Text(AppLocalizations.of(context)!.addEvent),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.title),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -75,7 +79,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
               onTap: () async {
                 await _selectDate(context, startDateController);
               },
-              decoration: const InputDecoration(labelText: 'Start Date'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.startDate),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -84,7 +88,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
               onTap: () async {
                 await _selectDate(context, endDateController);
               },
-              decoration: const InputDecoration(labelText: 'End Date'),
+              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.endDate),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
@@ -94,10 +98,13 @@ class _AddEventDialogState extends State<AddEventDialog> {
                   _selectedClient = newValue;
                   if (_selectedClient != null) {
                     selectedClientData = clients.firstWhere(
-                          (client) => '${client.firstName} ${client.lastName}' == _selectedClient,
+                          (client) =>
+                      '${client.firstName} ${client.lastName}' ==
+                          _selectedClient,
                     );
                     if (selectedClientData != null) {
-                      _fullNameController.text = '${selectedClientData!.firstName} ${selectedClientData!.lastName}';
+                      _fullNameController.text =
+                      '${selectedClientData!.firstName} ${selectedClientData!.lastName}';
                     }
                   }
                 });
@@ -108,9 +115,9 @@ class _AddEventDialogState extends State<AddEventDialog> {
                   child: Text('${client.firstName} ${client.lastName}'),
                 );
               }).toList(),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Select client',
+                hintText: AppLocalizations.of(context)!.selectClient,
               ),
             ),
           ],
@@ -134,12 +141,16 @@ class _AddEventDialogState extends State<AddEventDialog> {
                 String startDate = startDateController.text;
                 String endDate = endDateController.text;
 
-                if (fullName.isNotEmpty && startDate.isNotEmpty && endDate.isNotEmpty) {
+                if (fullName.isNotEmpty &&
+                    startDate.isNotEmpty &&
+                    endDate.isNotEmpty &&
+                    titleController.text.trim().isNotEmpty &&
+                    _selectedClient != null) {
                   try {
                     showDialog(
                       context: context,
                       builder: (context) {
-                        return  Center(child: AppConst.spinKitWave());
+                        return Center(child: AppConst.spinKitWave());
                       },
                       barrierDismissible: false,
                     );
@@ -152,55 +163,87 @@ class _AddEventDialogState extends State<AddEventDialog> {
                       'lawyerId': uid,
                       'userId': selectedClientData!.userId,
                     };
-                    await FirebaseFirestore.instance.collection('appointments').add(clientData).then((value) {
+                    await FirebaseFirestore.instance
+                        .collection('appointments')
+                        .add(clientData)
+                        .then((value) {
                       Navigator.pop(context);
                       setState(() {});
                     });
                     Navigator.pop(context);
-                    Get.snackbar('Successfully', 'Appointment added',
+                    Get.snackbar(AppLocalizations.of(context)!.successfully, AppLocalizations.of(context)!.appointmentAdded,
                         backgroundColor: AppColors.blue,
                         colorText: AppColors.white,
                         borderRadius: 20.r,
-                        icon: Icon(Icons.error_outline, color: AppColors.white,),
-                        snackPosition: SnackPosition.TOP
-                    );
+                        icon: Icon(
+                          Icons.check,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
                     _selectedClient = null;
-
                   } catch (e) {
                     Navigator.pop(context);
-                    Get.snackbar('Error', 'Failed to add appointment: $e',
+                    Get.snackbar(AppLocalizations.of(context)!.error, '${AppLocalizations.of(context)!.failedToAddAppointment}: $e',
                         backgroundColor: AppColors.red,
                         colorText: AppColors.white,
                         borderRadius: 20.r,
-                        icon: Icon(Icons.error_outline, color: AppColors.white,),
-                        snackPosition: SnackPosition.TOP
-                    );
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
                   }
                 } else {
-                  if (fullName.isEmpty) {
-                    Get.snackbar('Error', 'Full Name Required!',
+                  if (titleController.text.trim().isEmpty) {
+                    Get.snackbar(AppLocalizations.of(context)!.error, 'Title Required!',
                         backgroundColor: AppColors.red,
                         colorText: AppColors.white,
                         borderRadius: 20.r,
-                        icon: Icon(Icons.error_outline, color: AppColors.white,),
-                        snackPosition: SnackPosition.TOP
-                    );
-                  } else if (endDate.isEmpty) {
-                    Get.snackbar('Error', 'Please select end date',
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
+                  } else if (fullName.isEmpty) {
+                    Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.fullNameRequired,
                         backgroundColor: AppColors.red,
                         colorText: AppColors.white,
                         borderRadius: 20.r,
-                        icon: Icon(Icons.error_outline, color: AppColors.white,),
-                        snackPosition: SnackPosition.TOP
-                    );
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
                   } else if (startDate.isEmpty) {
-                    Get.snackbar('Error', 'Please select start date!',
+                    Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.pleaseSelectStartDate,
                         backgroundColor: AppColors.red,
                         colorText: AppColors.white,
                         borderRadius: 20.r,
-                        icon: Icon(Icons.error_outline, color: AppColors.white,),
-                        snackPosition: SnackPosition.TOP
-                    );
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
+                  } else if (endDate.isEmpty) {
+                    Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.pleaseSelectEndDate,
+                        backgroundColor: AppColors.red,
+                        colorText: AppColors.white,
+                        borderRadius: 20.r,
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
+                  } else if (_selectedClient == null) {
+                    Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.pleaseSelectClient,
+                        backgroundColor: AppColors.red,
+                        colorText: AppColors.white,
+                        borderRadius: 20.r,
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: AppColors.white,
+                        ),
+                        snackPosition: SnackPosition.TOP);
                   }
                 }
               },
@@ -224,7 +267,7 @@ class UserModel {
     return UserModel(
       firstName: data['firstName'],
       lastName: data['lastName'],
-      userId: data['userId'],
+      userId: data['uid'],
     );
   }
 }

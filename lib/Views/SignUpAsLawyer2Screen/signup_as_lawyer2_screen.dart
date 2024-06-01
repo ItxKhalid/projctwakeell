@@ -14,7 +14,7 @@ import 'package:projctwakeell/Views/verification_screen.dart';
 import 'package:projctwakeell/service/Userclass.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Widgets/custom_Container_button.dart';
 import '../../Widgets/custom_container_textform_field.dart';
 import '../../Widgets/custom_text.dart';
@@ -45,12 +45,13 @@ class SignUpAsLawyer2Screen extends StatefulWidget {
 }
 
 class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
-  TextEditingController password1Controller=TextEditingController();
-  TextEditingController confirmpasswordController=TextEditingController();
-  bool passVisibility=false;
-  final _formKey=GlobalKey<FormState>();
+  TextEditingController password1Controller = TextEditingController();
+  TextEditingController confirmpasswordController = TextEditingController();
+  bool passVisibility = false;
+  final _formKey = GlobalKey<FormState>();
+
   bool passwordsMatch() {
-    String password =  password1Controller.text;
+    String password = password1Controller.text;
     String confirmPassword = confirmpasswordController.text;
     return password == confirmPassword;
   }
@@ -61,7 +62,6 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
     confirmpasswordController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,61 +78,69 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-
                   Padding(
-                    padding:  EdgeInsets.only(top: 42.h,left: 39.w,right: 29.w),
+                    padding:
+                        EdgeInsets.only(top: 42.h, left: 39.w, right: 29.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomText(
                             textAlign: TextAlign.left,
-                            text:'Wakeel Naama',
+                            text: AppLocalizations.of(context)!.wakeel_naama,
                             color: AppColors.tealB3,
                             fontSize: 20.91.sp,
                             fontWeight: FontWeight.w400,
-                            fontFamily:'Acme'),
-
+                            fontFamily: 'Acme'),
                         GestureDetector(
-                          onTap: (){
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginAsLawyerScreen()));
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        LoginAsLawyerScreen()));
                           },
                           child: CustomText(
                               textAlign: TextAlign.right,
-                              text:'Log In',
+                              text: AppLocalizations.of(context)!.log_in,
                               color: AppColors.tealB3,
                               fontSize: 20.91.sp,
                               fontWeight: FontWeight.w600,
-                              fontFamily:'Mulish'),
+                              fontFamily: 'Mulish'),
                         ),
                       ],
                     ),
                   ),
-
-
                   Padding(
-                    padding:  EdgeInsets.only(top: 48.h,),
+                    padding: EdgeInsets.only(
+                      top: 48.h,
+                    ),
                     child: Align(
                       alignment: Alignment.center,
                       child: CustomText(
                           textAlign: TextAlign.center,
-                          text:'Sign up as a Lawyer',
+                          text:
+                              '${AppLocalizations.of(context)!.sign_up_as_a} ${AppLocalizations.of(context)!.lawyer}',
                           color: themeProvider.themeMode == ThemeMode.dark
                               ? AppColors.white // Dark theme color
                               : AppColors.black,
                           fontSize: 32.sp,
                           fontWeight: FontWeight.w500,
-                          fontFamily:'Mulish'),
+                          fontFamily: 'Mulish'),
                     ),
                   ),
-
                   Padding(
-                    padding:  EdgeInsets.only(top:27.h,left: 76.w,right: 75.w),
-                    child: Image.asset(AppImages.image3,width: 242.w,height: 159.h,fit: BoxFit.cover,),
+                    padding:
+                        EdgeInsets.only(top: 27.h, left: 76.w, right: 75.w),
+                    child: Image.asset(
+                      AppImages.image3,
+                      width: 242.w,
+                      height: 159.h,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-
-
                   Padding(
-                    padding:  EdgeInsets.only(top: 26.h,left: 34.w,right: 33.w),
+                    padding:
+                        EdgeInsets.only(top: 26.h, left: 34.w, right: 33.w),
                     child: Container(
                       width: 326.w,
                       height: 311.h,
@@ -144,49 +152,62 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.only(top: 15,left: 20.w,right: 20.w),
+                        padding:
+                            EdgeInsets.only(top: 15, left: 20.w, right: 20.w),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Align(
-                              alignment:Alignment.topLeft,
+                              alignment: Alignment.topLeft,
                               child: CustomText(
                                   textAlign: TextAlign.left,
-                                  text:widget.firstName,
-                                  color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
+                                  text: widget.firstName,
+                                  color:
+                                      themeProvider.themeMode == ThemeMode.dark
+                                          ? AppColors.white
+                                          : AppColors.black,
                                   // color: AppColors.white,
                                   fontSize: 20.74.sp,
                                   fontWeight: FontWeight.w600,
-                                  fontFamily:'Inter'),
+                                  fontFamily: 'Inter'),
                             ),
-                            SizedBox(height: 8.41.h,),
+                            SizedBox(
+                              height: 8.41.h,
+                            ),
                             Align(
-                              alignment:Alignment.topLeft,
+                              alignment: Alignment.topLeft,
                               child: CustomText(
                                   textAlign: TextAlign.left,
                                   text: widget.email,
-                                  color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
+                                  color:
+                                      themeProvider.themeMode == ThemeMode.dark
+                                          ? AppColors.white
+                                          : AppColors.black,
                                   // color: AppColors.white,
                                   fontSize: 16.13.sp,
                                   fontWeight: FontWeight.w400,
-                                  fontFamily:'Inter'),
+                                  fontFamily: 'Inter'),
                             ),
-
-                            SizedBox(height: 33.59.h,),
+                            SizedBox(
+                              height: 33.59.h,
+                            ),
                             Align(
                               alignment: Alignment.topLeft,
                               child: CustomText(
                                 textAlign: TextAlign.left,
-                                text: 'Password',
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
+                                text: AppLocalizations.of(context)!.password,
+                                color: themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
                                 // color: AppColors.white,
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'Inter',
                               ),
                             ),
-
-                            SizedBox(height: 13.h,),
+                            SizedBox(
+                              height: 13.h,
+                            ),
                             CustomContainerTextFormField(
                               contentpadding: EdgeInsets.only(left: 15.w),
                               width: 286.w,
@@ -200,30 +221,43 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                                     passVisibility = !passVisibility;
                                   });
                                 },
-                                icon: passVisibility ? Icon(Icons.visibility, color: AppColors.tealB3, size: 20,) :
-                                Icon(Icons.visibility_off, color: AppColors.grey41, size: 20,),
+                                icon: passVisibility
+                                    ? Icon(
+                                        Icons.visibility,
+                                        color: AppColors.tealB3,
+                                        size: 20,
+                                      )
+                                    : Icon(
+                                        Icons.visibility_off,
+                                        color: AppColors.grey41,
+                                        size: 20,
+                                      ),
                               ),
-                              validator: (value) {
-                              },
+                              validator: (value) {},
                               onFieldSubmitted: (value) {},
                               controller: password1Controller,
                             ),
-
-                            SizedBox(height: 25.h,),
+                            SizedBox(
+                              height: 25.h,
+                            ),
                             Align(
                               alignment: Alignment.topLeft,
                               child: CustomText(
                                 textAlign: TextAlign.left,
-                                text: 'Confirm Password',
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
+                                text: AppLocalizations.of(context)!
+                                    .confirmPassword,
+                                color: themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
                                 // color: AppColors.white,
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'Inter',
                               ),
                             ),
-
-                            SizedBox(height: 13.h,),
+                            SizedBox(
+                              height: 13.h,
+                            ),
                             CustomContainerTextFormField(
                               contentpadding: EdgeInsets.only(left: 15.w),
                               width: 286.w,
@@ -237,29 +271,35 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                                     passVisibility = !passVisibility;
                                   });
                                 },
-                                icon: passVisibility ? Icon(Icons.visibility, color: AppColors.tealB3, size: 20,) :
-                                Icon(Icons.visibility_off, color: AppColors.grey41, size: 20,),
+                                icon: passVisibility
+                                    ? Icon(
+                                        Icons.visibility,
+                                        color: AppColors.tealB3,
+                                        size: 20,
+                                      )
+                                    : Icon(
+                                        Icons.visibility_off,
+                                        color: AppColors.grey41,
+                                        size: 20,
+                                      ),
                               ),
-                              validator: (value) {
-                              },
+                              validator: (value) {},
                               onFieldSubmitted: (value) {},
                               controller: confirmpasswordController,
                             ),
-
-
                           ],
                         ),
                       ),
                     ),
                   ),
-
-
                   Padding(
-                    padding:  EdgeInsets.only(top: 20.h,left:38.w,right: 38.w),
+                    padding:
+                        EdgeInsets.only(top: 20.h, left: 38.w, right: 38.w),
                     child: GestureDetector(
                       onTap: () async {
                         String password = password1Controller.text.trim();
-                        String cpassword = confirmpasswordController.text.trim();
+                        String cpassword =
+                            confirmpasswordController.text.trim();
                         if (password.isNotEmpty && cpassword.isNotEmpty) {
                           try {
                             showDialog(
@@ -270,13 +310,17 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                               barrierDismissible: false,
                             );
                             // Create the user with email and password
-                            UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            UserCredential userCredential = await FirebaseAuth
+                                .instance
+                                .createUserWithEmailAndPassword(
                               email: widget.email,
                               password: password,
                             );
 
                             // Send verification email
-                            await userCredential.user!.sendEmailVerification().then((value) {
+                            await userCredential.user!
+                                .sendEmailVerification()
+                                .then((value) {
                               Get.snackbar(
                                 'Email Sent',
                                 'A verification email has been sent to ${widget.email}. Please verify your email to proceed.',
@@ -300,58 +344,74 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                               // Set other properties as needed
                             );
 
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            await prefs.setString(AppConst.saveUserName, widget.firstName + widget.lastName);
-                            AppConst.getUserName = prefs.getString(AppConst.saveUserName)!;
-                            await prefs.setString(AppConst.saveUserType, 'lawyer');
-                            AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
-                            await prefs.setString('lawyer_id', loggedInUser.userId!);
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString(AppConst.saveUserName,
+                                widget.firstName + widget.lastName);
+                            AppConst.getUserName =
+                                prefs.getString(AppConst.saveUserName)!;
+                            await prefs.setString(
+                                AppConst.saveUserType, 'lawyer');
+                            AppConst.getUserType =
+                                prefs.getString(AppConst.saveUserType)!;
+                            await prefs.setString(
+                                'lawyer_id', loggedInUser.userId!);
                             await prefs.setString('lawyer_email', widget.email);
-                            await prefs.setString('lawyer_fName', widget.firstName);
-                            await prefs.setString('lawyer_lName', widget.lastName);
-                            await prefs.setString('lawyer_licenseNumber', widget.licenseNumber);
-                            await prefs.setString('lawyer_gender', widget.gender);
-                            await prefs.setString('lawyer_number', widget.phoneNumber);
-                            Get.snackbar(
-                              'Congratulations',
-                              'Successfully SignUp as a Lawyer! Verification email has been sent.',
-                              backgroundColor: AppColors.tealB3,
-                              colorText: AppColors.white,
-                              borderRadius: 20.r,
-                              icon: Icon(Icons.done, color: AppColors.white),
-                              snackPosition: SnackPosition.TOP,
-                            );
+                            await prefs.setString(
+                                'lawyer_fName', widget.firstName);
+                            await prefs.setString(
+                                'lawyer_lName', widget.lastName);
+                            await prefs.setString(
+                                'lawyer_licenseNumber', widget.licenseNumber);
+                            await prefs.setString(
+                                'lawyer_gender', widget.gender);
+                            await prefs.setString(
+                                'lawyer_number', widget.phoneNumber);
+                            // Get.snackbar(
+                            //   'Congratulations',
+                            //   'Successfully SignUp as a Lawyer! Verification email has been sent.',
+                            //   backgroundColor: AppColors.tealB3,
+                            //   colorText: AppColors.white,
+                            //   borderRadius: 20.r,
+                            //   icon: Icon(Icons.done, color: AppColors.white),
+                            //   snackPosition: SnackPosition.TOP,
+                            // );
 
                             Navigator.pop(context);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>  VerificationScreen(email: widget.email),
+                                builder: (context) =>
+                                    VerificationScreen(email: widget.email),
                               ),
                             );
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'weak-password') {
                               Get.snackbar(
-                                'Error',
-                                'The password provided is too weak!',
+                                AppLocalizations.of(context)!.error,
+                                AppLocalizations.of(context)!.weak_password,
                                 backgroundColor: AppColors.red,
                                 colorText: AppColors.white,
                                 borderRadius: 20.r,
-                                icon: Icon(Icons.error_outline, color: AppColors.white),
+                                icon: Icon(Icons.error_outline,
+                                    color: AppColors.white),
                                 snackPosition: SnackPosition.TOP,
                               );
                               print('The password provided is too weak.');
                             } else if (e.code == 'email-already-in-use') {
                               Get.snackbar(
-                                'Error',
-                                'The account already exists for that email!',
+                                AppLocalizations.of(context)!.error,
+                                AppLocalizations.of(context)!
+                                    .email_already_in_use,
                                 backgroundColor: AppColors.red,
                                 colorText: AppColors.white,
                                 borderRadius: 20.r,
-                                icon: Icon(Icons.error_outline, color: AppColors.white),
+                                icon: Icon(Icons.error_outline,
+                                    color: AppColors.white),
                                 snackPosition: SnackPosition.TOP,
                               );
-                              print('The account already exists for that email.');
+                              print(
+                                  'The account already exists for that email.');
                             }
                             Navigator.pop(context);
                           } catch (e) {
@@ -361,42 +421,49 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                         } else {
                           if (password1Controller.text.isEmpty) {
                             Get.snackbar(
-                              'Error',
-                              'Password Required!',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.password_required,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (password.length < 6) {
                             Get.snackbar(
-                              'Error',
-                              'Password must be at least 6 characters long!',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!
+                                  .password_length_short,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (cpassword.isEmpty) {
                             Get.snackbar(
-                              'Error',
-                              'Confirm Password Required!',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!
+                                  .confirm_password_required,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (!passwordsMatch()) {
                             Get.snackbar(
-                              'Error',
-                              'Passwords do not match!',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!
+                                  .passwords_do_not_match,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline, color: AppColors.white),
+                              icon: Icon(Icons.error_outline,
+                                  color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                             return;
@@ -410,16 +477,14 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Mulish',
                         fontSize: 22.2.sp,
-                        text: 'Create my account',
+                        text: AppLocalizations.of(context)!.create_account,
                         backgroundColor: AppColors.tealB3,
                         color: AppColors.white,
                       ),
                     ),
                   ),
-
-
                   Padding(
-                    padding:  EdgeInsets.only(top: 13.h),
+                    padding: EdgeInsets.only(top: 13.h),
                     child: Align(
                       alignment: Alignment.center,
                       child: Row(
@@ -427,39 +492,40 @@ class _SignUpAsLawyer2ScreenState extends State<SignUpAsLawyer2Screen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           CustomText(
-                              text:'Here to Offer Legal Expertise?',
+                              text: AppLocalizations.of(context)!
+                                  .hereOfferLegalExpertise,
                               color: themeProvider.themeMode == ThemeMode.dark
                                   ? AppColors.white // Dark theme color
                                   : AppColors.black,
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
-                              fontFamily:'Mulish'),
+                              fontFamily: 'Mulish'),
                           GestureDetector(
-                            onTap: (){
-      Navigator.push(context,MaterialPageRoute(builder: (context)=>SignupAsClientScreen()));
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SignupAsClientScreen()));
                             },
                             child: CustomText(
-                                text:' Join as a',
+                                text:
+                                    ' ${AppLocalizations.of(context)!.join_as_a}',
                                 color: AppColors.tealB3,
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w600,
-                                fontFamily:'Mulish'),
+                                fontFamily: 'Mulish'),
                           ),
-
                         ],
                       ),
                     ),
                   ),
-
                   CustomText(
-                      text:'Client',
+                      text: AppLocalizations.of(context)!.client,
                       color: AppColors.tealB3,
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
-                      fontFamily:'Mulish'),
-
-
-
+                      fontFamily: 'Mulish'),
                 ],
               ),
             ),

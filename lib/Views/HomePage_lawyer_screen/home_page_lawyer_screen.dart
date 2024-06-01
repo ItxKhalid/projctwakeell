@@ -11,6 +11,7 @@ import '../../Utils/images.dart';
 import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../chatBotScreen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePageLawyerScreen extends StatefulWidget {
   const HomePageLawyerScreen({super.key});
@@ -40,12 +41,13 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
         child: Image.asset('assets/images/chatbot.png',fit: BoxFit.fitHeight,height: 100),
       ),
       body: SafeArea(
-        child:SingleChildScrollView(
+        child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
               Padding(
-                padding:  EdgeInsets.only(top: 42.h,left: 39.w,right: 29.13.h),
+                padding:
+                EdgeInsets.only(top: 42.h, left: 39.w, right: 29.13.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -53,79 +55,85 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                       alignment: Alignment.topLeft,
                       child: CustomText(
                           textAlign: TextAlign.left,
-                          text:'Wakeel Naama',
+                          text: AppLocalizations.of(context)!.wakeel_naama,
                           color: AppColors.tealB3,
                           fontSize: 20.91.sp,
                           fontWeight: FontWeight.w400,
-                          fontFamily:'Acme'),
+                          fontFamily: 'Acme'),
                     ),
-
                     GestureDetector(
                       onTap: () {
                         _key.currentState!.openDrawer();
                       },
-                      child: Icon(Icons.menu,color: AppColors.tealB3,),
+                      child: Icon(
+                        Icons.menu,
+                        color: AppColors.tealB3,
+                      ),
                     ),
-
-
                   ],
                 ),
               ),
 
-
               Padding(
-                padding:  EdgeInsets.only(top: 49.h,),
+                padding: EdgeInsets.only(
+                  top: 49.h,
+                ),
                 child: Align(
                   alignment: Alignment.center,
                   child: RichText(
-                    text: TextSpan(
-                        children: <TextSpan>
-                        [
-                          TextSpan(text: 'Welcome to',
-                              style: TextStyle(
-                                fontWeight:FontWeight.w400 ,
-                                fontSize: 28.sp,
-                                color: themeProvider.themeMode == ThemeMode.dark
-                                    ? AppColors.white // Dark theme color
-                                    : AppColors.black,
-                                fontFamily: 'Acme',
-                              )),
-                          TextSpan(text: ' Wakeel Naama !',
-                              style: TextStyle(
-                                fontWeight:FontWeight.w400 ,
-                                fontSize: 28.sp,
-                                color: AppColors.tealB3,
-                                fontFamily: 'Acme',
-                              )),
-
-                        ]
-                    ),),
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                          text: AppLocalizations.of(context)!.welcome_to,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 28.sp,
+                            color: themeProvider.themeMode == ThemeMode.dark
+                                ? AppColors.white // Dark theme color
+                                : AppColors.black,
+                            fontFamily: 'Acme',
+                          )),
+                      TextSpan(
+                          text:
+                          ' ${AppLocalizations.of(context)!.wakeel_naama}!',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 28.sp,
+                            color: AppColors.tealB3,
+                            fontFamily: 'Acme',
+                          )),
+                    ]),
+                  ),
                 ),
               ),
 
               Padding(
-                padding:  EdgeInsets.only(top: 21.h),
+                padding: EdgeInsets.only(top: 21.h),
                 child: Align(
                   alignment: Alignment.center,
                   child: CustomText(
                       textAlign: TextAlign.center,
-                      text:'Connect with Expert Lawyers, Anytime,\n Anywhere !',
+                      text: '',
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white // Dark theme color
                           : AppColors.black,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      fontFamily:'Mulish'),
+                      fontFamily: 'Mulish'),
                 ),
               ),
 
               Padding(
-                padding:  EdgeInsets.only(top:13.h,left: 94.w,right: 93.w),
-                child: Image.asset(AppImages.image5,width: 206.w,height: 135.h,fit: BoxFit.cover,),
+                padding: EdgeInsets.only(top: 13.h, left: 94.w, right: 93.w),
+                child: Image.asset(
+                  AppImages.image5,
+                  width: 206.w,
+                  height: 135.h,
+                  fit: BoxFit.cover,
+                ),
               ),
 
               Padding(
-                padding:  EdgeInsets.only(top: 21.h,left: 12.w,right: 12.w),
+                padding: EdgeInsets.only(top: 21.h, left: 12.w, right: 12.w),
                 child: Row(
                   children: [
                     Container(
@@ -133,13 +141,14 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                       height: 160.h,
                       decoration: BoxDecoration(
                         color: themeProvider.themeMode == ThemeMode.dark
-                            ? AppColors.grey33// Dark theme color
+                            ? AppColors.grey33 // Dark theme color
                             : Colors.grey.shade100,
                         //color: AppColors.grey33,
                       ),
-                      child: Image.asset(AppImages.image6,),
+                      child: Image.asset(
+                        AppImages.image6,
+                      ),
                     ),
-
                     Container(
                       width: 261.w,
                       height: 160.h,
@@ -150,97 +159,103 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                         //color: AppColors.black919,
                       ),
                       child: Padding(
-                        padding:  EdgeInsets.symmetric(horizontal: 17.w,vertical: 17.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 17.w, vertical: 17.h),
                         child: RichText(
                           textAlign: TextAlign.justify,
-                          text: TextSpan(
-                              children: <TextSpan>
-                              [
-                                TextSpan(text: 'Wakeel  Naama ',
-                                    style: TextStyle(
-                                      fontWeight:FontWeight.w500 ,
-                                      fontSize: 15.sp,
-                                      color: AppColors.tealB3,
-                                      fontFamily: 'Mulish',
-                                    )),
-                                TextSpan(
-                                    text: 'Wakeel Naama is a game-changing app that makes it super easy for people to find the right lawyer. With our simple-to-use app and awesome features, getting legal help has never been this straightforward!',
-                                    style: TextStyle(
-                                      color: themeProvider.themeMode == ThemeMode.dark
-                                          ? AppColors.white // Dark theme color
-                                          : AppColors.black,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: 'Mulish',
-                                      // fontSize: 15.sp,
-                                    )),
-
-                              ]
-                          ),),
+                          text: TextSpan(children: <TextSpan>[
+                            TextSpan(
+                                text: '${AppLocalizations.of(context)!.wakeel_naama} ',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15.sp,
+                                  color: AppColors.tealB3,
+                                  fontFamily: 'Mulish',
+                                )),
+                            TextSpan(
+                                text: AppLocalizations.of(context)!
+                                    .wakell_nama_is_the_changeing_app,
+                                style: TextStyle(
+                                  color: themeProvider.themeMode ==
+                                      ThemeMode.dark
+                                      ? AppColors.white // Dark theme color
+                                      : AppColors.black,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Mulish',
+                                  // fontSize: 15.sp,
+                                )),
+                          ]),
+                        ),
                       ),
                     ),
-
                   ],
                 ),
               ),
 
-
               Padding(
-                padding:  EdgeInsets.only(top: 21.h),
+                padding: EdgeInsets.only(top: 21.h),
                 child: Align(
                   alignment: Alignment.center,
                   child: CustomText(
                       textAlign: TextAlign.center,
-                      text:'Mission',
+                      text: AppLocalizations.of(context)!.mission,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white // Dark theme color
                           : AppColors.black,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
-                      fontFamily:'Mulish'),
+                      fontFamily: 'Mulish'),
                 ),
               ),
-              Container(width: 50.w,height: 3.h,decoration: BoxDecoration(
-                color: AppColors.tealB3,
-                borderRadius: BorderRadius.circular(5.r),
-              ),),
-
+              Container(
+                width: 50.w,
+                height: 3.h,
+                decoration: BoxDecoration(
+                  color: AppColors.tealB3,
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+              ),
 
               Padding(
-                padding:  EdgeInsets.only(top: 12.h,left: 29.w,right: 29.w),
+                padding: EdgeInsets.only(top: 12.h, left: 29.w, right: 29.w),
                 child: Center(
                   child: CustomText(
                       textAlign: TextAlign.justify,
-                      text:'Our mission is to empower individuals to access legal services efficiently while providing lawyers with the tools they need to effectively manage their clients and cases.',
+                      text: AppLocalizations.of(context)!
+                          .our_mission_is_to_empower,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white // Dark theme color
                           : AppColors.black,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      fontFamily:'Mulish'),
+                      fontFamily: 'Mulish'),
                 ),
               ),
 
-
               Padding(
-                padding:  EdgeInsets.only(top: 12.h),
+                padding: EdgeInsets.only(top: 12.h),
                 child: Align(
                   alignment: Alignment.center,
                   child: CustomText(
                       textAlign: TextAlign.center,
-                      text:'Benefits',
+                      text: AppLocalizations.of(context)!.benefits,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white // Dark theme color
                           : AppColors.black,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
-                      fontFamily:'Mulish'),
+                      fontFamily: 'Mulish'),
                 ),
               ),
-              Container(width: 50.w,height: 3.h,decoration: BoxDecoration(
-                color: AppColors.tealB3,
-                borderRadius: BorderRadius.circular(5.r),
-              ),),
+              Container(
+                width: 50.w,
+                height: 3.h,
+                decoration: BoxDecoration(
+                  color: AppColors.tealB3,
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+              ),
 
               Padding(
                 padding: EdgeInsets.only(top: 21.h),
@@ -260,7 +275,8 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.favorite,
+                          Icon(
+                            Icons.favorite,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.tealB3
                                 : AppColors.tealB3,
@@ -268,7 +284,7 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                           SizedBox(height: 5.h),
                           CustomText(
                             textAlign: TextAlign.center,
-                            text: 'User-friendly',
+                            text: AppLocalizations.of(context)!.user_friendly,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.white
                                 : AppColors.black,
@@ -292,7 +308,8 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.security,
+                          Icon(
+                            Icons.security,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.tealB3
                                 : AppColors.tealB3,
@@ -300,7 +317,7 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                           SizedBox(height: 5.h),
                           CustomText(
                             textAlign: TextAlign.center,
-                            text: 'Secure',
+                            text: AppLocalizations.of(context)!.secure,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.white
                                 : AppColors.black,
@@ -324,7 +341,8 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.settings,
+                          Icon(
+                            Icons.settings,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.tealB3
                                 : AppColors.tealB3,
@@ -332,7 +350,7 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                           SizedBox(height: 5.h),
                           CustomText(
                             textAlign: TextAlign.center,
-                            text: 'Convenient',
+                            text: AppLocalizations.of(context)!.convenient,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.white
                                 : AppColors.black,
@@ -347,28 +365,30 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                 ),
               ),
 
-
-
               Padding(
-                padding:  EdgeInsets.only(top: 12.h),
+                padding: EdgeInsets.only(top: 15.h),
                 child: Align(
                   alignment: Alignment.center,
                   child: CustomText(
                       textAlign: TextAlign.center,
-                      text:'Testimonials',
+                      text: AppLocalizations.of(context)!.testimonials,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white // Dark theme color
                           : AppColors.black,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
-                      fontFamily:'Mulish'),
+                      fontFamily: 'Mulish'),
                 ),
               ),
-              Container(width: 50.w,height: 3.h,decoration: BoxDecoration(
-                color: AppColors.tealB3,
-                borderRadius: BorderRadius.circular(5.r),
-              ),),
 
+              Container(
+                width: 50.w,
+                height: 3.h,
+                decoration: BoxDecoration(
+                  color: AppColors.tealB3,
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+              ),
 
               CarouselSlider(
                 carouselController: controller,
@@ -386,13 +406,17 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                               width: 259.w,
                               height: 140.h,
                               decoration: BoxDecoration(
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.black919 :Colors.grey.shade100,
+                                color:
+                                themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.black919
+                                    : Colors.grey.shade100,
                                 // color: AppColors.black919,
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(30.r), bottomRight: Radius.circular(30.r)),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30.r),
+                                    bottomRight: Radius.circular(30.r)),
                               ),
                             ),
                           ),
-
                           Positioned(
                             top: 40,
                             left: 5,
@@ -413,7 +437,6 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                               ),
                             ),
                           ),
-
                           Positioned(
                             top: 20,
                             left: 50,
@@ -427,28 +450,38 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                               left: 190,
                               child: Row(
                                 children: [
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp,),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
+                                  Icon(
+                                    Icons.star,
+                                    color: AppColors.tealB3,
+                                    size: 12.sp,
+                                  ),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
                                 ],
-                              )
-                          ),
+                              )),
                           Positioned(
                             top: 35,
                             right: 19,
                             left: 68,
                             child: CustomText(
                                 textAlign: TextAlign.justify,
-                                text:' found the perfect lawyer for my case within minutes! Wakeel Naama made the process so simple and stress-free.',
+                                text:
+                                ' ${AppLocalizations.of(context)!.found_the_perfect_lawyer_home_page}',
                                 //color: AppColors.white,
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                                color:
+                                themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
-                                fontFamily:'Mulish'),
+                                fontFamily: 'Mulish'),
                           ),
-
                           Positioned(
                             top: 90,
                             left: 150,
@@ -463,11 +496,11 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                             left: 70,
                             child: CustomText(
                                 textAlign: TextAlign.justify,
-                                text:'Hamna Afzal',
+                                text: 'Hamna Afzal',
                                 color: AppColors.tealB3,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
-                                fontFamily:'Mulish'),
+                                fontFamily: 'Mulish'),
                           ),
                         ],
                       ),
@@ -486,13 +519,17 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                               width: 259.w,
                               height: 140.h,
                               decoration: BoxDecoration(
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.black919 :Colors.grey.shade100,
+                                color:
+                                themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.black919
+                                    : Colors.grey.shade100,
                                 // color: AppColors.black919,
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(30.r), bottomRight: Radius.circular(30.r)),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30.r),
+                                    bottomRight: Radius.circular(30.r)),
                               ),
                             ),
                           ),
-
                           Positioned(
                             top: 40,
                             left: 5,
@@ -513,7 +550,6 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                               ),
                             ),
                           ),
-
                           Positioned(
                             top: 20,
                             left: 50,
@@ -527,28 +563,38 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                               left: 190,
                               child: Row(
                                 children: [
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp,),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                  Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
+                                  Icon(
+                                    Icons.star,
+                                    color: AppColors.tealB3,
+                                    size: 12.sp,
+                                  ),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
+                                  Icon(Icons.star,
+                                      color: AppColors.tealB3, size: 12.sp),
                                 ],
-                              )
-                          ),
+                              )),
                           Positioned(
                             top: 35,
                             right: 19,
                             left: 68,
                             child: CustomText(
                                 textAlign: TextAlign.justify,
-                                text:' found the perfect lawyer for my case within minutes! Wakeel Naama made the process so simple and stress-free.',
+                                text:
+                                ' found the perfect lawyer for my case within minutes! Wakeel Naama made the process so simple and stress-free.',
                                 //color: AppColors.white,
-                                color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                                color:
+                                themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
-                                fontFamily:'Mulish'),
+                                fontFamily: 'Mulish'),
                           ),
-
                           Positioned(
                             top: 90,
                             left: 150,
@@ -563,11 +609,11 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                             left: 70,
                             child: CustomText(
                                 textAlign: TextAlign.justify,
-                                text:'Hamna Afzal',
+                                text: 'Hamna Afzal',
                                 color: AppColors.tealB3,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
-                                fontFamily:'Mulish'),
+                                fontFamily: 'Mulish'),
                           ),
                         ],
                       ),
@@ -575,7 +621,6 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                   ),
                   Row(
                     children: [
-
                       Padding(
                         padding: EdgeInsets.only(top: 27.h),
                         child: SizedBox(
@@ -589,13 +634,17 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                                   width: 259.w,
                                   height: 140.h,
                                   decoration: BoxDecoration(
-                                    color: themeProvider.themeMode==ThemeMode.dark? AppColors.black919 :Colors.grey.shade100,
+                                    color: themeProvider.themeMode ==
+                                        ThemeMode.dark
+                                        ? AppColors.black919
+                                        : Colors.grey.shade100,
                                     // color: AppColors.black919,
-                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(30.r), bottomRight: Radius.circular(30.r)),
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(30.r),
+                                        bottomRight: Radius.circular(30.r)),
                                   ),
                                 ),
                               ),
-
                               Positioned(
                                 top: 40,
                                 left: 5,
@@ -606,7 +655,8 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                                     height: 19.h,
                                     width: 19.w,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(34.r),
+                                      borderRadius:
+                                      BorderRadius.circular(34.r),
                                     ),
                                     child: Center(
                                       child: Image.asset(
@@ -616,7 +666,6 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                                   ),
                                 ),
                               ),
-
                               Positioned(
                                 top: 20,
                                 left: 50,
@@ -630,28 +679,42 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                                   left: 190,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.star,color: AppColors.tealB3,size: 12.sp,),
-                                      Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                      Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                      Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
-                                      Icon(Icons.star,color: AppColors.tealB3,size: 12.sp),
+                                      Icon(
+                                        Icons.star,
+                                        color: AppColors.tealB3,
+                                        size: 12.sp,
+                                      ),
+                                      Icon(Icons.star,
+                                          color: AppColors.tealB3,
+                                          size: 12.sp),
+                                      Icon(Icons.star,
+                                          color: AppColors.tealB3,
+                                          size: 12.sp),
+                                      Icon(Icons.star,
+                                          color: AppColors.tealB3,
+                                          size: 12.sp),
+                                      Icon(Icons.star,
+                                          color: AppColors.tealB3,
+                                          size: 12.sp),
                                     ],
-                                  )
-                              ),
+                                  )),
                               Positioned(
                                 top: 35,
                                 right: 19,
                                 left: 68,
                                 child: CustomText(
                                     textAlign: TextAlign.justify,
-                                    text:' found the perfect lawyer for my case within minutes! Wakeel Naama made the process so simple and stress-free.',
+                                    text:
+                                    ' found the perfect lawyer for my case within minutes! Wakeel Naama made the process so simple and stress-free.',
                                     //color: AppColors.white,
-                                    color: themeProvider.themeMode==ThemeMode.dark? AppColors.white: AppColors.black,
+                                    color: themeProvider.themeMode ==
+                                        ThemeMode.dark
+                                        ? AppColors.white
+                                        : AppColors.black,
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
-                                    fontFamily:'Mulish'),
+                                    fontFamily: 'Mulish'),
                               ),
-
                               Positioned(
                                 top: 90,
                                 left: 150,
@@ -666,11 +729,11 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                                 left: 70,
                                 child: CustomText(
                                     textAlign: TextAlign.justify,
-                                    text:'Hamna Afzal',
+                                    text: 'Hamna Afzal',
                                     color: AppColors.tealB3,
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
-                                    fontFamily:'Mulish'),
+                                    fontFamily: 'Mulish'),
                               ),
                             ],
                           ),
@@ -678,7 +741,6 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                       ),
                     ],
                   ),
-
                 ],
 
                 ////////////////////////////////////
@@ -686,7 +748,8 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
                   initialPage: 0,
                   height: 166.55.h,
                   enlargeCenterPage: true,
-                  autoPlay: false,//not moving
+                  autoPlay: false,
+                  //not moving
                   // aspectRatio: 16 / 9,
                   // autoPlayCurve: Curves.fastOutSlowIn,
                   autoPlayCurve: Curves.slowMiddle,
@@ -704,9 +767,6 @@ class _HomePageLawyerScreenState extends State<HomePageLawyerScreen> {
 
               buildIndicator(),
               // buildButtons(),
-
-
-
             ],
           ),
         ),

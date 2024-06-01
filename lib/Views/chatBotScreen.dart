@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -19,7 +20,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Bot'),
+        title: Text(AppLocalizations.of(context)!.chatBot),
       ),
       body: Column(
         children: [
@@ -27,7 +28,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             child: SingleChildScrollView(
               reverse: true,
               child: Card(
-                margin: EdgeInsets.all(30),
+                margin: const EdgeInsets.all(30),
                 elevation: 1,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -46,15 +47,15 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   child: TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                        hintText: 'Enter your query',
+                        hintText: AppLocalizations.of(context)!.enterYourQuery,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey)
+                            borderSide: const BorderSide(color: Colors.grey)
                         )
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   style: const ButtonStyle(
                     fixedSize: MaterialStatePropertyAll(Size.fromHeight(60)),
@@ -62,7 +63,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   onPressed: () {
                     _sendQuery(controller.text);
                   },
-                  child: Text('Send'),
+                  child:  Text(AppLocalizations.of(context)!.send),
                 ),
               ],
             ),
@@ -79,7 +80,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         ListTile(
           title: Text(
             messages[i]['sender'] == 'bot' ? 'Bot' : 'You',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -88,7 +89,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
       );
       if (i % 2 == 1 && i < messages.length - 1) {
         // Add a divider after each pair of messages (user + bot)
-        messageWidgets.add(Divider());
+        messageWidgets.add(const Divider());
       }
     }
     return messageWidgets;

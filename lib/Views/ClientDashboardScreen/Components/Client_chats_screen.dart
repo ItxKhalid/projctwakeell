@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../Utils/colors.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'client_message_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ClientChatsScreen extends StatefulWidget {
   const ClientChatsScreen({Key? key}) : super(key: key);
@@ -63,7 +64,7 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Chats'),
+        title:  Text(AppLocalizations.of(context)!.chats),
         centerTitle: true,
       ),
       body: Column(
@@ -88,8 +89,9 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
                           child: TextFormField(
                             controller: searchController,
                             cursorColor: AppColors.tealB3,
-                            decoration: const InputDecoration(
-                              hintText: 'Search lawyer',
+                            decoration:  InputDecoration(
+                              hintText: AppLocalizations.of(context)!.search_lawyer,
+                              hintStyle: const TextStyle(color: Colors.grey),
                               border: InputBorder.none,
                             ),
                             style: const TextStyle(color: Colors.black),
@@ -105,14 +107,14 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+           Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Messages',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.messages,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
                   ),
@@ -158,73 +160,69 @@ class _ClientChatsScreenState extends State<ClientChatsScreen> {
   Widget _buildChatItem(Map<String, dynamic> lawyerData) {
     String firstName = lawyerData['firstName'] ?? '';
     String lastName = lawyerData['lastName'] ?? '';
+    String licenseNumber = lawyerData['email'] ?? '';
     String name = '$firstName $lastName'.trim();
     Timestamp timestamp = lawyerData['timestamp'] ?? Timestamp.now();
     String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    String roomId = chatRoomId(uid, lawyerData['uid']);
+    String roomId = chatRoomId(uid, lawyerData['userId']);
     return GestureDetector(
-        onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ClientMessageScreen(
-            clientName: name,
-            clientId: lawyerData['uid'],
-            chatRoomId: roomId,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ClientMessageScreen(
+              clientName: name,
+              clientId: lawyerData['userId'],
+              chatRoomId: roomId,
+            ),
           ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.grey[200],
         ),
-      );
-    },
-    child: Container(
-    margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
-    padding: const EdgeInsets.all(10.0),
-    decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(10.0),
-    color: Colors.grey[200],
-    ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 4),
-            child: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/image11.png'),
-            ),
-          ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 3),
-              ],
-            ),
-          ),
-          const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                formattedTimestamp,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black54,
-                ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 4),
+              child: const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/image11.png'),
               ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    '$licenseNumber',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

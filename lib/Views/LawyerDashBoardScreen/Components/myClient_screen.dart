@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projctwakeell/Widgets/custom_Container_button.dart';
 import '../../../Utils/images.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyClientScreens extends StatefulWidget {
   const MyClientScreens({Key? key});
@@ -34,7 +35,7 @@ class _MyClientScreensState extends State<MyClientScreens> {
       await FirebaseFirestore.instance
           .collection('ClientsData')
           .doc(clientId)
-          .update({'status': newStatus});
+          .update({'caseStatus': newStatus});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Case status updated to $newStatus')),
       );
@@ -51,13 +52,13 @@ class _MyClientScreensState extends State<MyClientScreens> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Clients'),
+        title:  Text(AppLocalizations.of(context)!.myClients),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('ClientsData')
             .where('lawyerUid', isEqualTo: currentUserUID)
-            .where('status', whereIn: ["", "InProgress"]) // Include both empty and "In Progress" statuses
+            .where('caseStatus', whereIn: ["", "InProgress"]) // Include both empty and "In Progress" statuses
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -81,20 +82,20 @@ class _MyClientScreensState extends State<MyClientScreens> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(clientData['ClientfullName'], style: const TextStyle(color: Colors.teal)),
-                        Text(clientData['status']+'...', style: const TextStyle(color: Colors.teal)),
+                        Text(clientData['caseStatus']+'...', style: const TextStyle(color: Colors.teal)),
                       ],
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Case Type: ${clientData['ClientcaseType']}'),
-                        Text('Case Description: ${clientData['ClientcaseDetails']}'),
-                        Text('Client Phone Number: ${clientData['ClientcontactNumber']}'),
+                        Text('${AppLocalizations.of(context)!.case_type}: ${clientData['ClientcaseType']}'),
+                        Text('${AppLocalizations.of(context)!.case_description}: ${clientData['ClientcaseDetails']}'),
+                        Text('${AppLocalizations.of(context)!.client_phone_number}: ${clientData['ClientcontactNumber']}'),
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            if (clientData['status'] != 'InProgress')
+                            if (clientData['caseStatus'] != 'InProgress')
                               CustomButton(
                                 borderRadius: BorderRadius.circular(8),
                                 height: 30,
@@ -103,7 +104,7 @@ class _MyClientScreensState extends State<MyClientScreens> {
                                 fontWeight: FontWeight.w500,
                                 fontFamily: 'fontFamily',
                                 fontSize: 12,
-                                text: 'In Progress',
+                                text: AppLocalizations.of(context)!.inProgress,
                                 color: Colors.teal,
                                 onTap: () {
                                   updateCaseStatus(clientData.id, 'InProgress');
@@ -117,7 +118,7 @@ class _MyClientScreensState extends State<MyClientScreens> {
                               fontWeight: FontWeight.w500,
                               fontFamily: 'fontFamily',
                               fontSize: 12,
-                              text: 'Cancel Case',
+                              text: AppLocalizations.of(context)!.cancelCase,
                               color: Colors.teal,
                               onTap: () {
                                 updateCaseStatus(clientData.id, 'Cancelled');
@@ -132,7 +133,7 @@ class _MyClientScreensState extends State<MyClientScreens> {
                               fontWeight: FontWeight.w500,
                               fontFamily: 'fontFamily',
                               fontSize: 12,
-                              text: 'Complete Case',
+                              text: AppLocalizations.of(context)!.completeCase,
                               color: Colors.white,
                               onTap: () {
                                 updateCaseStatus(clientData.id, 'Completed');
@@ -147,8 +148,8 @@ class _MyClientScreensState extends State<MyClientScreens> {
               },
             );
           }
-          return const Center(
-            child: Text('No clients found.'),
+          return  Center(
+            child: Text(AppLocalizations.of(context)!.noClientsFound),
           );
         },
       ),

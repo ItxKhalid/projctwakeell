@@ -172,7 +172,7 @@ class _HomePageClientScreenState extends State<HomePageClientScreen> {
                             textAlign: TextAlign.justify,
                             text: TextSpan(children: <TextSpan>[
                               TextSpan(
-                                  text: 'Wakeel  Naama ',
+                                  text: '${AppLocalizations.of(context)!.wakeel_naama} ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15.sp,

@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../../Utils/images.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../../LawyerDashBoardScreen/Components/myClient_screen.dart';
+import 'case_status.dart';
 import 'client_editprofile_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -69,6 +71,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    fetchUserData();
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
     return Scaffold(
       key: _key,
@@ -209,21 +212,20 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                   _userData != null ? _userData!['gender'] : ''),
               Padding(
                 padding: EdgeInsets.only(top: 50.h, left: 38.w, right: 38.w),
-                child: GestureDetector(
+                child: CustomButton(
                   onTap: () {
-                    // Implement my cases functionality
+                    var userAndLawyer = AppConst.getUserType == 'lawyer' ? MyClientScreens() : CaseStatusScreen();
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> userAndLawyer));
                   },
-                  child: CustomButton(
-                    borderRadius: BorderRadius.circular(10.r),
-                    height: 55.h,
-                    width: 317.w,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Mulish',
-                    fontSize: 22.2.sp,
-                    text: AppLocalizations.of(context)!.my_cases,
-                    backgroundColor: AppColors.tealB3,
-                    color: AppColors.white,
-                  ),
+                  borderRadius: BorderRadius.circular(10.r),
+                  height: 55.h,
+                  width: 317.w,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Mulish',
+                  fontSize: 22.2.sp,
+                  text: AppLocalizations.of(context)!.my_cases,
+                  backgroundColor: AppColors.tealB3,
+                  color: AppColors.white,
                 ),
                 ),
             ],

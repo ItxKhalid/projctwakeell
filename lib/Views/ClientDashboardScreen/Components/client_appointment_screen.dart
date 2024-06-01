@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:projctwakeell/Utils/colors.dart';// Import the upcoming screen
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ClientAppointmentScreen extends StatefulWidget {
   const ClientAppointmentScreen({Key? key}) : super(key: key);
@@ -32,10 +33,10 @@ class _ClientAppointmentScreenState extends State<ClientAppointmentScreen> with 
             dividerColor: AppColors.blackA19,
             indicatorColor: Colors.teal,
             labelStyle: const TextStyle(color: Colors.teal),
-            tabs: const [
-              Tab(text: 'Upcoming', icon: Icon(Icons.new_label_rounded)),
-              Tab(text: 'Past', icon: Icon(Icons.paste)),
-              Tab(text: 'Cancelled', icon: Icon(Icons.cancel)),
+            tabs:  [
+              Tab(text: AppLocalizations.of(context)!.upcoming, icon: const Icon(Icons.new_label_rounded)),
+              Tab(text: AppLocalizations.of(context)!.past, icon: const Icon(Icons.paste)),
+              Tab(text: AppLocalizations.of(context)!.cancelled, icon: const Icon(Icons.cancel)),
             ],
           ),
         ),
@@ -47,8 +48,8 @@ class _ClientAppointmentScreenState extends State<ClientAppointmentScreen> with 
             const PasAppointmenttScreen(),
             // Cancelled appointments screen
             Container(
-              child: const Center(
-                child: Text('Cancelled Appointments'),
+              child:  Center(
+                child: Text(AppLocalizations.of(context)!.cancelled_appointments),
               ),
             ),
           ],
@@ -120,7 +121,7 @@ class _ClientUpcomingScreenState extends State<ClientUpcomingScreen> {
               return StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('lawyer')
-                    .where('uid', isEqualTo: lawyerId)
+                    .where('userId', isEqualTo: lawyerId)
                     .snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> lawyerSnapshot) {
                   if (lawyerSnapshot.connectionState == ConnectionState.waiting) {
@@ -137,23 +138,23 @@ class _ClientUpcomingScreenState extends State<ClientUpcomingScreen> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Title: ${clientData['title']}'),
-                            Text('started at : ${clientData['startDate']} to ${clientData['endDate']}'),
-                            Text('Phone Number: ${lawyerData['phoneNumber']}'),
-                            Text('License Number: ${lawyerData['licenseNumber']}'),
+                            Text('${AppLocalizations.of(context)!.title}: ${clientData['title']}'),
+                            Text('${AppLocalizations.of(context)!.started_at} : ${clientData['startDate']} to ${clientData['endDate']}'),
+                            Text('${AppLocalizations.of(context)!.phone_number}: ${lawyerData['phoneNumber']}'),
+                            Text('${AppLocalizations.of(context)!.license_number}: ${lawyerData['licenseNumber']}'),
                           ],
                         ),
                       ),
                     );
                   }
-                  return const Text('No lawyer found for this client');
+                  return  Text(AppLocalizations.of(context)!.no_appointments_found);
                 },
               );
             },
           );
         }
-        return const Center(
-          child: Text('No Appointments found.'),
+        return  Center(
+          child: Text(AppLocalizations.of(context)!.no_appointments_found),
         );
       },
     );
@@ -229,7 +230,7 @@ class _PasAppointmenttScreenState extends State<PasAppointmenttScreen> {
               return StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('lawyer')
-                    .where('uid', isEqualTo: lawyerId)
+                    .where('userId', isEqualTo: lawyerId)
                     .snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> lawyerSnapshot) {
                   if (lawyerSnapshot.connectionState == ConnectionState.waiting) {
@@ -246,23 +247,23 @@ class _PasAppointmenttScreenState extends State<PasAppointmenttScreen> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Title: ${clientData['title']}'),
-                            Text('started at : ${clientData['startDate']} to ${clientData['endDate']}'),
-                            Text('Phone Number: ${lawyerData['phoneNumber']}'),
-                            Text('License Number: ${lawyerData['licenseNumber']}'),
+                            Text('${AppLocalizations.of(context)!.title}: ${clientData['title']}'),
+                            Text('${AppLocalizations.of(context)!.started_at} : ${clientData['startDate']} to ${clientData['endDate']}'),
+                            Text('${AppLocalizations.of(context)!.phone_number}: ${lawyerData['phoneNumber']}'),
+                            Text('${AppLocalizations.of(context)!.license_number}: ${lawyerData['licenseNumber']}'),
                           ],
                         ),
                       ),
                     );
                   }
-                  return const Text('No lawyer found for this client');
+                  return  Text(AppLocalizations.of(context)!.no_appointments_found);
                 },
               );
             },
           );
         }
-        return const Center(
-          child: Text('No Appointments found.'),
+        return  Center(
+          child: Text(AppLocalizations.of(context)!.no_appointments_found),
         );
       },
     );

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Utils/images.dart';
 import 'package:projctwakeell/Views/HomePageClientScreen/home_page_client_screen.dart';
@@ -13,9 +13,9 @@ import 'package:projctwakeell/Widgets/custom_text.dart';
 import 'package:projctwakeell/service/Userclass.dart';
 import 'package:projctwakeell/themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'package:projctwakeell/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../SignUpAsClientScreen/signup_as_client_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginAsClientScreen extends StatefulWidget {
   const LoginAsClientScreen({super.key});
@@ -55,7 +55,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                     alignment: Alignment.topLeft,
                     child: CustomText(
                       textAlign: TextAlign.left,
-                      text: 'Wakeel Naama',
+                    text: AppLocalizations.of(context)!.wakeel_naama,
                       color: AppColors.tealB3,
                       fontSize: 20.91.sp,
                       fontWeight: FontWeight.w400,
@@ -110,7 +110,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             alignment: Alignment.topLeft,
                             child: CustomText(
                               textAlign: TextAlign.left,
-                              text: 'Email address',
+                              text: AppLocalizations.of(context)!.email_address,
                               color: themeProvider.themeMode == ThemeMode.dark
                                   ? AppColors.white
                                   : AppColors.black,
@@ -135,7 +135,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             alignment: Alignment.topLeft,
                             child: CustomText(
                               textAlign: TextAlign.left,
-                              text: 'Password',
+                              text: AppLocalizations.of(context)!.password,
                               color: themeProvider.themeMode == ThemeMode.dark
                                   ? AppColors.white
                                   : AppColors.black,
@@ -179,21 +179,21 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 208.w, right: 33.w, top: 5.h),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Navigate to forgot password screen
-                    },
-                    child: CustomText(
-                      text: 'Forgot your password?',
-                      color: AppColors.tealB3,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(left: 208.w, right: 33.w, top: 5.h),
+                //   child: GestureDetector(
+                //     onTap: () {
+                //       // Navigate to forgot password screen
+                //     },
+                //     child: CustomText(
+                //       text: AppLocalizations.of(context)!.forgot_password,
+                //       color: AppColors.tealB3,
+                //       fontSize: 14.sp,
+                //       fontWeight: FontWeight.w400,
+                //       fontFamily: 'Inter',
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: EdgeInsets.only(top: 10.h, left: 38.w, right: 38.w),
                   child: GestureDetector(
@@ -209,18 +209,12 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             },
                             barrierDismissible: false,
                           );
-                          UserCredential userCredential = await FirebaseAuth
-                              .instance
-                              .signInWithEmailAndPassword(
-                                  email: email, password: password);
+                          UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
                           User? user = userCredential.user;
                           if (user != null && user.emailVerified) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            await prefs.setString(
-                                AppConst.saveUserType, 'client');
-                            AppConst.getUserType =
-                                prefs.getString(AppConst.saveUserType)!;
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setString(AppConst.saveUserType, 'client');
+                            AppConst.getUserType = prefs.getString(AppConst.saveUserType)!;
 
                             // Retrieve user data from SharedPreferences
                             String? userId = prefs.getString('user_id');
@@ -241,18 +235,27 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                               gender: userGender,
                             );
 
-                            await FirebaseFirestore.instance.collection('client').doc(user.uid).set(loggedInUser.toMap());
+                            // Check if user already exists in Firestore
+                            DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+                                .collection('client')
+                                .doc(user.uid)
+                                .get();
 
+                            if (!docSnapshot.exists) {
+                              // User does not exist, create new document
+                              await FirebaseFirestore.instance
+                                  .collection('client')
+                                  .doc(user.uid)
+                                  .set(loggedInUser.toMap());
+                            }
 
-                            final userProvider = Provider.of<UserProvider>(
-                                context,
-                                listen: false);
+                            final userProvider = Provider.of<UserProvider>(context, listen: false);
                             await userProvider.setLoggedInUser(loggedInUser);
 
                             Navigator.pop(context);
                             Get.snackbar(
-                              'Congratulations',
-                              'Successfully logged in as a Client!',
+                              AppLocalizations.of(context)!.congratulations,
+                              AppLocalizations.of(context)!.successfully_logged_in_as_client,
                               backgroundColor: AppColors.tealB3,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
@@ -263,20 +266,18 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePageClientScreen(
-                                    loggedInUser: loggedInUser),
+                                builder: (context) => HomePageClientScreen(loggedInUser: loggedInUser),
                               ),
                             );
                           } else {
                             Navigator.pop(context);
                             Get.snackbar(
-                              'Error',
-                              'Email is not verified. Please verify your email before logging in.',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.email_not_verified,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,
-                                  color: AppColors.white),
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           }
@@ -284,85 +285,76 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                           Navigator.pop(context);
                           if (e.code == 'user-not-found') {
                             Get.snackbar(
-                              'Error',
-                              'No user found for that email.',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.no_user_found,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,
-                                  color: AppColors.white),
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (e.code == 'wrong-password') {
                             Get.snackbar(
-                              'Error',
-                              'Wrong password provided.',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.wrong_password,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,
-                                  color: AppColors.white),
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           }
                         } catch (e) {
                           Navigator.pop(context);
                           Get.snackbar(
-                            'Error',
+                            AppLocalizations.of(context)!.error,
                             e.toString(),
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }
                       } else {
                         if (email.isEmpty) {
                           Get.snackbar(
-                            'Error',
-                            'Email Required!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.email_required,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
-                        } else if (!RegExp(
-                                r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
-                            .hasMatch(emailController.text)) {
+                        } else if (!RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(emailController.text)) {
                           Get.snackbar(
-                            'Error',
-                            'Invalid Email!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.invalid_email,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (password.isEmpty) {
                           Get.snackbar(
-                            'Error',
-                            'Password Required!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.password_required,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (password.length < 6) {
                           Get.snackbar(
-                            'Error',
-                            'Password must be at least 6 characters long!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.password_length_short,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }
@@ -375,7 +367,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Mulish',
                       fontSize: 22.2.sp,
-                      text: 'Continue',
+                      text: AppLocalizations.of(context)!.continueButton,
                       backgroundColor: AppColors.tealB3,
                       color: AppColors.white,
                     ),
@@ -387,7 +379,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                     alignment: Alignment.center,
                     child: CustomText(
                       textAlign: TextAlign.center,
-                      text: 'Don’t have a Wakeel Naama account?',
+                      text: AppLocalizations.of(context)!.dont_have_account,
                       color: themeProvider.themeMode == ThemeMode.dark
                           ? AppColors.white
                           : AppColors.black,
@@ -418,7 +410,7 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Mulish',
                         fontSize: 22.2.sp,
-                        text: 'Sign Up',
+                        text: AppLocalizations.of(context)!.sign_up,
                         backgroundColor: AppColors.black,
                         color: AppColors.white,
                       ),

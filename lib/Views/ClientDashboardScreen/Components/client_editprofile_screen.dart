@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projctwakeell/Utils/colors.dart';
 import 'package:projctwakeell/Widgets/custom_client_drawer.dart';
@@ -17,13 +18,16 @@ import '../../../Widgets/custom_country_code_picker.dart';
 import '../../../service/Userclass.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'client_profile_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ClientEditProfileScreen extends StatefulWidget {
-
-  const ClientEditProfileScreen({Key? key, }) : super(key: key);
+  const ClientEditProfileScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<ClientEditProfileScreen> createState() => _ClientEditProfileScreenState();
+  State<ClientEditProfileScreen> createState() =>
+      _ClientEditProfileScreenState();
 }
 
 class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
@@ -52,6 +56,8 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
 
       try {
         var userType = AppConst.getUserType == 'lawyer' ? 'lawyer' : 'client';
+        var userAndLawyer =
+            AppConst.getUserType == 'lawyer' ? 'licenseNumber' : 'cnic';
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection(userType)
             .where('email', isEqualTo: email)
@@ -65,7 +71,7 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
             firstnameController.text = _userData!['firstName'];
             lastnameController.text = _userData!['lastName'];
             phoneController.text = _userData!['phoneNumber'];
-            cnicController.text = _userData!['cnic'];
+            cnicController.text = _userData![userAndLawyer];
             gender = _userData!['gender'];
           });
         } else {
@@ -89,6 +95,13 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
       if (email != null) {
         print("User id: $uid, Email: $email");
         try {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Center(child: AppConst.spinKitWave());
+            },
+            barrierDismissible: false,
+          );
           // Query the collection to find the document with the specified email
           QuerySnapshot querySnapshot = await FirebaseFirestore.instance
               .collection('client')
@@ -101,7 +114,10 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
             print("Document found with id: $docId");
 
             // Update the document with the new data
-            await FirebaseFirestore.instance.collection('client').doc(docId).update({
+            await FirebaseFirestore.instance
+                .collection('client')
+                .doc(docId)
+                .update({
               'firstName': firstnameController.text,
               'lastName': lastnameController.text,
               'cnic': cnicController.text,
@@ -113,7 +129,9 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
           } else {
             print('No document found with the specified email');
           }
+          Navigator.pop(context);
         } catch (e) {
+          Navigator.pop(context);
           print('Error updating user data: $e');
         }
       } else {
@@ -124,24 +142,79 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
     }
   }
 
+  Future<void> _updateLawyerData() async {
+    User? user = FirebaseAuth.instance.currentUser;
 
+    if (user != null) {
+      String uid = user.uid;
+      String? email = user.email;
 
+      if (email != null) {
+        print("User id: $uid, Email: $email");
+        try {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Center(child: AppConst.spinKitWave());
+            },
+            barrierDismissible: false,
+          );
+          // Query the collection to find the document with the specified email
+          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+              .collection('lawyer')
+              .where('email', isEqualTo: email)
+              .get();
+
+          if (querySnapshot.docs.isNotEmpty) {
+            // Assuming there is only one document with this email
+            String docId = querySnapshot.docs.first.id;
+            print("Document found with id: $docId");
+
+            // Update the document with the new data
+            await FirebaseFirestore.instance
+                .collection('lawyer')
+                .doc(docId)
+                .update({
+              'firstName': firstnameController.text,
+              'lastName': lastnameController.text,
+              'licenseNumber': cnicController.text,
+              'phoneNumber': phoneController.text,
+              'gender': gender,
+            });
+
+            print('User data updated successfully');
+          } else {
+            print('No document found with the specified email');
+          }
+          Navigator.pop(context);
+        } catch (e) {
+          Navigator.pop(context);
+          print('Error updating user data: $e');
+        }
+      } else {
+        print('User email is null');
+      }
+    } else {
+      print('No user is signed in');
+    }
+  }
 
   Future<void> _showUpdateConfirmation() async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Profile Updated'),
-          content: Text('Your profile has been updated successfully.'),
+          title: Text(AppLocalizations.of(context)!.profileUpdated),
+          content: Text(AppLocalizations.of(context)!
+              .yourProfileHasBeenUpdatedSuccessfully),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text(AppLocalizations.of(context)!.oK),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => ClientProfileScreen()),
-                );
+                AppConst.getUserType == 'lawyer'
+                    ? _updateLawyerData().then((value) => {Get.back()})
+                    : _updateUserData().then((value) => {Get.back()});
               },
             ),
           ],
@@ -153,7 +226,6 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
-
 
     return Scaffold(
       key: _key,
@@ -167,21 +239,21 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Icon(Icons.arrow_back, color: AppColors.white),
+                    ),
                     Align(
                       alignment: Alignment.topLeft,
                       child: CustomText(
                           textAlign: TextAlign.left,
-                          text: 'Wakeel Naama',
+                          text: AppLocalizations.of(context)!.wakeel_naama,
                           color: AppColors.tealB3,
                           fontSize: 20.91.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Acme'),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _key.currentState!.openDrawer();
-                      },
-                      child: Icon(Icons.menu, color: AppColors.tealB3),
                     ),
                   ],
                 ),
@@ -190,44 +262,35 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
                 padding: EdgeInsets.only(top: 19.h, left: 19.w, right: 19.w),
                 child: Column(
                   children: [
-
                     SizedBox(height: 20.h),
                     _buildEditableField(
                         context,
-                        'First name',
-                        firstnameController
-                    ),
-
+                        AppLocalizations.of(context)!.first_name,
+                        firstnameController),
                     SizedBox(height: 13.h),
                     _buildEditableField(
                         context,
-                        'Last name',
-                        lastnameController
-                    ),
-
+                        AppLocalizations.of(context)!.last_name,
+                        lastnameController),
+                    SizedBox(height: 25.h),
+                    _buildEditableField(context,
+                        AppLocalizations.of(context)!.cnic, cnicController,
+                        keyboardType: TextInputType.number),
                     SizedBox(height: 25.h),
                     _buildEditableField(
                         context,
-                        'CNIC',
-                        cnicController,
-                        keyboardType: TextInputType.number
-                    ),
-
-                    SizedBox(height: 25.h),
-                    _buildEditableField(
-                        context,
-                        'Mobile number',
+                        AppLocalizations.of(context)!.mobile_number,
                         phoneController,
-                        keyboardType: TextInputType.phone
+                        keyboardType: TextInputType.phone),
+                    SizedBox(
+                      height: 13.h,
                     ),
-                    SizedBox(height: 13.h,),
-
                     SizedBox(height: 15.h),
                     Align(
                       alignment: Alignment.topLeft,
                       child: CustomText(
                           textAlign: TextAlign.left,
-                          text: 'Gender',
+                          text: AppLocalizations.of(context)!.gender,
                           color: themeProvider.themeMode == ThemeMode.dark
                               ? AppColors.white
                               : AppColors.black,
@@ -251,7 +314,6 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
                 padding: EdgeInsets.only(top: 50.h, left: 38.w, right: 38.w),
                 child: GestureDetector(
                   onTap: () async {
-                    await _updateUserData();
                     _showUpdateConfirmation();
                   },
                   child: CustomButton(
@@ -261,7 +323,7 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
                     fontWeight: FontWeight.w400,
                     fontFamily: 'Mulish',
                     fontSize: 22.2.sp,
-                    text: 'Update Profile',
+                    text: AppLocalizations.of(context)!.updateProfile,
                     backgroundColor: AppColors.tealB3,
                     color: AppColors.white,
                   ),
@@ -271,16 +333,14 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
           ),
         ),
       ),
-
-
     );
   }
 
   Widget _buildEditableField(
-      BuildContext context,
-      String label,
-      TextEditingController controller,
-      {bool readOnly = false, TextInputType keyboardType = TextInputType.text, void Function()? onTap}) {
+      BuildContext context, String label, TextEditingController controller,
+      {bool readOnly = false,
+      TextInputType keyboardType = TextInputType.text,
+      void Function()? onTap}) {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,11 +366,9 @@ class _ClientEditProfileScreenState extends State<ClientEditProfileScreen> {
               contentpadding: EdgeInsets.only(left: 15.w),
               width: 286.w,
               height: 38.h,
-              validator: (value) {
-              },
+              validator: (value) {},
               keyboardtype: keyboardType,
-              onFieldSubmitted: (value) {
-              },
+              onFieldSubmitted: (value) {},
               controller: controller,
             ),
           ),
@@ -333,7 +391,7 @@ class GenderDropDownComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButton<String>(
       value: initialValue,
-      hint: Text("Select Gender"),
+      hint: Text(AppLocalizations.of(context)!.selectGender),
       onChanged: onChanged,
       items: <String>['Male', 'Female', 'Other'].map((String value) {
         return DropdownMenuItem<String>(
@@ -344,5 +402,3 @@ class GenderDropDownComponent extends StatelessWidget {
     );
   }
 }
-
-

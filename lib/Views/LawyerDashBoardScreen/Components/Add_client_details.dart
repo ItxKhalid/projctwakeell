@@ -10,6 +10,7 @@ import '../../../Utils/colors.dart';
 import '../../../Utils/images.dart';
 import '../../../service/Userclass.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddClientScreen extends StatefulWidget {
   const AddClientScreen({Key? key});
@@ -60,25 +61,25 @@ class _AddClientScreenState extends State<AddClientScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text('Add Client Details'),
+        title: const Text('Add Client Details'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Client Full Name',
+                AppLocalizations.of(context)!.clientFullName,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               DropdownButtonFormField<String>(
                 value: _selectedClient,
                 onChanged: (String? newValue) {
@@ -115,53 +116,53 @@ class _AddClientScreenState extends State<AddClientScreen> {
                     child: Text('${client.firstName} ${client.lastName}'),
                   );
                 }).toList(),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Select client',
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Text(
-                'Case Type',
+                AppLocalizations.of(context)!.caseType,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextFormField(
                 controller: _caseTypeController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter case type',
+                  hintText: AppLocalizations.of(context)!.enterCaseType,
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Text(
-                'Case Details',
+                AppLocalizations.of(context)!.caseDetails,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextFormField(
                 controller: _caseDetailsController,
                 maxLines: 3,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter case details',
+                  hintText: AppLocalizations.of(context)!.enterCaseDetails,
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Text(
-                'Contact Number',
+                AppLocalizations.of(context)!.contactNumber,
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               TextFormField(
                 controller: _contactNumberController,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter contact number',
+                  hintText: AppLocalizations.of(context)!.enterContactNumber,
                 ),
               ),
-              SizedBox(height: 32.0),
+              const SizedBox(height: 32.0),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -211,7 +212,9 @@ class _AddClientScreenState extends State<AddClientScreen> {
                                 Get.back(),
                                 Navigator.pop(context),
                                 Get.snackbar(
-                                    'Successfully', 'Client Details Add',
+                                    AppLocalizations.of(context)!.successfully,
+                                    AppLocalizations.of(context)!
+                                        .clientDetailsAdd,
                                     backgroundColor: AppColors.blue,
                                     colorText: AppColors.white,
                                     borderRadius: 20.r,
@@ -229,7 +232,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                               });
                     } else {
                       if (fullName.isEmpty) {
-                        Get.snackbar('Error', 'Full Name Required!',
+                        Get.snackbar(AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.fullNameRequired,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
@@ -239,7 +243,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                             ),
                             snackPosition: SnackPosition.TOP);
                       } else if (caseType.isEmpty) {
-                        Get.snackbar('Error', 'Please Write case type',
+                        Get.snackbar(AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.pleaseWriteCaseType,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
@@ -249,7 +254,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                             ),
                             snackPosition: SnackPosition.TOP);
                       } else if (caseDetails.isEmpty) {
-                        Get.snackbar('Error', 'Case Detail Required!',
+                        Get.snackbar(AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.caseDetailRequired,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
@@ -259,7 +265,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                             ),
                             snackPosition: SnackPosition.TOP);
                       } else if (contactNumber.isEmpty) {
-                        Get.snackbar('Error', 'Mobile Number Required!',
+                        Get.snackbar(AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.mobileNumberRequired,
                             colorText: AppColors.white,
                             backgroundColor: Colors.red,
                             borderRadius: 20.r,
@@ -277,8 +284,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                     backgroundColor: AppColors.tealB3,
                   ),
                   child: Text(
-                    'Save',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.save,
+                    style: const TextStyle(
                         color: Colors.white), // Set text color to white
                   ),
                 ),

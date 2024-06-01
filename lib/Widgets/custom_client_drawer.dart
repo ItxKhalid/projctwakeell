@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -132,14 +133,14 @@ class MyClientDrawer extends StatelessWidget {
                 fontFamily: 'Mulish',
               ),
             ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FeedbackFormScreen(
-                            loggedInUser: loggedInUser,
-                          )));
-            },
+            // onTap: () {
+            //   Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => FeedbackFormScreen(
+            //                 loggedInUser: loggedInUser,
+            //               )));
+            // },
           ),
           ListTile(
             leading: Icon(Icons.file_present_sharp,
@@ -266,10 +267,12 @@ class MyClientDrawer extends StatelessWidget {
           ),
           SizedBox(height: 60.h),
           ListTile(
-            leading: Icon(Icons.logout,
-                color: themeProvider.themeMode == ThemeMode.dark
-                    ? AppColors.white
-                    : AppColors.tealB3),
+            leading: Icon(
+              Icons.logout,
+              color: themeProvider.themeMode == ThemeMode.dark
+                  ? AppColors.white
+                  : AppColors.tealB3,
+            ),
             title: Text(
               AppLocalizations.of(context)!.log_out,
               style: TextStyle(
@@ -282,11 +285,25 @@ class MyClientDrawer extends StatelessWidget {
               ),
             ),
             onTap: () {
-              userProvider.logout().then((value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LoginAsClientScreen())));
-              // Implement your logout functionality here
+              CoolAlert.show(
+                context: context,
+                type: CoolAlertType.confirm,
+                animType: CoolAlertAnimType.slideInUp,
+                loopAnimation: true,
+                showCancelBtn: true,
+                cancelBtnText: AppLocalizations.of(context)!.no,
+                confirmBtnText: AppLocalizations.of(context)!.yes,
+                confirmBtnColor: AppColors.tealB3,
+                backgroundColor: AppColors.tealB3.withOpacity(0.3),
+                onConfirmBtnTap: () {
+                  userProvider.logout().then((value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginAsClientScreen())));
+                  Navigator.of(context).pop();
+                },
+                text: AppLocalizations.of(context)!.doYouWantToLogoutTheApp,
+              );
             },
           ),
           SizedBox(height: 20.h),

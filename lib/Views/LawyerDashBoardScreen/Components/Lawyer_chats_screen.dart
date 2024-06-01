@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../Utils/colors.dart';
 import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import 'Lawyer_message_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LawyerChatsScreen extends StatefulWidget {
   const LawyerChatsScreen({Key? key}) : super(key: key);
@@ -75,7 +76,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Chats'),
+        title:  Text(AppLocalizations.of(context)!.chats),
         centerTitle: true,
       ),
       body: Column(
@@ -100,8 +101,8 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                           child: TextFormField(
                             controller: searchController,
                             cursorColor: AppColors.tealB3,
-                            decoration: const InputDecoration(
-                              hintText: 'Search client',
+                            decoration:  InputDecoration(
+                              hintText: AppLocalizations.of(context)!.search_client,
                               border: InputBorder.none,
                             ),
                             style: const TextStyle(color: Colors.black),
@@ -111,7 +112,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                           onPressed: () {
                             searchController.clear();
                             setState(() {
@@ -127,14 +128,14 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+           Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Messages',
-                  style: TextStyle(
+                  AppLocalizations.of(context)!.messages,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
                   ),
@@ -159,7 +160,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No client found'));
+                  return  Center(child: Text(AppLocalizations.of(context)!.noClientsFound));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
@@ -180,11 +181,12 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
   Widget _buildChatItem(Map<String, dynamic> clientData) {
     String firstName = clientData['firstName'] ?? '';
     String lastName = clientData['lastName'] ?? '';
+    String email = clientData['email'] ?? '';
     String name = '$firstName $lastName'.trim();
-    Timestamp timestamp = clientData['timestamp'] ?? Timestamp.now();
-    String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
+    // Timestamp timestamp = clientData['timestamp'] ?? Timestamp.now();
+    // String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    String roomId = chatRoomId(uid, clientData['userId']);
+    String roomId = chatRoomId(uid, clientData['uid']);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -192,7 +194,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
           MaterialPageRoute(
             builder: (context) => LawyerMessageScreen(
               clientName: name,
-              clientId: clientData['userId'],
+              clientId: clientData['uid'],
               chatRoomId: roomId,
             ),
           ),
@@ -228,22 +230,18 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                     ),
                   ),
                   const SizedBox(height: 3),
+                  Text(
+                    email,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  )
                 ],
               ),
             ),
-            const SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  formattedTimestamp,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
-                ),
-              ],
-            ),
+
           ],
         ),
       ),

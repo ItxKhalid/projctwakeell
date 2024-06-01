@@ -1,18 +1,17 @@
 import 'dart:async';
-import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:projctwakeell/Views/ChooseLanguageScreen/choose_lang_screen.dart';
 import 'package:projctwakeell/Views/HomePage_lawyer_screen/home_page_lawyer_screen.dart';
 import 'package:projctwakeell/Views/LoginAsClientScreen/login_as_client_screen.dart';
 import 'package:projctwakeell/Views/LoginAsLawyerScreen/login_as_lawyer_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../Utils/colors.dart';
 import '../../Utils/images.dart';
-import '../../Widgets/custom_Container_button.dart';
 import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../../user_provider.dart';
@@ -71,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
               padding: EdgeInsets.only(top: 10.h),
               child: CustomText(
                 textAlign: TextAlign.center,
-                text: 'Wakeel Naama',
+                text: AppLocalizations.of(context)!.wakeel_naama,
                 color: themeProvider.themeMode == ThemeMode.dark
                     ? AppColors.white // Dark theme color
                     : AppColors.black,

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../Utils/images.dart';
 import '../../../Widgets/custom_Container_button.dart';
 
 class CaseStatusScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Case Status'),
+        title:  Text(AppLocalizations.of(context)!.case_status),
       ),
       body: StreamBuilder<DocumentSnapshot>(
           stream: null,
@@ -78,18 +79,18 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                         fontFamily: 'Poppins',
                       ),
                       unselectedLabelColor: Colors.teal,
-                      tabs: const [
+                      tabs:  [
                         Tab(
-                          text: 'Pending',
+                          text: AppLocalizations.of(context)!.pending,
                         ),
                         Tab(
-                          text: 'In Progress',
+                          text: AppLocalizations.of(context)!.in_progress,
                         ),
                         Tab(
-                          text: 'Completed',
+                          text: AppLocalizations.of(context)!.completed,
                         ),
                         Tab(
-                          text: 'Cancelled',
+                          text: AppLocalizations.of(context)!.cancelled,
                         ),
                       ],
                     ),
@@ -102,13 +103,11 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                           stream: FirebaseFirestore.instance
                               .collection('ClientsData')
                               .where('Client_Id', isEqualTo: currentUserUID)
-                              .where('status', isEqualTo: "")
+                              .where('caseStatus', isEqualTo: "")
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return AppConst.spinKitWave();
                             }
                             if (snapshot.hasError) {
                               return Center(
@@ -126,9 +125,9 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Case Type: ${clientData['ClientcaseType']}'),
-                                          Text('Case Description: ${clientData['ClientcaseDetails']}'),
-                                          Text('Client Phone Number: ${clientData['ClientcontactNumber']}'),
+                                          Text('${AppLocalizations.of(context)!.case_type}: ${clientData['ClientcaseType']}'),
+                                          Text('${AppLocalizations.of(context)!.case_description}: ${clientData['ClientcaseDetails']}'),
+                                          Text('${AppLocalizations.of(context)!.client_phone_number}: ${clientData['ClientcontactNumber']}'),
                                           const SizedBox(height: 10),
                                         ],
                                       ),
@@ -137,8 +136,8 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                 },
                               );
                             }
-                            return const Center(
-                              child: Text('No Case found.'),
+                            return  Center(
+                              child: Text(AppLocalizations.of(context)!.no_case_found),
                             );
                           },
                         ),
@@ -146,13 +145,11 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                           stream: FirebaseFirestore.instance
                               .collection('ClientsData')
                               .where('Client_Id', isEqualTo: currentUserUID)
-                              .where('status', isEqualTo: "InProgress")
+                              .where('caseStatus', isEqualTo: "InProgress")
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return AppConst.spinKitWave();
                             }
                             if (snapshot.hasError) {
                               return Center(
@@ -170,9 +167,9 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Case Type: ${clientData['ClientcaseType']}'),
-                                          Text('Case Description: ${clientData['ClientcaseDetails']}'),
-                                          Text('Client Phone Number: ${clientData['ClientcontactNumber']}'),
+                                          Text('${AppLocalizations.of(context)!.case_type}: ${clientData['ClientcaseType']}'),
+                                          Text('${AppLocalizations.of(context)!.case_description}: ${clientData['ClientcaseDetails']}'),
+                                          Text('${AppLocalizations.of(context)!.client_phone_number}: ${clientData['ClientcontactNumber']}'),
                                           const SizedBox(height: 10),
                                         ],
                                       ),
@@ -181,8 +178,8 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                 },
                               );
                             }
-                            return const Center(
-                              child: Text('No Case found.'),
+                            return  Center(
+                              child: Text(AppLocalizations.of(context)!.no_case_found),
                             );
                           },
                         ),
@@ -190,13 +187,11 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                           stream: FirebaseFirestore.instance
                               .collection('ClientsData')
                               .where('Client_Id', isEqualTo: currentUserUID)
-                              .where('status', isEqualTo: "Completed")
+                              .where('caseStatus', isEqualTo: "Completed")
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return AppConst.spinKitWave();
                             }
                             if (snapshot.hasError) {
                               return Center(
@@ -214,9 +209,9 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Case Type: ${clientData['ClientcaseType']}'),
-                                          Text('Case Description: ${clientData['ClientcaseDetails']}'),
-                                          Text('Client Phone Number: ${clientData['ClientcontactNumber']}'),
+                                          Text('${AppLocalizations.of(context)!.case_type}: ${clientData['ClientcaseType']}'),
+                                          Text('${AppLocalizations.of(context)!.case_description}: ${clientData['ClientcaseDetails']}'),
+                                          Text('${AppLocalizations.of(context)!.client_phone_number}: ${clientData['ClientcontactNumber']}'),
                                           const SizedBox(height: 10),
                                         ],
                                       ),
@@ -225,8 +220,8 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                 },
                               );
                             }
-                            return const Center(
-                              child: Text('No Case found.'),
+                            return  Center(
+                              child: Text(AppLocalizations.of(context)!.no_case_found),
                             );
                           },
                         ),
@@ -234,13 +229,11 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                           stream: FirebaseFirestore.instance
                               .collection('ClientsData')
                               .where('Client_Id', isEqualTo: currentUserUID)
-                              .where('status', isEqualTo: "Cancelled")
+                              .where('caseStatus', isEqualTo: "Cancelled")
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                              return AppConst.spinKitWave();
                             }
                             if (snapshot.hasError) {
                               return Center(
@@ -258,9 +251,9 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Case Type: ${clientData['ClientcaseType']}'),
-                                          Text('Case Description: ${clientData['ClientcaseDetails']}'),
-                                          Text('Client Phone Number: ${clientData['ClientcontactNumber']}'),
+                                          Text('${AppLocalizations.of(context)!.case_type}: ${clientData['ClientcaseType']}'),
+                                          Text('${AppLocalizations.of(context)!.case_description}: ${clientData['ClientcaseDetails']}'),
+                                          Text('${AppLocalizations.of(context)!.client_phone_number}: ${clientData['ClientcontactNumber']}'),
                                           const SizedBox(height: 10),
                                         ],
                                       ),
@@ -269,8 +262,8 @@ class _CaseStatusScreenState extends State<CaseStatusScreen>
                                 },
                               );
                             }
-                            return const Center(
-                              child: Text('No Case found.'),
+                            return  Center(
+                              child: Text(AppLocalizations.of(context)!.no_case_found),
                             );
                           },
                         ),

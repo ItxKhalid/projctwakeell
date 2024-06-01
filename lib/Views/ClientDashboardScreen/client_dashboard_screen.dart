@@ -1,6 +1,8 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -45,208 +47,173 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
     final themeProvider = Provider.of<ThemeChangerProvider>(context);
     UserModel loggedInUser = widget.loggedInUser;
 
-    return Scaffold(
-        key: _key,
-        floatingActionButton: FloatingActionButton(
-          clipBehavior: Clip.hardEdge,
-          shape: OvalBorder(),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const ChatBotScreen()));
-          },
-          child: Image.asset('assets/images/chatbot.png',
-              fit: BoxFit.fitHeight, height: 100),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: 42.h, left: 39.w, right: 29.13.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: CustomText(
-                          textAlign: TextAlign.left,
-                          text: AppLocalizations.of(context)!.wakeel_naama,
-                          color: AppColors.tealB3,
-                          fontSize: 20.91.sp,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Acme',
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _key.currentState!.openDrawer();
-                        },
-                        child: Icon(
-                          Icons.menu,
-                          color: AppColors.tealB3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 19.h),
-                  child: CustomText(
-                    textAlign: TextAlign.center,
-                    text: AppLocalizations.of(context)!.client +
-                        AppLocalizations.of(context)!.dashboard,
-                    color: AppColors.grey5C,
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Mulish',
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 49.h),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: AppLocalizations.of(context)!.welcome_to,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 28.sp,
-                              color: themeProvider.themeMode == ThemeMode.dark
-                                  ? AppColors.white
-                                  : AppColors.black,
-                              fontFamily: 'Acme',
-                            ),
-                          ),
-                          TextSpan(
-                            text: '${widget.userModel.firstName}!',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 28.sp,
-                              color: AppColors.tealB3,
-                              fontFamily: 'Acme',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20.h),
-                  child: Container(
-                    width: 334.w,
-                    height: 636.h,
-                    decoration: BoxDecoration(
-                      color: themeProvider.themeMode == ThemeMode.dark
-                          ? AppColors.black919
-                          : Colors.grey.shade100,
-                    ),
-                    child: Column(
+    return WillPopScope(
+      onWillPop: () async {
+          bool shouldPop = await CoolAlert.show(
+            context: context,
+            type: CoolAlertType.warning,
+            animType: CoolAlertAnimType.slideInUp,
+            loopAnimation: true,
+            showCancelBtn: true,
+            cancelBtnText: AppLocalizations.of(context)!.no,
+            confirmBtnText: AppLocalizations.of(context)!.yes,
+            confirmBtnColor: AppColors.tealB3,
+            backgroundColor: AppColors.tealB3.withOpacity(0.3),
+            onConfirmBtnTap: () {
+              SystemNavigator.pop();
+            },
+            text: AppLocalizations.of(context)!.doYouWantToExitTheApp,
+          );
+          return shouldPop ?? false; // Prevent pop if shouldPop is null
+      },
+      child: Scaffold(
+          key: _key,
+          floatingActionButton: FloatingActionButton(
+            clipBehavior: Clip.hardEdge,
+            shape: const OvalBorder(),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ChatBotScreen()));
+            },
+            child: Image.asset('assets/images/chatbot.png',
+                fit: BoxFit.fitHeight, height: 100),
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.only(top: 42.h, left: 39.w, right: 29.13.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 27.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ClientProfileScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
-                                      color: themeProvider.themeMode ==
-                                              ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.person,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      CustomText(
-                                        text: AppLocalizations.of(context)!.my_profile,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                        fontSize: 17.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Mulish',
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: CustomText(
+                            textAlign: TextAlign.left,
+                            text: AppLocalizations.of(context)!.wakeel_naama,
+                            color: AppColors.tealB3,
+                            fontSize: 20.91.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Acme',
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _key.currentState!.openDrawer();
+                          },
+                          child: Icon(
+                            Icons.menu,
+                            color: AppColors.tealB3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 19.h),
+                    child: CustomText(
+                      textAlign: TextAlign.center,
+                      text: AppLocalizations.of(context)!.client +
+                          AppLocalizations.of(context)!.dashboard,
+                      color: AppColors.grey5C,
+                      fontSize: 17.sp,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Mulish',
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 49.h),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: AppLocalizations.of(context)!.welcome_to,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 28.sp,
+                                color: themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
+                                fontFamily: 'Acme',
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
+                            ),
+                            TextSpan(
+                              text: '${widget.userModel.firstName}!',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 28.sp,
+                                color: AppColors.tealB3,
+                                fontFamily: 'Acme',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.h),
+                    child: Container(
+                      width: 334.w,
+                      height: 636.h,
+                      decoration: BoxDecoration(
+                        color: themeProvider.themeMode == ThemeMode.dark
+                            ? AppColors.black919
+                            : Colors.grey.shade100,
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 27.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
                                         builder: (context) =>
-                                            const SuggestionScreen()),
-                                  );
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
+                                            const ClientProfileScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
                                       color: themeProvider.themeMode ==
                                               ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.cases_rounded,
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
                                         color: themeProvider.themeMode ==
                                                 ThemeMode.dark
                                             ? AppColors.white
                                             : AppColors.black,
                                       ),
-                                      SizedBox(height: 10.h),
-                                      Center(
-                                        child: CustomText(
-                                          textAlign: TextAlign.center,
-                                          text: AppLocalizations.of(context)!.case_category,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.person,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        CustomText(
+                                          text: AppLocalizations.of(context)!.my_profile,
                                           color: themeProvider.themeMode ==
                                                   ThemeMode.dark
                                               ? AppColors.white
@@ -255,306 +222,361 @@ class _ClientDashboardScreenState extends State<ClientDashboardScreen> {
                                           fontWeight: FontWeight.w500,
                                           fontFamily: 'Mulish',
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 31.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MyLawyerScreens(),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
-                                      color: themeProvider.themeMode ==
-                                              ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        CupertinoIcons.person,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      CustomText(
-                                        textAlign: TextAlign.center,
-                                        text: AppLocalizations.of(context)!.my_lawyer,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                        fontSize: 17.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Mulish',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ClientAppointmentScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
-                                      color: themeProvider.themeMode ==
-                                              ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.assignment_ind_rounded,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      CustomText(
-                                        textAlign: TextAlign.center,
-                                        text: AppLocalizations.of(context)!.my_appointments,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                        fontSize: 17.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Mulish',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 30.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const MyDocument()));
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
+                                              const SuggestionScreen()),
+                                    );
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
                                       color: themeProvider.themeMode ==
                                               ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
+                                        color: themeProvider.themeMode ==
+                                                ThemeMode.dark
+                                            ? AppColors.white
+                                            : AppColors.black,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.cases_rounded,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        Center(
+                                          child: CustomText(
+                                            textAlign: TextAlign.center,
+                                            text: AppLocalizations.of(context)!.case_category,
+                                            color: themeProvider.themeMode ==
+                                                    ThemeMode.dark
+                                                ? AppColors.white
+                                                : AppColors.black,
+                                            fontSize: 17.sp,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: 'Mulish',
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.file_copy_rounded,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      CustomText(
-                                        textAlign: TextAlign.center,
-                                        text: AppLocalizations.of(context)!.my_documents,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                        fontSize: 17.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Mulish',
-                                      ),
-                                    ],
-                                  ),
                                 ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(() => CaseStatusScreen());
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
-                                      color: themeProvider.themeMode ==
-                                              ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.cases_rounded,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      CustomText(
-                                        textAlign: TextAlign.center,
-                                        text: AppLocalizations.of(context)!.case_status,
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                        fontSize: 17.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Mulish',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 31.h),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
+                          Padding(
+                            padding: EdgeInsets.only(top: 31.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const MyLawyerScreens(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
+                                      color: themeProvider.themeMode ==
+                                              ThemeMode.dark
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
+                                        color: themeProvider.themeMode ==
+                                                ThemeMode.dark
+                                            ? AppColors.white
+                                            : AppColors.black,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.person,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: AppLocalizations.of(context)!.my_lawyer,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Mulish',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
                                         builder: (context) =>
-                                            const ClientChatsScreen()),
-                                  );
-                                },
-                                child: Container(
-                                  alignment: Alignment.bottomCenter,
-                                  width: 124.w,
-                                  height: 122.h,
-                                  decoration: BoxDecoration(
-                                    color: themeProvider.themeMode ==
-                                            ThemeMode.dark
-                                        ? AppColors.black12
-                                        : Colors.grey.shade200,
-                                    border: Border.all(
+                                            const ClientAppointmentScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
                                       color: themeProvider.themeMode ==
                                               ThemeMode.dark
-                                          ? AppColors.white
-                                          : AppColors.black,
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
+                                        color: themeProvider.themeMode ==
+                                                ThemeMode.dark
+                                            ? AppColors.white
+                                            : AppColors.black,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.assignment_ind_rounded,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: AppLocalizations.of(context)!.my_appointments,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Mulish',
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.message_rounded,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 30.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MyDocument()));
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
+                                      color: themeProvider.themeMode ==
+                                              ThemeMode.dark
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
                                         color: themeProvider.themeMode ==
                                                 ThemeMode.dark
                                             ? AppColors.white
                                             : AppColors.black,
                                       ),
-                                      SizedBox(height: 10.h),
-                                      CustomText(
-                                        textAlign: TextAlign.center,
-                                        text: 'Messages',
-                                        color: themeProvider.themeMode ==
-                                                ThemeMode.dark
-                                            ? AppColors.white
-                                            : AppColors.black,
-                                        fontSize: 17.sp,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Mulish',
-                                      ),
-                                    ],
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.file_copy_rounded,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: AppLocalizations.of(context)!.my_documents,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Mulish',
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => CaseStatusScreen());
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
+                                      color: themeProvider.themeMode ==
+                                              ThemeMode.dark
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
+                                        color: themeProvider.themeMode ==
+                                                ThemeMode.dark
+                                            ? AppColors.white
+                                            : AppColors.black,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.cases_rounded,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: AppLocalizations.of(context)!.case_status,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Mulish',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: EdgeInsets.only(top: 31.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ClientChatsScreen()),
+                                    );
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    width: 124.w,
+                                    height: 122.h,
+                                    decoration: BoxDecoration(
+                                      color: themeProvider.themeMode ==
+                                              ThemeMode.dark
+                                          ? AppColors.black12
+                                          : Colors.grey.shade200,
+                                      border: Border.all(
+                                        color: themeProvider.themeMode ==
+                                                ThemeMode.dark
+                                            ? AppColors.white
+                                            : AppColors.black,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.message_rounded,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        CustomText(
+                                          textAlign: TextAlign.center,
+                                          text: AppLocalizations.of(context)!.messages,
+                                          color: themeProvider.themeMode ==
+                                                  ThemeMode.dark
+                                              ? AppColors.white
+                                              : AppColors.black,
+                                          fontSize: 17.sp,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'Mulish',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        drawer: MyClientDrawer(loggedInUser: loggedInUser));
+          drawer: MyClientDrawer(loggedInUser: loggedInUser)),
+    );
   }
 }

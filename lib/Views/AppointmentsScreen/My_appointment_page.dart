@@ -1,15 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:projctwakeell/Utils/images.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/intl.dart';
-
-import '../../Utils/colors.dart';
-import '../../service/Userclass.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../LawyerDashBoardScreen/Components/dialog.dart';
 
 class AppointmentPage extends StatefulWidget {
@@ -51,7 +45,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Appointments'),
+        title:  Text(AppLocalizations.of(context)!.appointments),
         centerTitle: true,
         actions: [
           IconButton(
@@ -84,8 +78,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       });
                     },
                     icon: const Icon(Icons.calendar_today, color: Colors.teal),
-                    label: const Text('Month',
-                        style: TextStyle(color: Colors.teal)),
+                    label:  Text(AppLocalizations.of(context)!.month,
+                        style: const TextStyle(color: Colors.teal)),
                   ),
                   const SizedBox(width: 10), // Add space between buttons
                   ElevatedButton.icon(
@@ -96,8 +90,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     },
                     icon: const Icon(Icons.calendar_view_month,
                         color: Colors.teal),
-                    label: const Text('Two Weeks',
-                        style: TextStyle(
+                    label:  Text(AppLocalizations.of(context)!.twoWeeks,
+                        style: const TextStyle(
                             color: Colors.teal)), // Changed text color here
                   ),
                   const SizedBox(width: 10), // Add space between buttons
@@ -109,8 +103,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     },
                     icon: const Icon(Icons.calendar_view_week,
                         color: Colors.teal),
-                    label: const Text('Week',
-                        style: TextStyle(
+                    label:  Text(AppLocalizations.of(context)!.week,
+                        style: const TextStyle(
                             color: Colors.teal)), // Changed text color here
                   ),
                 ],
@@ -147,11 +141,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
             ),
 
             const SizedBox(height: 10), // Add some space
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0), // Add left padding
+             Padding(
+              padding: const EdgeInsets.only(left: 16.0), // Add left padding
               child: Text(
-                'My Events', // Replace with the message content
-                style: TextStyle(
+                AppLocalizations.of(context)!.myEvents, // Replace with the message content
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
@@ -165,7 +159,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No events found'));
+                  return   Center(child: Text(AppLocalizations.of(context)!.noEventsFound));
                 } else {
                   return EventList(events: snapshot.data!);
                 }
@@ -201,7 +195,7 @@ class EventList extends StatelessWidget {
     return ListView.builder(
       itemCount: events.length,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         Map<String, dynamic> event = events[index];
         String title = event['title'] ?? 'No Title';

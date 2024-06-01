@@ -19,6 +19,7 @@ import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../LoginAsClientScreen/login_as_client_screen.dart';
 import '../SignUpAsLawyerScreen/signup_as_lawyer_screen.dart';
 import '../verification_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpAsClient2Screen extends StatefulWidget {
   const SignUpAsClient2Screen({
@@ -84,8 +85,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
 
       // Show Snackbar
       Get.snackbar(
-        'Congratulations',
-        'Successfully SignUp as a Client!',
+        AppLocalizations.of(context)!.congratulations,
+        AppLocalizations.of(context)!.successfully_logged_in_as_client,
         backgroundColor: AppColors.tealB3,
         colorText: AppColors.white,
         borderRadius: 20.r,
@@ -102,8 +103,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
       );
     } else {
       Get.snackbar(
-        'Error',
-        'Please verify your email to proceed!',
+        AppLocalizations.of(context)!.error,
+        AppLocalizations.of(context)!.pleaseVerifyYourEmailProceed,
         backgroundColor: AppColors.red,
         colorText: AppColors.white,
         borderRadius: 20.r,
@@ -132,7 +133,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                     children: [
                       CustomText(
                           textAlign: TextAlign.left,
-                          text:'Wakeel Naama',
+                          text:AppLocalizations.of(context)!.wakeel_naama,
                           color: AppColors.tealB3,
                           fontSize: 20.91.sp,
                           fontWeight: FontWeight.w400,
@@ -144,7 +145,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                         },
                         child: CustomText(
                             textAlign: TextAlign.right,
-                            text:'Log In',
+                            text:AppLocalizations.of(context)!.log_in,
                             color: AppColors.tealB3,
                             fontSize: 20.91.sp,
                             fontWeight: FontWeight.w600,
@@ -161,7 +162,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                     alignment: Alignment.center,
                     child: CustomText(
                         textAlign: TextAlign.center,
-                        text:'Sign up as a client',
+                        text:"${AppLocalizations.of(context)!.sign_up_as_a} ${AppLocalizations.of(context)!.client}",
                         color: themeProvider.themeMode == ThemeMode.dark
                             ? AppColors.white // Dark theme color
                             : AppColors.black,
@@ -223,7 +224,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                             alignment: Alignment.topLeft,
                             child: CustomText(
                               textAlign: TextAlign.left,
-                              text: 'Password',color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
+                              text: AppLocalizations.of(context)!.password,color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
                               //color: AppColors.white,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w400,
@@ -259,7 +260,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                             alignment: Alignment.topLeft,
                             child: CustomText(
                               textAlign: TextAlign.left,
-                              text: 'Confirm Password',
+                              text: AppLocalizations.of(context)!.confirmPassword,
                               color: themeProvider.themeMode==ThemeMode.dark? AppColors.white : AppColors.black,
                              // color: AppColors.white,
                               fontSize: 18.sp,
@@ -341,8 +342,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                         // Send email verification
                         await user.sendEmailVerification().then((value) {
                           Get.snackbar(
-                            'Email Sent',
-                            'A verification email has been sent to ${widget.email}. Please verify your email to proceed.',
+                            AppLocalizations.of(context)!.emailSent,
+                            AppLocalizations.of(context)!.verification_email_sent_to_email.replaceFirst('%email%', widget.email),
                             backgroundColor: AppColors.tealB3,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
@@ -363,8 +364,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                         Navigator.pop(context);
                         if (e.code == 'weak-password') {
                           Get.snackbar(
-                            'Error',
-                            'The password provided is too weak!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.weak_password,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
@@ -373,8 +374,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                           );
                         } else if (e.code == 'email-already-in-use') {
                           Get.snackbar(
-                            'Error',
-                            'The account already exists for that email!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.email_already_in_use,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
@@ -385,7 +386,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                       } catch (e) {
                         Navigator.pop(context);
                         Get.snackbar(
-                          'Error',
+                          AppLocalizations.of(context)!.error,
                           e.toString(),
                           backgroundColor: AppColors.red,
                           colorText: AppColors.white,
@@ -397,8 +398,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                     } else {
                       if (email.isEmpty) {
                         Get.snackbar(
-                          'Error',
-                          'Email Required!',
+                          AppLocalizations.of(context)!.error,
+                          AppLocalizations.of(context)!.email_required,
                           backgroundColor: AppColors.red,
                           colorText: AppColors.white,
                           borderRadius: 20.r,
@@ -407,8 +408,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                         );
                       } else if (!RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$').hasMatch(widget.email)) {
                         Get.snackbar(
-                          'Error',
-                          'Invalid Email!',
+                          AppLocalizations.of(context)!.error,
+                          AppLocalizations.of(context)!.invalid_email,
                           backgroundColor: AppColors.red,
                           colorText: AppColors.white,
                           borderRadius: 20.r,
@@ -417,8 +418,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                         );
                       } else if (password.isEmpty) {
                         Get.snackbar(
-                          'Error',
-                          'Password Required!',
+                          AppLocalizations.of(context)!.error,
+                          AppLocalizations.of(context)!.password_required,
                           backgroundColor: AppColors.red,
                           colorText: AppColors.white,
                           borderRadius: 20.r,
@@ -427,8 +428,8 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                         );
                       } else if (password.length < 6) {
                         Get.snackbar(
-                          'Error',
-                          'Password must be at least 6 characters long!',
+                          AppLocalizations.of(context)!.error,
+                          AppLocalizations.of(context)!.password_length_short,
                           backgroundColor: AppColors.red,
                           colorText: AppColors.white,
                           borderRadius: 20.r,
@@ -445,7 +446,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Mulish',
                   fontSize: 22.2.sp,
-                  text: 'Create my account',
+                  text: AppLocalizations.of(context)!.create_account,
                   backgroundColor: AppColors.tealB3,
                   color: AppColors.white,
                 ),
@@ -460,7 +461,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CustomText(
-                            text:'Here to Offer Legal Expertise?',
+                            text:AppLocalizations.of(context)!.hereOfferLegalExpertise,
                             color: themeProvider.themeMode == ThemeMode.dark
                                 ? AppColors.white // Dark theme color
                                 : AppColors.black,
@@ -474,7 +475,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                               Navigator.push(context,MaterialPageRoute(builder: (context)=>const SignupAsLawyerScreen()));
                             },
                             child: CustomText(
-                                text:' Join as a',
+                                text:' ${AppLocalizations.of(context)!.join_as_a}',
                                 color: AppColors.tealB3,
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w600,
@@ -488,7 +489,7 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
                 ),
 
                 CustomText(
-                    text:'Lawyer',
+                    text:AppLocalizations.of(context)!.lawyer,
                     color: AppColors.tealB3,
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -496,49 +497,6 @@ class _SignUpAsClient2ScreenState extends State<SignUpAsClient2Screen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-class EmailVerificationScreen extends StatelessWidget {
-  final User user;
-
-  const EmailVerificationScreen({Key? key, required this.user}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Email Verification'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('A verification email has been sent to ${user.email}.'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await user.reload();
-                if (user.emailVerified) {
-                  Navigator.pop(context);
-                  // Save user data to Firestore after email verification
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginAsClientScreen(), // pass necessary user data
-                    ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please verify your email before proceeding!')),
-                  );
-                }
-              },
-              child: Text('Proceed'),
-            ),
-          ],
         ),
       ),
     );

@@ -20,6 +20,7 @@ import '../SignUpAsClientScreen/Components/genderdropdown_component.dart';
 import '../SignUpAsClientScreen/signup_as_client_screen.dart';
 import '../SignUpAsLawyer2Screen/signup_as_lawyer2_screen.dart';
 import '../SignUpasClient2Screen/signup_as_client2_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignupAsLawyerScreen extends StatefulWidget {
   const SignupAsLawyerScreen({super.key});
@@ -71,7 +72,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                       children: [
                         CustomText(
                             textAlign: TextAlign.left,
-                            text: 'Wakeel Naama',
+                            text: AppLocalizations.of(context)!.wakeel_naama,
                             color: AppColors.tealB3,
                             fontSize: 20.91.sp,
                             fontWeight: FontWeight.w400,
@@ -85,7 +86,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                           },
                           child: CustomText(
                               textAlign: TextAlign.right,
-                              text: 'Log In',
+                              text: AppLocalizations.of(context)!.log_in,
                               color: AppColors.tealB3,
                               fontSize: 20.91.sp,
                               fontWeight: FontWeight.w600,
@@ -102,7 +103,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                       alignment: Alignment.center,
                       child: CustomText(
                           textAlign: TextAlign.center,
-                          text: 'Sign up as a Lawyer',
+                          text: '${AppLocalizations.of(context)!.sign_up_as_a} ${AppLocalizations.of(context)!.lawyer}',
                           color: themeProvider.themeMode == ThemeMode.dark
                               ? AppColors.white // Dark theme color
                               : AppColors.black,
@@ -137,7 +138,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                                       alignment: Alignment.topLeft,
                                       child: CustomText(
                                           textAlign: TextAlign.left,
-                                          text: 'First name',
+                                          text: AppLocalizations.of(context)!.first_name,
                                           color: themeProvider.themeMode ==
                                                   ThemeMode.dark
                                               ? AppColors.white
@@ -171,7 +172,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                                       alignment: Alignment.topRight,
                                       child: CustomText(
                                           textAlign: TextAlign.right,
-                                          text: 'Last name',
+                                          text: AppLocalizations.of(context)!.last_name,
                                           color: themeProvider.themeMode ==
                                                   ThemeMode.dark
                                               ? AppColors.white
@@ -204,7 +205,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                               alignment: Alignment.topLeft,
                               child: CustomText(
                                   textAlign: TextAlign.left,
-                                  text: 'Email address',
+                                  text: AppLocalizations.of(context)!.email_address,
                                   color: themeProvider.themeMode == ThemeMode.dark
                                       ? AppColors.white
                                       : AppColors.black,
@@ -233,7 +234,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                               alignment: Alignment.topLeft,
                               child: CustomText(
                                   textAlign: TextAlign.left,
-                                  text: 'License number',
+                                  text: AppLocalizations.of(context)!.license_number,
                                   color: themeProvider.themeMode == ThemeMode.dark
                                       ? AppColors.white
                                       : AppColors.black,
@@ -261,7 +262,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                               alignment: Alignment.topLeft,
                               child: CustomText(
                                   textAlign: TextAlign.left,
-                                  text: 'Mobile number',
+                                  text: AppLocalizations.of(context)!.mobile_number,
                                   color: themeProvider.themeMode == ThemeMode.dark
                                       ? AppColors.white
                                       : AppColors.black,
@@ -310,7 +311,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                               alignment: Alignment.topLeft,
                               child: CustomText(
                                   textAlign: TextAlign.left,
-                                  text: 'Gender',
+                                  text: AppLocalizations.of(context)!.gender,
                                   color: themeProvider.themeMode == ThemeMode.dark
                                       ? AppColors.white
                                       : AppColors.black,
@@ -342,7 +343,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                             genderController.getSelectedGender().trim();
                         // Validate First Name
                         if (firstname1Controller.text.isEmpty) {
-                          Get.snackbar('Error', 'First Name Required!',
+                          Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.fullNameRequired,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
@@ -355,7 +356,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                               false; // Update flag to false due to validation failure
                         } else if (lastname1Controller.text.isEmpty) {
                           // Validate Last Name
-                          Get.snackbar('Error', 'Last Name is Required!',
+                          Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.last_name_required,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
@@ -366,7 +367,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                               snackPosition: SnackPosition.TOP);
                           canNavigate = false;
                         } else if (email1Controller.text.isEmpty) {
-                          Get.snackbar('Error', 'Email Required!',
+                          Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.email_required,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
@@ -381,7 +382,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                           RegExp emailRegex = RegExp(
                               r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
                           if (!emailRegex.hasMatch(email1Controller.text)) {
-                            Get.snackbar('Error', 'Invalid Email!',
+                            Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.invalid_email,
                                 backgroundColor: AppColors.red,
                                 colorText: AppColors.white,
                                 borderRadius: 20.r,
@@ -392,7 +393,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                                 snackPosition: SnackPosition.TOP);
                             canNavigate = false;
                           } else if (licensenumController.text.isEmpty) {
-                            Get.snackbar('Error', 'License Number Required!',
+                            Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.license_number,
                                 backgroundColor: AppColors.red,
                                 colorText: AppColors.white,
                                 borderRadius: 20.r,
@@ -403,7 +404,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                                 snackPosition: SnackPosition.TOP);
                             canNavigate = false;
                           } else if (fullPhoneNumber1.isEmpty) {
-                            Get.snackbar('Error', 'Mobile Number Required!',
+                            Get.snackbar(AppLocalizations.of(context)!.error, AppLocalizations.of(context)!.mobileNumberRequired,
                                 colorText: AppColors.white,
                                 backgroundColor: Colors.red,
                                 borderRadius: 20.r,
@@ -434,7 +435,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Mulish',
                           fontSize: 22.2.sp,
-                          text: 'Next',
+                          text: AppLocalizations.of(context)!.next,
                           backgroundColor: AppColors.tealB3,
                           color: AppColors.white),
                     ),
@@ -448,7 +449,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           CustomText(
-                              text: 'Here to Offer Legal Expertise?',
+                              text: AppLocalizations.of(context)!.hereOfferLegalExpertise,
                               color: themeProvider.themeMode == ThemeMode.dark
                                   ? AppColors.white // Dark theme color
                                   : AppColors.black,
@@ -464,7 +465,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                                           SignupAsClientScreen()));
                             },
                             child: CustomText(
-                                text: ' Join as a',
+                                text: ' ${AppLocalizations.of(context)!.join_as_a}',
                                 color: AppColors.tealB3,
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w600,
@@ -475,7 +476,7 @@ class _SignupAsLawyerScreenState extends State<SignupAsLawyerScreen> {
                     ),
                   ),
                   CustomText(
-                      text: 'Client',
+                      text: AppLocalizations.of(context)!.client,
                       color: AppColors.tealB3,
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,

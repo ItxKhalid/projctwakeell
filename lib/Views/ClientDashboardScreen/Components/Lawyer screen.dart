@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projctwakeell/Utils/images.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MyLawyerScreens extends StatefulWidget {
   const MyLawyerScreens({Key? key});
@@ -25,7 +26,7 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Lawyer'),
+        title: Text(AppLocalizations.of(context)!.my_lawyer),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -50,7 +51,7 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
                 var clientData = snapshot.data!.docs[index];
-                String lawyerId = clientData['lawerUID'];
+                String lawyerId = clientData['lawyerUid'];
                 // Check if lawyer ID is unique, if not, skip
                 if (uniqueLawyerIds.contains(lawyerId)) {
                   return SizedBox.shrink(); // Skip rendering duplicate lawyer
@@ -59,11 +60,11 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
                 return StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('lawyer')
-                      .where('uid', isEqualTo: lawyerId)
+                      .where('userId', isEqualTo: lawyerId)
                       .snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> lawyerSnapshot) {
                     if (lawyerSnapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return AppConst.spinKitWave();
                     }
                     if (lawyerSnapshot.hasError) {
                       return Text('Error: ${lawyerSnapshot.error}');
@@ -76,7 +77,7 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Gender: ${lawyerData['gender']}'),
+                              // Text('Gender: ${lawyerData['gender']}'),
                               Text('Phone Number: ${lawyerData['phoneNumber']}'),
                               Text('License Number: ${lawyerData['licenseNumber']}'),
                             ],
@@ -84,14 +85,14 @@ class _MyLawyerScreensState extends State<MyLawyerScreens> {
                         ),
                       );
                     }
-                    return Text('No lawyer found for this client');
+                    return  Text(AppLocalizations.of(context)!.no_lawyers_found);
                   },
                 );
               },
             );
           }
           return Center(
-            child: Text('No clients found.'),
+            child: Text(AppLocalizations.of(context)!.no_lawyers_found),
           );
         },
       ),

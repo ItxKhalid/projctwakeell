@@ -20,18 +20,21 @@ import '../HomePage_lawyer_screen/home_page_lawyer_screen.dart';
 import '../PinCodeScreen/pin_code_screen.dart';
 import '../SignUpAsClientScreen/signup_as_client_screen.dart';
 import '../SignUpAsLawyerScreen/signup_as_lawyer_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginAsLawyerScreen extends StatefulWidget {
   const LoginAsLawyerScreen({super.key});
+
   @override
   State<LoginAsLawyerScreen> createState() => _LoginAsLawyerScreenState();
 }
 
 class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
-  TextEditingController passController1=TextEditingController();
-  TextEditingController emailController1=TextEditingController();
-  bool passVisibility1=false;
-  final _formKey=GlobalKey<FormState>();
+  TextEditingController passController1 = TextEditingController();
+  TextEditingController emailController1 = TextEditingController();
+  bool passVisibility1 = false;
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     passController1.dispose();
@@ -52,65 +55,75 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
               children: [
 
                 Padding(
-                  padding:  EdgeInsets.only(top: 42.h,left: 39.w),
+                  padding: EdgeInsets.only(top: 42.h, left: 39.w),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: CustomText(
                         textAlign: TextAlign.left,
-                        text:'Wakeel Naama',
+                        text: AppLocalizations.of(context)!.wakeel_naama,
                         color: AppColors.tealB3,
                         fontSize: 20.91.sp,
                         fontWeight: FontWeight.w400,
-                        fontFamily:'Acme'),
+                        fontFamily: 'Acme'),
                   ),
                 ),
 
                 Padding(
-                  padding:  EdgeInsets.only(top:52.h,left: 113.w,right: 114.w),
-                  child: Image.asset(AppImages.image4,width: 168.w,height: 149.h,fit: BoxFit.cover,),
+                  padding: EdgeInsets.only(
+                      top: 52.h, left: 113.w, right: 114.w),
+                  child: Image.asset(AppImages.image4, width: 168.w,
+                    height: 149.h,
+                    fit: BoxFit.cover,),
                 ),
 
                 Padding(
-                  padding:  EdgeInsets.only(top: 24.h,),
+                  padding: EdgeInsets.only(top: 24.h,),
                   child: Align(
                     alignment: Alignment.center,
                     child: CustomText(
                         textAlign: TextAlign.center,
-                        text:'Log In as a Lawyer',
+                        text: '${AppLocalizations.of(context)!
+                            .log_in_as_a} ${AppLocalizations.of(context)!
+                            .lawyer}',
                         color: themeProvider.themeMode == ThemeMode.dark
                             ? AppColors.white // Dark theme color
                             : AppColors.black,
                         fontSize: 32.sp,
                         fontWeight: FontWeight.w500,
-                        fontFamily:'Mulish'),
+                        fontFamily: 'Mulish'),
                   ),
                 ),
 
                 Padding(
-                  padding:  EdgeInsets.only(top: 20.h,left: 34.w,right: 33.w),
+                  padding: EdgeInsets.only(top: 20.h, left: 34.w, right: 33.w),
                   child: Container(
                     width: 326.w,
                     height: 223.h,
                     decoration: BoxDecoration(
-                      color: themeProvider.themeMode==ThemeMode.dark? AppColors.blackA19 :Colors.grey.shade100,
+                      color: themeProvider.themeMode == ThemeMode.dark
+                          ? AppColors.blackA19
+                          : Colors.grey.shade100,
                       //color: AppColors.blackA19,
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 20,left: 20.w,right: 20.w),
+                      padding: EdgeInsets.only(
+                          top: 20, left: 20.w, right: 20.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Align(
-                            alignment:Alignment.topLeft,
+                            alignment: Alignment.topLeft,
                             child: CustomText(
                                 textAlign: TextAlign.left,
-                                text:'Email address',
-                                color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
+                                text: AppLocalizations.of(context)!.email_address,
+                                color: themeProvider.themeMode == ThemeMode.dark
+                                    ? AppColors.white
+                                    : AppColors.black,
                                 // color: AppColors.white,
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w400,
-                                fontFamily:'Inter'),
+                                fontFamily: 'Inter'),
                           ),
                           SizedBox(height: 13.h,),
                           CustomContainerTextFormField(
@@ -118,12 +131,10 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                             width: 286.w,
                             height: 38.h,
                             autofillHints: [AutofillHints.email],
-                            validator: (value) {
-                            },
+                            validator: (value) {},
                             keyboardtype: TextInputType.emailAddress,
-                            onFieldSubmitted: (value) {
-                            },
-                            controller:emailController1,
+                            onFieldSubmitted: (value) {},
+                            controller: emailController1,
                           ),
 
                           SizedBox(height: 25.h,),
@@ -131,8 +142,10 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                             alignment: Alignment.topLeft,
                             child: CustomText(
                               textAlign: TextAlign.left,
-                              text: 'Password',
-                              color: themeProvider.themeMode==ThemeMode.dark ? AppColors.white:AppColors.black,
+                              text: AppLocalizations.of(context)!.password,
+                              color: themeProvider.themeMode == ThemeMode.dark
+                                  ? AppColors.white
+                                  : AppColors.black,
                               // color: AppColors.white,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w400,
@@ -154,11 +167,14 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                                   passVisibility1 = !passVisibility1;
                                 });
                               },
-                              icon: passVisibility1 ? Icon(Icons.visibility, color: AppColors.tealB3, size: 20,) :
-                              Icon(Icons.visibility_off, color: AppColors.grey41, size: 20,),
+                              icon: passVisibility1 ? Icon(
+                                Icons.visibility, color: AppColors.tealB3,
+                                size: 20,) :
+                              Icon(
+                                Icons.visibility_off, color: AppColors.grey41,
+                                size: 20,),
                             ),
-                            validator: (value) {
-                            },
+                            validator: (value) {},
                             onFieldSubmitted: (value) {},
                             controller: passController1,
                           ),
@@ -170,23 +186,23 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                 ),
 
 
-                Padding(
-                  padding:EdgeInsets.only(left: 208.w,right: 33.w,top: 5.h),
-                  child: GestureDetector(
-                    onTap: (){
-                      //Navigator.push(context, MaterialPageRoute(builder: (context)=>PinCodeLawyerScreen()));
-                    },
-                    child: CustomText(
-                        text:'Forgot your password?',
-                        color: AppColors.tealB3,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        fontFamily:'Inter'),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(left: 208.w, right: 33.w, top: 5.h),
+                //   child: GestureDetector(
+                //     onTap: () {
+                //       //Navigator.push(context, MaterialPageRoute(builder: (context)=>PinCodeLawyerScreen()));
+                //     },
+                //     child: CustomText(
+                //         text: 'Forgot your password?',
+                //         color: AppColors.tealB3,
+                //         fontSize: 14.sp,
+                //         fontWeight: FontWeight.w400,
+                //         fontFamily: 'Inter'),
+                //   ),
+                // ),
 
                 Padding(
-                  padding:  EdgeInsets.only(top: 10.h,left:38.w,right: 38.w),
+                  padding: EdgeInsets.only(top: 10.h, left: 38.w, right: 38.w),
                   child: GestureDetector(
                     onTap: () async {
                       String email = emailController1.text.trim();
@@ -200,14 +216,16 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                             },
                             barrierDismissible: false,
                           );
+
                           UserCredential userCredential = await FirebaseAuth
                               .instance
                               .signInWithEmailAndPassword(
                               email: email, password: password);
                           User? user = userCredential.user;
+
                           if (user != null && user.emailVerified) {
-                            SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
+                            SharedPreferences prefs = await SharedPreferences
+                                .getInstance();
                             await prefs.setString(
                                 AppConst.saveUserType, 'lawyer');
                             AppConst.getUserType =
@@ -215,12 +233,18 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
 
                             // Retrieve user data from SharedPreferences
                             String? lawyerId = prefs.getString('lawyer_id');
-                            String? lawyerEmail = prefs.getString('lawyer_email');
-                            String? lawyerFName = prefs.getString('lawyer_fName');
-                            String? lawyerLName = prefs.getString('lawyer_lName');
-                            String? lawyerLicense = prefs.getString('lawyer_licenseNumber');
-                            String? lawyerGender = prefs.getString('lawyer_gender');
-                            String? lawyerNumber = prefs.getString('lawyer_number');
+                            String? lawyerEmail = prefs.getString(
+                                'lawyer_email');
+                            String? lawyerFName = prefs.getString(
+                                'lawyer_fName');
+                            String? lawyerLName = prefs.getString(
+                                'lawyer_lName');
+                            String? lawyerLicense = prefs.getString(
+                                'lawyer_licenseNumber');
+                            String? lawyerGender = prefs.getString(
+                                'lawyer_gender');
+                            String? lawyerNumber = prefs.getString(
+                                'lawyer_number');
 
                             LawyerModel loggedInUser = LawyerModel(
                               userId: lawyerId,
@@ -232,17 +256,29 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                               gender: lawyerGender,
                             );
 
-                            await FirebaseFirestore.instance.collection('lawyer').doc(user.uid).set(loggedInUser.toMap());
+                            // Check if user already exists in Firestore
+                            DocumentSnapshot docSnapshot = await FirebaseFirestore
+                                .instance
+                                .collection('lawyer')
+                                .doc(user.uid)
+                                .get();
+
+                            if (!docSnapshot.exists) {
+                              // User does not exist, create new document
+                              await FirebaseFirestore.instance
+                                  .collection('lawyer')
+                                  .doc(user.uid)
+                                  .set(loggedInUser.toMap());
+                            }
 
                             final userProvider = Provider.of<UserProvider>(
-                                context,
-                                listen: false);
+                                context, listen: false);
                             await userProvider.setLoggedInLawyer(loggedInUser);
 
                             Navigator.pop(context);
                             Get.snackbar(
-                              'Congratulations',
-                              'Successfully logged in as a Lawyer!',
+                              AppLocalizations.of(context)!.congratulations,
+                              AppLocalizations.of(context)!.successfully_logged_in_as_lawyer,
                               backgroundColor: AppColors.tealB3,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
@@ -253,19 +289,19 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const HomePageLawyerScreen(),
+                                builder: (context) => HomePageLawyerScreen(),
                               ),
                             );
                           } else {
                             Navigator.pop(context);
                             Get.snackbar(
-                              'Error',
-                              'Email is not verified. Please verify your email before logging in.',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.email_not_verified,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,
-                                  color: AppColors.white),
+                              icon: Icon(
+                                  Icons.error_outline, color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           }
@@ -273,127 +309,118 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                           Navigator.pop(context);
                           if (e.code == 'user-not-found') {
                             Get.snackbar(
-                              'Error',
-                              'No user found for that email.',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.no_user_found,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,
-                                  color: AppColors.white),
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           } else if (e.code == 'wrong-password') {
                             Get.snackbar(
-                              'Error',
-                              'Wrong password provided.',
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.wrong_password,
                               backgroundColor: AppColors.red,
                               colorText: AppColors.white,
                               borderRadius: 20.r,
-                              icon: Icon(Icons.error_outline,
-                                  color: AppColors.white),
+                              icon: Icon(Icons.error_outline, color: AppColors.white),
                               snackPosition: SnackPosition.TOP,
                             );
                           }
                         } catch (e) {
                           Navigator.pop(context);
                           Get.snackbar(
-                            'Error',
+                            AppLocalizations.of(context)!.error,
                             e.toString(),
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }
                       } else {
                         if (email.isEmpty) {
                           Get.snackbar(
-                            'Error',
-                            'Email Required!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.email_required,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (!RegExp(
                             r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
                             .hasMatch(emailController1.text)) {
                           Get.snackbar(
-                            'Error',
-                            'Invalid Email!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.invalid_email,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (password.isEmpty) {
                           Get.snackbar(
-                            'Error',
-                            'Password Required!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.password_required,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         } else if (password.length < 6) {
                           Get.snackbar(
-                            'Error',
-                            'Password must be at least 6 characters long!',
+                            AppLocalizations.of(context)!.error,
+                            AppLocalizations.of(context)!.password_length_short,
                             backgroundColor: AppColors.red,
                             colorText: AppColors.white,
                             borderRadius: 20.r,
-                            icon: Icon(Icons.error_outline,
-                                color: AppColors.white),
+                            icon: Icon(Icons.error_outline, color: AppColors.white),
                             snackPosition: SnackPosition.TOP,
                           );
                         }
                       }
                     },
-
-                    child: CustomButton(borderRadius: BorderRadius.circular(10.r),
-                        height: 55.h,
-                        width: 317.w,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Mulish',
-                        fontSize: 22.2.sp,
-                        text: 'Continue',
-                        backgroundColor: AppColors.tealB3,
-                        color: AppColors.white),
+                    child: CustomButton(
+                      borderRadius: BorderRadius.circular(10.r),
+                      height: 55.h,
+                      width: 317.w,
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Mulish',
+                      fontSize: 22.2.sp,
+                      text: AppLocalizations.of(context)!.continueButton,
+                      backgroundColor: AppColors.tealB3,
+                    ),
                   ),
                 ),
-
-
-
-
                 Padding(
                   padding: EdgeInsets.only(top: 20.h),
                   child: Align(
                     alignment: Alignment.center,
                     child: CustomText(
                         textAlign: TextAlign.center,
-                        text:'Don’t have a Wakeel Naama account?',
+                        text: AppLocalizations.of(context)!.dont_have_account,
                         color: themeProvider.themeMode == ThemeMode.dark
                             ? AppColors.white // Dark theme color
                             : AppColors.black,
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w600,
-                        fontFamily:'Mulish'),
+                        fontFamily: 'Mulish'),
                   ),
                 ),
 
                 Padding(
-                  padding:  EdgeInsets.only(top: 30.h,),
+                  padding: EdgeInsets.only(top: 30.h,),
                   child: GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SignupAsLawyerScreen()));
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (
+                          context) => SignupAsLawyerScreen()));
                     },
                     child: Align(
                       alignment: Alignment.center,
@@ -405,13 +432,12 @@ class _LoginAsLawyerScreenState extends State<LoginAsLawyerScreen> {
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Mulish',
                           fontSize: 22.2.sp,
-                          text: 'Sign Up',
+                          text: AppLocalizations.of(context)!.sign_up,
                           backgroundColor: AppColors.black,
                           color: AppColors.white),
                     ),
                   ),
                 ),
-
 
 
               ],
