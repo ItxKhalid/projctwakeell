@@ -20,7 +20,7 @@ class UserModel {
   // Create a UserModel from a map
   factory UserModel.fromMap(Map<String, dynamic> userMap) {
     return UserModel(
-      userId: userMap['uid'],
+      userId: userMap['userId'],
       firstName: userMap['firstName'],
       lastName: userMap['lastName'],
       email: userMap['email'],
@@ -33,7 +33,7 @@ class UserModel {
   // Convert a UserModel to a map
   Map<String, dynamic> toMap() {
     return {
-      'uid': userId,
+      'userId': userId,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
@@ -67,7 +67,7 @@ class LawyerModel {
   // Create a LawyerModel from a map
   factory LawyerModel.fromMap(Map<String, dynamic> userMap) {
     return LawyerModel(
-      userId: userMap['uid'],
+      userId: userMap['userId'],
       firstName: userMap['firstName'],
       lastName: userMap['lastName'],
       email: userMap['email'],

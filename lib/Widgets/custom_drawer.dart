@@ -13,6 +13,7 @@ import '../Utils/colors.dart';
 import '../Views/ClientDashboardScreen/client_dashboard_screen.dart';
 import '../Views/FeedBackFormScreen/feedback_form_screen.dart';
 import '../Views/HomePageClientScreen/home_page_client_screen.dart';
+import '../Views/selection_screen.dart';
 import '../service/translation_model.dart';
 import '../user_provider.dart';
 import 'custom_text.dart';
@@ -260,7 +261,7 @@ class MyLawyerDrawer extends StatelessWidget {
                   userProvider.logout().then((value) => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginAsLawyerScreen())));
+                          builder: (context) => const SelectionScreen())));
                   Navigator.of(context).pop();
                 },
                 text: AppLocalizations.of(context)!.doYouWantToLogoutTheApp,

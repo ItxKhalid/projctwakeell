@@ -1,7 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import '../../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
+import '../Utils/colors.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -15,60 +19,92 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   String responseApi = '';
   String errorMessage = '';
   List<Map<String, String>> messages = [];
+  bool isLoading = false; // Add this variable to track loading state
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.chatBot),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Card(
-                margin: const EdgeInsets.all(30),
-                elevation: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: _buildMessagesWithDividers(),
+    final themeProvider = Provider.of<ThemeChangerProvider>(context);
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.chatBot),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Card(
+                  margin: const EdgeInsets.all(30),
+                  elevation: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: _buildMessagesWithDividers(),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                        hintText: AppLocalizations.of(context)!.enterYourQuery,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.grey)
-                        )
+            if (isLoading) // Display loading indicator if isLoading is true
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(color: Colors.teal),
+              ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: TextFormField(
+                                controller: controller,
+                                cursorColor: AppColors.tealB3,
+                                keyboardType: TextInputType.multiline,
+                                minLines: 1,
+                                maxLines: 5,
+                                textInputAction: TextInputAction.send,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: AppLocalizations.of(context)!.enterYourQuery,
+                                  hintStyle: TextStyle(
+                                    color: themeProvider.themeMode == ThemeMode.dark ? AppColors.white : AppColors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  style: const ButtonStyle(
-                    fixedSize: MaterialStatePropertyAll(Size.fromHeight(60)),
-                  ),
-                  onPressed: () {
-                    _sendQuery(controller.text);
-                  },
-                  child:  Text(AppLocalizations.of(context)!.send),
-                ),
-              ],
+                  MaterialButton(
+                    onPressed: (){
+                      _sendQuery(controller.text);
+                    },
+                    shape: const CircleBorder(),
+                    color: AppColors.tealB3,
+                    padding: EdgeInsets.all(12.r),
+                    minWidth: 0,
+                    child: Icon(Icons.send, color: AppColors.white, size: 30.sp),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -80,8 +116,9 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         ListTile(
           title: Text(
             messages[i]['sender'] == 'bot' ? 'Bot' : 'You',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+            style:  TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.tealB3
             ),
           ),
           subtitle: Text(messages[i]['message']!),
@@ -96,11 +133,12 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   }
 
   Future<void> _sendQuery(String query) async {
-    try {
-      setState(() {
-        messages.add({'sender': 'user', 'message': query});
-      });
+    setState(() {
+      messages.add({'sender': 'user', 'message': query});
+      isLoading = true; // Set loading state to true
+    });
 
+    try {
       var headers = {'Content-Type': 'application/json'};
       var requestBody = json.encode({"prompt": query});
       var response = await http.post(
@@ -114,7 +152,6 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           messages.add({'sender': 'bot', 'message': response.body});
           errorMessage = '';
         });
-        controller.clear();
       } else {
         setState(() {
           errorMessage = 'Error: ${response.reasonPhrase}';
@@ -124,6 +161,11 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
       setState(() {
         errorMessage = 'Exception: $e';
       });
+    } finally {
+      setState(() {
+        isLoading = false; // Set loading state to false
+      });
     }
+    controller.clear(); // Clear the input field
   }
 }

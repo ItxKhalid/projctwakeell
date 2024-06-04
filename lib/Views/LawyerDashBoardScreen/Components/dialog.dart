@@ -267,7 +267,7 @@ class UserModel {
     return UserModel(
       firstName: data['firstName'],
       lastName: data['lastName'],
-      userId: data['uid'],
+      userId: data['userId'],
     );
   }
 }

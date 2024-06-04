@@ -24,7 +24,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
   final TextEditingController _caseTypeController = TextEditingController();
   final TextEditingController _caseDetailsController = TextEditingController();
   final TextEditingController _contactNumberController =
-      TextEditingController();
+  TextEditingController();
   List<UserModel> clients = [];
 
   @override
@@ -45,7 +45,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
 
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('client').get();
+      await FirebaseFirestore.instance.collection('client').get();
       clients = querySnapshot.docs
           .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
@@ -66,7 +66,7 @@ class _AddClientScreenState extends State<AddClientScreen> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('Add Client Details'),
+        title:  Text(AppLocalizations.of(context)!.add_client_details),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -77,7 +77,11 @@ class _AddClientScreenState extends State<AddClientScreen> {
             children: [
               Text(
                 AppLocalizations.of(context)!.clientFullName,
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
               ),
               const SizedBox(height: 8.0),
               DropdownButtonFormField<String>(
@@ -88,8 +92,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                     if (_selectedClient != null) {
                       // Find the selected client from the list
                       selectedClientData = clients.firstWhere(
-                        (client) =>
-                            '${client.firstName} ${client.lastName}' ==
+                            (client) =>
+                        '${client.firstName} ${client.lastName}' ==
                             _selectedClient,
                       );
                       // If a matching client is found, set the contact number
@@ -102,64 +106,138 @@ class _AddClientScreenState extends State<AddClientScreen> {
                                 selectedClientData!.lastName!;
                       } else {
                         _contactNumberController.text =
-                            ''; // No client selected, clear the text field
+                        ''; // No client selected, clear the text field
                       }
                     } else {
                       _contactNumberController.text =
-                          ''; // No client selected, clear the text field
+                      ''; // No client selected, clear the text field
                     }
                   });
                 },
                 items: clients.map((client) {
                   return DropdownMenuItem<String>(
                     value: '${client.firstName} ${client.lastName}',
-                    child: Text('${client.firstName} ${client.lastName}'),
+                    child: Text(
+                      '${client.firstName} ${client.lastName}',
+                      style: TextStyle(
+                        color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                      ),
+                    ),
                   );
                 }).toList(),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
                   hintText: 'Select client',
+                  hintStyle: TextStyle(
+                    color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 16.0),
               Text(
                 AppLocalizations.of(context)!.caseType,
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
               ),
               const SizedBox(height: 8.0),
               TextFormField(
                 controller: _caseTypeController,
+                style: TextStyle(
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
                   hintText: AppLocalizations.of(context)!.enterCaseType,
+                  hintStyle: TextStyle(
+                    color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 16.0),
               Text(
                 AppLocalizations.of(context)!.caseDetails,
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
               ),
               const SizedBox(height: 8.0),
               TextFormField(
                 controller: _caseDetailsController,
+                style: TextStyle(
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
                 maxLines: 3,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
                   hintText: AppLocalizations.of(context)!.enterCaseDetails,
+                  hintStyle: TextStyle(
+                    color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 16.0),
               Text(
                 AppLocalizations.of(context)!.contactNumber,
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
               ),
               const SizedBox(height: 8.0),
               TextFormField(
                 controller: _contactNumberController,
                 keyboardType: TextInputType.phone,
+                style: TextStyle(
+                  color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                ),
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.teal,
+                    ),
+                  ),
                   hintText: AppLocalizations.of(context)!.enterContactNumber,
+                  hintStyle: TextStyle(
+                    color: themeProvider.themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(height: 32.0),
@@ -209,27 +287,27 @@ class _AddClientScreenState extends State<AddClientScreen> {
                           .collection('ClientsData')
                           .add(clientData)
                           .then((value) => {
-                                Get.back(),
-                                Navigator.pop(context),
-                                Get.snackbar(
-                                    AppLocalizations.of(context)!.successfully,
-                                    AppLocalizations.of(context)!
-                                        .clientDetailsAdd,
-                                    backgroundColor: AppColors.blue,
-                                    colorText: AppColors.white,
-                                    borderRadius: 20.r,
-                                    icon: Icon(
-                                      Icons.check,
-                                      color: AppColors.white,
-                                    ),
-                                    snackPosition: SnackPosition.TOP),
-                                _selectedClient = null,
-                                setState(() {}),
-                                _fullNameController.clear(),
-                                _caseTypeController.clear(),
-                                _caseDetailsController.clear(),
-                                _contactNumberController.clear(),
-                              });
+                        Get.back(),
+                        Navigator.pop(context),
+                        Get.snackbar(
+                            AppLocalizations.of(context)!.successfully,
+                            AppLocalizations.of(context)!
+                                .clientDetailsAdd,
+                            backgroundColor: AppColors.blue,
+                            colorText: AppColors.white,
+                            borderRadius: 20.r,
+                            icon: Icon(
+                              Icons.check,
+                              color: AppColors.white,
+                            ),
+                            snackPosition: SnackPosition.TOP),
+                        _selectedClient = null,
+                        setState(() {}),
+                        _fullNameController.clear(),
+                        _caseTypeController.clear(),
+                        _caseDetailsController.clear(),
+                        _contactNumberController.clear(),
+                      });
                     } else {
                       if (fullName.isEmpty) {
                         Get.snackbar(AppLocalizations.of(context)!.error,
@@ -286,7 +364,8 @@ class _AddClientScreenState extends State<AddClientScreen> {
                   child: Text(
                     AppLocalizations.of(context)!.save,
                     style: const TextStyle(
-                        color: Colors.white), // Set text color to white
+                      color: Colors.white,
+                    ), // Set text color to white
                   ),
                 ),
               ),

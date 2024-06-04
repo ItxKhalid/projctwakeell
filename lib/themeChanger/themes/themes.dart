@@ -6,7 +6,7 @@ class AppThemes {
   /// Light Theme
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    // colorScheme: ColorScheme.fromSeed(seedColor: AppColors.tealB3),
     useMaterial3: true,
     primaryColor:  AppColors.tealB3,
   );
@@ -14,7 +14,7 @@ class AppThemes {
   /// Dark Theme
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    // colorScheme: ColorScheme.fromSeed(seedColor: AppColors.tealB3),
     useMaterial3: true,
       primaryColor: AppColors.tealB3,
   );

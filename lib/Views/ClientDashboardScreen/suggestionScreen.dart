@@ -190,11 +190,11 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text(AppLocalizations.of(context)!.recommended_lawyer),
+          title:  Text(AppLocalizations.of(context)!.recommended_lawyer,style: TextStyle(color: Colors.teal)),
           content: Text(response),
           actions: [
             TextButton(
-              child:  Text(AppLocalizations.of(context)!.oK),
+              child:  Text(AppLocalizations.of(context)!.oK,style: TextStyle(color: Colors.teal)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -257,11 +257,11 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text(AppLocalizations.of(context)!.case_time_prediction),
+          title:  Text(AppLocalizations.of(context)!.case_time_prediction,style: TextStyle(color: Colors.teal)),
           content: Text(response),
           actions: [
             TextButton(
-              child:  Text(AppLocalizations.of(context)!.oK),
+              child:  Text(AppLocalizations.of(context)!.oK,style: TextStyle(color: Colors.teal)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -296,11 +296,12 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
         title:  Text(AppLocalizations.of(context)!.recommended_lawyer),
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ?  Center(child: AppConst.spinKitWave())
           : Column(
               children: [
                 if (responseApi != null)
                   Stack(
+                    clipBehavior: Clip.none,
                     fit: StackFit.loose,
                     children: [
                       Card(
@@ -312,7 +313,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
                         ),
                       ),
                       Positioned(
-                        bottom: 0,
+                        bottom: -15,
                         right: 25,
                         child: ElevatedButton(
                             style: const ButtonStyle(
@@ -329,6 +330,7 @@ class _RecommendedLawyerScreenState extends State<RecommendedLawyerScreen> {
                       )
                     ],
                   ),
+                const SizedBox(height: 30),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance.collection('lawyer').snapshots(),

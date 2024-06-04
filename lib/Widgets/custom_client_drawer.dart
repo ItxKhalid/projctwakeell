@@ -14,6 +14,7 @@ import '../Views/ClientDashboardScreen/client_dashboard_screen.dart';
 import '../Views/FeedBackFormScreen/feedback_form_screen.dart';
 import '../Views/HomePageClientScreen/home_page_client_screen.dart';
 import '../Views/LoginAsClientScreen/login_as_client_screen.dart';
+import '../Views/selection_screen.dart';
 import '../service/Userclass.dart';
 import '../service/translation_model.dart';
 import '../user_provider.dart';
@@ -299,7 +300,7 @@ class MyClientDrawer extends StatelessWidget {
                   userProvider.logout().then((value) => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginAsClientScreen())));
+                          builder: (context) => const SelectionScreen())));
                   Navigator.of(context).pop();
                 },
                 text: AppLocalizations.of(context)!.doYouWantToLogoutTheApp,

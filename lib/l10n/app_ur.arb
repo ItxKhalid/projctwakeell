@@ -173,6 +173,8 @@
     "confirmLogout": "تصدیق لاگ آوٹ",
     "doYouWantToLogoutTheApp": "کیا آپ لاگ آوٹ کرنا چاہتے ہیں؟",
     "cancel": "منسوخ",
+    "lawyer_description": "میں وکیل ہوں، اپنی قانونی مہارت اور خدمات پیش کرنے کے لیے تیار ہوں",
+    "client_description": "میں کلیئنٹ ہوں، قانونی مہارت اور مدد کی تلاش میں ہوں",
     "logout": "لاگ آوٹ",
     "yourProfileHasBeenUpdatedSuccessfully": "آپ کی پروفائل کامیابی کے ساتھ اپ ڈیٹ ہو گئی ہے۔",
     "profileUpdated": "پروفائل اپ ڈیٹ",

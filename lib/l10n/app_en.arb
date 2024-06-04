@@ -96,6 +96,8 @@
     "doYouWantToLogoutTheApp": "Do you want to log out?",
     "cancel": "Cancel",
     "logout": "Logout",
+    "lawyer_description": "I'm a lawyer, ready to offer my legal expertise and services",
+    "client_description": "I'm a client, looking for legal expertise and assistance",
     "yourProfileHasBeenUpdatedSuccessfully": "Your profile has been updated successfully.",
     "profileUpdated": "Profile Updated",
     "updateProfile": "Update Profile",

@@ -16,6 +16,7 @@ import '../../Widgets/custom_text.dart';
 import '../../themeChanger/themeChangerProvider/theme_changer_provider.dart';
 import '../../user_provider.dart';
 import '../HomePageClientScreen/home_page_client_screen.dart';
+import '../selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
       }
       else if (userProvider.loggedInUser == null ||
           userProvider.loggedInLawyer == null) {
-        Get.to(() =>  AppConst.getUserType == 'lawyer' ? const LoginAsLawyerScreen() : const LoginAsClientScreen());
+        Get.to(() =>   const SelectionScreen());
       }
     });
   }

@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
+import 'package:projctwakeell/Views/LawyerDashBoardScreen/Components/add_client_details2.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../Utils/colors.dart';
@@ -103,6 +106,7 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
                             cursorColor: AppColors.tealB3,
                             decoration:  InputDecoration(
                               hintText: AppLocalizations.of(context)!.search_client,
+                              hintStyle: TextStyle(color: Colors.grey),
                               border: InputBorder.none,
                             ),
                             style: const TextStyle(color: Colors.black),
@@ -185,65 +189,86 @@ class _LawyerChatsScreenState extends State<LawyerChatsScreen> {
     String name = '$firstName $lastName'.trim();
     // Timestamp timestamp = clientData['timestamp'] ?? Timestamp.now();
     // String formattedTimestamp = DateFormat('MM/dd/yyyy, hh:mm a').format(timestamp.toDate());
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-    String roomId = chatRoomId(uid, clientData['uid']);
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LawyerMessageScreen(
-              clientName: name,
-              clientId: clientData['uid'],
-              chatRoomId: roomId,
+    String currentUid = FirebaseAuth.instance.currentUser!.uid;
+    String roomId = chatRoomId(currentUid, clientData['uid']);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.grey[200],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 4),
+            child: const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/image11.png'),
             ),
           ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Colors.grey[200],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 4),
-              child: const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/image11.png'),
-              ),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    email,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    ),
-                  )
-                ],
-              ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  email,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
+                )
+              ],
             ),
-
-          ],
-        ),
+          ),
+          const SizedBox(width: 10),
+           GestureDetector(
+               onTap: () {
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                     builder: (context) => LawyerMessageScreen(
+                       clientName: name,
+                       clientId: clientData['uid'].toString(),
+                       chatRoomId: roomId,
+                     ),
+                   ),
+                 );
+               },
+               child: Icon(CupertinoIcons.chat_bubble_fill,color: AppColors.tealB3,size: 32)),
+          const SizedBox(width: 10),
+          GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AddClientScreen2(
+                          id:  clientData['uid'].toString(),
+                          name: name,
+                          phoneNo:clientData['phoneNumber'].toString(),
+                        )
+                    //     LawyerMessageScreen(
+                    //   clientName: name,
+                    //   clientId: clientData['uid'].toString(),
+                    //   chatRoomId: roomId,
+                    // ),
+                  ),
+                );
+              },
+              child: Icon(Icons.add_circle,color: AppColors.tealB3,size: 32))
+        ],
       ),
     );
   }

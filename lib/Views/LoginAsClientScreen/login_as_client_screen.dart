@@ -179,21 +179,6 @@ class _LoginAsClientScreenState extends State<LoginAsClientScreen> {
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 208.w, right: 33.w, top: 5.h),
-                //   child: GestureDetector(
-                //     onTap: () {
-                //       // Navigate to forgot password screen
-                //     },
-                //     child: CustomText(
-                //       text: AppLocalizations.of(context)!.forgot_password,
-                //       color: AppColors.tealB3,
-                //       fontSize: 14.sp,
-                //       fontWeight: FontWeight.w400,
-                //       fontFamily: 'Inter',
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: EdgeInsets.only(top: 10.h, left: 38.w, right: 38.w),
                   child: GestureDetector(
